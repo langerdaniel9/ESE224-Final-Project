@@ -1,0 +1,394 @@
+// Local Files //
+#include "User.h"
+#include "Librarian.h"
+#include "Reader.h"
+#include "Student.h"
+#include "Teacher.h"
+#include "DateFunction.h"
+
+// Standard Files //
+#include <iostream>
+#include <string>
+#include <ctime>
+#include <vector>
+#include <fstream>
+
+using namespace std;
+
+// Casting //
+Librarian *userToLibrarian(User *toCast)
+{
+    return dynamic_cast<Librarian *>(toCast);
+}
+
+Student *userToStudent(User *toCast)
+{
+    return dynamic_cast<Student *>(toCast);
+}
+
+Teacher *userToTeacher(User *toCast)
+{
+    return dynamic_cast<Teacher *>(toCast);
+}
+
+Reader *userToReader(User *toCast)
+{
+    return dynamic_cast<Reader *>(toCast);
+}
+/////////////
+
+// Function Declarations //
+void getUsers(vector<User *> usersList);
+void getBooks(vector<Book> &bookCatalog, int &idcount);
+User *login(vector<User *> usersList);
+void librarianLoop(Librarian *user, vector<Book> bookCatalog, vector<User *> usersList, time_t &zeroTime, int &idCount);
+void readerLoop(Reader *user, vector<Book> bookCatalog, time_t &zeroTime);
+///////////////////////////
+
+// Main Function //
+int main()
+{
+    // Data to be read in from text files
+    vector<Book> bookCatalog;
+    vector<User *> usersList;
+
+    // Read in data from student.txt and book.txt
+    int idCount = 0;                // TODO - needs to be changed since we are given id's (Ethan)
+    getUsers(usersList);            // TODO - verify, but should not need any changed
+    getBooks(bookCatalog, idCount); // TODO - needs to be changed since we are given id's (Ethan)
+
+    // Login system, can log in and log out on the same run
+
+    while (true)
+    {
+        User *currentUser = login(usersList); // TODO - verify, but should be working (Ethan)
+        time_t zeroTime = time(NULL);
+
+        if (currentUser->type() == "Librarian")
+        {
+            librarianLoop(userToLibrarian(currentUser), bookCatalog, usersList, zeroTime, idCount);
+        }
+        else if (currentUser->type() == "Student")
+        {
+            readerLoop(userToReader(currentUser), bookCatalog, zeroTime);
+        }
+        else if (currentUser->type() == "Teacher")
+        {
+            readerLoop(userToReader(currentUser), bookCatalog, zeroTime);
+        }
+        else
+        {
+            cerr << "userType is invalid" << endl;
+            exit(5);
+        }
+    }
+}
+
+void getUsers(vector<User *> usersList)
+{
+    // Do file I/O, filename is usersList.txt
+    fstream fin("usersList.txt");
+    if (fin.fail())
+    {
+        cerr << "error opening userList" << endl;
+        exit(1);
+    }
+
+    /* It will be done variable by variable since each Person has 3 fields that need to be read.
+     *
+     * The format will be
+     * Role(0=student, 1=teacher, 2=librarian)  user_name   password
+     */
+    // Check what type of user it is (student, teacher, librarian) and push to the vector
+
+    int rolein;
+    string userin;
+    string passwordin;
+    while (!(fin.eof()))
+    {
+        fin >> rolein >> userin >> passwordin;
+        string temp;
+        getline(fin, temp);
+        if (rolein == 0) // for student
+        {
+            // assign values and attributes to temp student
+            Student *temp = new Student(userin, passwordin);
+            // push to vector
+            usersList.push_back(temp);
+        }
+        if (rolein == 1) // for teacher
+        {
+            // assign values and attributes to temp teacher
+            Teacher *temp = new Teacher(userin, passwordin);
+            // push to vector
+            usersList.push_back(temp);
+        }
+        if (rolein == 2) // for librarian
+        {
+            // assign values and attributes to temp teacher
+            Librarian *temp = new Librarian(userin, passwordin);
+            // push to vector
+            usersList.push_back(temp);
+        }
+    }
+    // When finished reading in from file, close it
+    fin.close();
+}
+
+void getBooks(vector<Book> &bookCatalog, int &idcount)
+{
+    // Do file I/O, filename is booksList.txt
+    fstream books("booksList.txt");
+    fstream copies("copiesList.txt");
+    if (books.fail() || copies.fail())
+    {
+        cerr << "error opening file" << endl;
+        exit(1);
+    }
+    /*
+     * Format of booksList.txt:
+     * ISBN  Title  Author  Category
+     *
+     * Format of copiesList.txt:
+     * ISBN  ID
+     */
+
+    // TODO - (Ethan)
+
+    // When everything is done, close the file and return
+    books.close();
+    copies.close();
+}
+
+User *login(vector<User *> usersList)
+{
+    while (true)
+    {
+        // Prompt for username/ ask if they want to shutdown system
+        cout << "Please enter a user name or type 'shutdown' to shut down LMS:" << endl;
+        string userin;
+        string passwordin;
+        cin >> userin;
+
+        // If shutdown system, exit
+        if (userin == "shutdown")
+        {
+            cout << "Shutting Down..." << endl
+                 << endl;
+            exit(0);
+        }
+        else
+        {
+            // Else prompt for password
+            cout << "Please enter a password:" << endl;
+            cin >> passwordin;
+            for (int i = 0; i < usersList.size(); i++)
+            {
+                // Check if user at i matches the username and password input
+                if ((usersList.at(i)->getUserName() == userin) && (usersList.at(i)->getPassword() == passwordin))
+                {
+                    // If exists, return that user
+                    cout
+                        << "Account found. Logging in..." << endl
+                        << endl;
+                    return usersList.at(i);
+                }
+            }
+            // If not, print an error and say try again
+            cout << "Account with those credentials was not found. Please try again" << endl
+                 << endl;
+        }
+    }
+}
+
+// TODO - (Daniel)
+void readerLoop(Reader *user, vector<Book> bookCatalog, time_t &zeroTime)
+{
+    while (true)
+    {
+        int currentDate = date(zeroTime);
+        cout << "Welcome back, " << user->type() << "\n"
+             << "It is currently day " << currentDate << "\n\n"
+             << "Please choose:\n"
+             << "1 -- Search Book\n"
+             << "2 -- Borrow Book\n"
+             << "3 -- Return Book\n"
+             << "4 -- Renew Book\n"
+             << "5 -- Reserve Book\n"
+             << "6 -- Cancel Book\n"
+             << "7 -- My Information\n"
+             << "8 -- Change Password\n"
+             << "9 -- I'm Feeling Lucky\n"
+             << "0 -- Log Out\n"
+             << endl;
+
+        int choice;
+        cin >> choice;
+        if (cin.fail())
+        {
+            cout << "Invalid input" << endl
+                 << endl;
+            // Reset cin and clear the failbit
+            cin.clear();
+            cin.ignore();
+            continue;
+        }
+
+        switch (choice)
+        {
+        case 0:
+        {
+            return;
+        }
+        case 1:
+        {
+            // Search Book
+            user->searchBook(bookCatalog);
+            break;
+        }
+        case 2:
+        {
+            // Borrow Book
+            user->borrowBook(bookCatalog, zeroTime);
+            break;
+        }
+        case 3:
+        {
+            // Return Book
+            user->returnBook(bookCatalog);
+            break;
+        }
+        case 4:
+        {
+            // Renew Book
+            user->renewBook(bookCatalog);
+            break;
+        }
+        case 5:
+        {
+            // Reserve Book
+            user->reserveBook(bookCatalog);
+            break;
+        }
+        case 6:
+        {
+            // Cancel Book
+            user->cancelBook(bookCatalog);
+            break;
+        }
+        case 7:
+        {
+            // Printout Information
+            cout << user;
+            break;
+        }
+        case 8:
+        {
+            // Change Password
+            user->changePassword();
+            break;
+        }
+        case 9:
+        {
+            // I'm Feeling Lucky
+            user->feelingLucky(bookCatalog);
+            break;
+        }
+
+        default:
+        {
+            cout << "Something went wrong, please try again" << endl;
+            break;
+        }
+        }
+    }
+}
+
+// TODO - (Ethan)
+void librarianLoop(Librarian *user, vector<Book> bookCatalog, vector<User *> usersList, time_t &zeroTime, int &idCount)
+{
+    while (true)
+    {
+        int currentDate = date(zeroTime);
+        cout << "Welcome back, " << user->type() << "\n"
+             << "It is currently day " << currentDate << "\n\n"
+             << "Please choose:\n"
+             << "2 -- Add Book\n"
+             << "3 -- Delete Book\n"
+             << "4 -- Search User\n"
+             << "5 -- Add User\n"
+             << "6 -- Delete User\n"
+             << "7 -- My Information\n"
+             << "8 -- Change Password\n"
+             << "0 -- Log Out\n"
+             << endl;
+
+        int choice;
+        cin >> choice;
+        if (cin.fail())
+        {
+            cout << "Invalid input" << endl
+                 << endl;
+            // Reset cin and clear the failbit
+            cin.clear();
+            cin.ignore();
+            continue;
+        }
+
+        switch (choice)
+        {
+        case 0:
+        {
+            return;
+        }
+        case 2:
+        {
+            // Add Book
+            user->addBook(bookCatalog);
+            break;
+        }
+        case 3:
+        {
+            // Delete Book
+            user->deleteBook(bookCatalog);
+            break;
+        }
+        case 4:
+        {
+            // Search User
+            user->searchUser(usersList);
+            break;
+        }
+        case 5:
+        {
+            // Add User
+            user->addUser(usersList);
+            break;
+        }
+        case 6:
+        {
+            // Delete User
+            user->deleteUser(usersList);
+            break;
+        }
+        case 7:
+        {
+            // My Information
+            cout << user;
+            break;
+        }
+        case 8:
+        {
+            // Change Password
+            user->changePassword();
+            break;
+        }
+
+        default:
+        {
+            cout << "Something went wrong, please try again" << endl;
+            break;
+        }
+        }
+    }
+}
