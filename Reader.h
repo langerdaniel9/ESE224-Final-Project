@@ -35,7 +35,6 @@ public:
     void returnBook(vector<Book> &bookCatalog);
     void renewBook(vector<Book> &bookCatalog);
     void cancelBook(vector<Book> &bookCatalog);
-    void changePassword();
     void feelingLucky(vector<Book> &bookCatalog);
 };
 
@@ -486,11 +485,6 @@ void Reader::renewBook(vector<Book> &bookCatalog)
 void cancelBook(vector<Book> &bookCatalog)
 {
     // TODO - (Kenny)
-}
-
-void changePassword()
-{
-    // TODO - (Daniel)
 }
 
 void feelingLucky(vector<Book> &bookCatalog)

@@ -18,7 +18,6 @@ public:
     void searchUser(vector<User *> usersList);
     void addUsers(vector<User *> usersList);
     void deleteUser(vector<User *> usersList);
-    void changePassword();
     string type();
 };
 
@@ -55,11 +54,6 @@ void Librarian::addUsers(vector<User *> usersList)
 }
 
 void Librarian::deleteUser(vector<User *> usersList)
-{
-    // TODO - (Ethan)
-}
-
-void Librarian::changePassword()
 {
     // TODO - (Ethan)
 }
