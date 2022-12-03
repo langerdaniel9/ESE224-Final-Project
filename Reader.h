@@ -16,8 +16,8 @@ class Reader : public User
 protected:
     int maxCopies;
     int maxLoanTime;
-    vector<Book> copiesBorrowed;
-    vector<Book> BooksReserved;
+    BST<Book>* copiesBorrowed;
+    BST<Book>* BooksReserved;
     int penalties;
     string type();
 
@@ -25,17 +25,17 @@ public:
     // Getters //
     int getMaxCopies();
     int getMaxLoanTime();
-    vector<Book> getBooksBorrowed();
+    BST<Book>* getBooksBorrowed();
     // Operator Overloading //
     friend ostream &operator<<(ostream &output, Book &book);
     friend istream &operator>>(istream &input, Book &book);
     // Main functions //
-    void searchBook(vector<Book> &bookCatalog);
-    void borrowBook(vector<Book> &bookCatalog, time_t &zeroTime);
-    void returnBook(vector<Book> &bookCatalog);
-    void renewBook(vector<Book> &bookCatalog);
-    void cancelBook(vector<Book> &bookCatalog);
-    void feelingLucky(vector<Book> &bookCatalog);
+    void searchBook(BST<Book>* &bookCatalog);
+    void borrowBook(BST<Book>* &bookCatalog, time_t &zeroTime);
+    void returnBook(BST<Book>* &bookCatalog);
+    void renewBook(BST<Book>* &bookCatalog);
+    void cancelBook(BST<Book>* &bookCatalog);
+    void feelingLucky(BST<Book>* &bookCatalog);
 };
 
 // Leave functions in the .h file for now, will move them to their respective .cpp files when project is finished
@@ -50,12 +50,12 @@ int Reader::getMaxLoanTime()
     return maxLoanTime;
 }
 
-vector<Book> Reader::getBooksBorrowed()
+BST<Book>* Reader::getBooksBorrowed()
 {
     return this->copiesBorrowed;
 }
 
-int partition(vector<Book> lib, int low, int high)
+int partition(vector<Book>* lib, int low, int high)
 {
     // partition starting from first element;
     // then comparing each element by the last element in the array
@@ -82,8 +82,7 @@ int partition(vector<Book> lib, int low, int high)
     return i + 1;
 }
 
-void quickSort(vector<Book> lib, int low, int high)
-{
+void quickSort(vector<Book>* lib, int low, int high) {
     if (low < high)
     {
         int pi = partition(lib, low, high);
@@ -96,7 +95,7 @@ void quickSort(vector<Book> lib, int low, int high)
     }
 }
 
-void Reader::searchBook(vector<Book> &bookCatalog)
+void Reader::searchBook(BST<Book>* &bookCatalog)
 {
     // FIXME - (Daniel)
     int searchChoice;
@@ -107,8 +106,7 @@ void Reader::searchBook(vector<Book> &bookCatalog)
     cout << "(4) - ID" << endl;
     cin >> searchChoice;
 
-    vector<Book> searchMatches;
-    searchMatches.clear();
+    Book* searchMatches = NULL;
 
     switch (searchChoice)
     {
@@ -289,13 +287,18 @@ void Reader::searchBook(vector<Book> &bookCatalog)
     }
 }
 
-void Reader::borrowBook(vector<Book> &bookCatalog, time_t &zeroTime)
+void Reader::borrowBook(BST<Book>* &bookCatalog, time_t &zeroTime)
 {
     // FIXME - (Daniel)
     // Check if there are overdue books
     int currentTime = date(zeroTime);
-    vector<Book> expiredBooks;
+    BST<Book>* expiredBooks;
+    BST<Book>* temp = bookCatalog;
     bool expired = false;
+
+    while (temp != NULL) {
+
+    }
     for (int i = 0; i < this->getBooksBorrowed().size(); i++)
     {
         if (this->getBooksBorrowed().at(i).getExpDate() < currentTime)
