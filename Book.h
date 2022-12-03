@@ -26,11 +26,11 @@ private:
     string title;
     string author;
     string category;
-    vector<BookCopy> copiesVector;
     LLNode *rrHead;
     int timesFavorited;
 
 public:
+    vector<BookCopy> copiesVector;
     Book(string isbn, string title, string author, string category);
 
     // ********** ACCESSORS **********
