@@ -178,65 +178,71 @@ void getBooks(BST<Book> &bookCatalog, int &idcount)
     books.close();
 }
 
-void traverseToInsert(_struct_ toInsert, TreeNode<Book> *bookNode)
+void getCopies(BST<copystruct> &copyList)
 {
-    if (bookNode->val.getIsbn() == toInsert.isbn)
-        ;
+    fstream copyfin("copiesList.txt");
+    if (copyfin.fail())
+    {
+        cerr << "error opening file" << endl;
+        exit(1);
+    }
+    string isbn;
+    int id;
+    while (!fin.eof())
+    {
+        copyfin >> isbn;
+        copyin >> id;
+        copystruct temp;
+        temp.isbnfile = isbn;
+        temp.idfile = id;
+    }
+    copyfin.close();
+}
+
+void traverseToInsert(copystruct toInsert, TreeNode<Book> *bookNode)
+{
+    if (bookNode->val.getIsbn() == toInsert.isbnfile)
+    {
+        //
+    }
 }
 
 void traverse(TreeNode<BookCopy> *node, BST<Book> &bookCatalog)
 {
     if (node == nullptr)
-        void getCopies(BST<copystruct> & copyList)
-        {
-            fstream copyfin("copiesList.txt");
-            if (copyfin.fail())
-            {
-                cerr << "error opening file" << endl;
-                exit(1);
-            }
-            string isbn;
-            int id;
-            while (!fin.eof())
-            {
-                copyfin >> isbn;
-                copyin >> id;
-                copystruct temp;
-                temp.isbnfile = isbn;
-                temp.idfile = id;
-            }
-            copyfin.close();
-        }
-
-    void addCopiesToBook(BST<Book> & bookCatalog, BST<BookCopy> & copyCatalog)
     {
+        void getCopies(BST<copystruct> & copyList);
     }
 
-    Book inorderTraversal(TreeNode * root, string user)
+    /* Traverse left*/
+    traverse(node->left, bookCatalog);
+
+    /* Thing to do */
+    traverseToInsert(node->val, bookCatalog.root);
+
+    /* Traverse right */
+    traverse(node->right, bookCatalog);
+}
+
+void addCopiesToBook(BST<Book> &bookCatalog, BST<BookCopy> &copyCatalog)
+{
+}
+
+Book inorderTraversal(TreeNode *root, string user)
+{
+    TreeNode *temp = root;
+    if (temp == NULL)
     {
-        TreeNode *temp = root;
-        if (temp == NULL)
-        {
-            return;
-        }
-
-        /* Traverse left*/
-        traverse(node->left, bookCatalog);
-
-        /* Thing to do */
-        traverseToInsert(node->val, bookCatalog.root);
-
-        /* Traverse right */
-        traverse(node->right, bookCatalog);
-    }
-
-    void addCopiesToBook(BST<Book> & bookCatalog, BST<_struct_> & copyCatalog)
-    {
-        traverse(copyCatalog.root, bookCatalog);
+        return;
     }
     inorderTraversal(temp->left);  // visit left child
     cout << temp->val << " ";      // visit current node
     inorderTraversal(temp->right); // visit right child
+}
+
+void addCopiesToBook(BST<Book> &bookCatalog, BST<copystruct> &copyCatalog)
+{
+    traverse(copyCatalog.root, bookCatalog);
 }
 
 User *login(BST<User *> usersList)
