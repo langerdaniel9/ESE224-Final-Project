@@ -222,18 +222,18 @@ public:
         root = binarySearch(root, element);
     }
 
-    void inorderTraversal(TreeNode *root)
-    {
-        TreeNode *temp = root;
-        if (temp == NULL)
-        {
-            return;
-        }
+    //void inorderTraversal(TreeNode *root)
+    //{
+    //    TreeNode *temp = root;
+    //    if (temp == NULL)
+    //    {
+    //        return;
+    //    }
 
-        inorderTraversal(temp->left);  // visit left child
-        cout << temp->val << " ";      // visit current node
-        inorderTraversal(temp->right); // visit right child
-    }
+    //    inorderTraversal(temp->left);  // visit left child
+    //    cout << temp->val << " ";      // visit current node
+    //    inorderTraversal(temp->right); // visit right child
+    //}
 
     void inOrderSearchRecursive(TreeNode<Book> *root, string searchTerm, vector<Book> &matches, bool TorC)
     {

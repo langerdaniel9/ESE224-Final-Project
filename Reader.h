@@ -4,6 +4,7 @@
 #include "Book.h"
 #include "DateFunction.h"
 #include "BST.h"
+#include "BookCopy.h"
 
 #include <iostream>
 #include <string>
@@ -17,8 +18,8 @@ class Reader : public User
 protected:
     int maxCopies;
     int maxLoanTime;
-    BST<Book>* copiesBorrowed;
-    BST<Book>* BooksReserved;
+    vector<Book>* copiesBorrowed;
+    vector<Book>* BooksReserved;
     int penalties;
     string type();
 
@@ -26,7 +27,7 @@ public:
     // Getters //
     int getMaxCopies();
     int getMaxLoanTime();
-    BST<Book>* getBooksBorrowed();
+    vector<Book>* getBooksBorrowed();
     // Operator Overloading //
     friend ostream &operator<<(ostream &output, Book &book);
     friend istream &operator>>(istream &input, Book &book);
@@ -83,8 +84,22 @@ int partition(vector<Book>* lib, int low, int high)
     return i + 1;
 }
 
-void quickSort(vector<Book>* lib, int low, int high) {
-void IDInOrderTraversal(BST<Book> *inputBST, string inputID)
+void quickSort(vector<Book>* lib, int low, int high)
+{
+    if (low < high)
+    {
+        int pi = partition(lib, low, high);
+
+        // recursive call on the left of pivot
+        quickSort(lib, low, pi - 1);
+
+        // recursive call on the right of pivot
+        quickSort(lib, pi + 1, high);
+    }
+}
+
+
+void IDInOrderTraversal(BST<Book> *inputBST, int inputID)
 { // not working either???
     if (inputBST == NULL)
     {
@@ -92,8 +107,17 @@ void IDInOrderTraversal(BST<Book> *inputBST, string inputID)
     }
 
     IDInOrderTraversal(inputBST->left, inputID); // visit left child
-    inputBST->val->binarySearch(inputID);
+//    inputBST->val->binarySearch(inputID);
+    forLoopforBook(inputBST, inputID);
     IDInOrderTraversal(inputBST->right, inputID); // visit right child
+}
+
+BookCopy forLoopforBook(BST<Book>* inputBST, int inputID) {
+    for (int i = 0; i < inputBST->val.copiesVector.size(); i++) {
+        if (inputBST->val.copiesVector.at(i).ID == inputID) {
+            return inputBST->val.copiesVector.at(i);
+        }
+    }
 }
 
 void QSInOrderTraversal(BST<Book> *inputBST, string inputStr, vector<Book> matches)
@@ -109,21 +133,8 @@ void QSInOrderTraversal(BST<Book> *inputBST, string inputStr, vector<Book> match
     QSInOrderTraversal(inputBST->right, inputStr, matches); // visit right child
 }
 
-void quickSort(vector<Book> lib, int low, int high)
-{
-    if (low < high)
-    {
-        int pi = partition(lib, low, high);
 
-        // recursive call on the left of pivot
-        quickSort(lib, low, pi - 1);
-
-        // recursive call on the right of pivot
-        quickSort(lib, pi + 1, high);
-    }
-}
-
-void Reader::searchBook(BST<Book> *bookCatalog)
+void Reader::searchBook(BST<Book>* &bookCatalog)
 {
     // FIXME - (Daniel)
     int searchChoice;
@@ -138,13 +149,13 @@ void Reader::searchBook(BST<Book> *bookCatalog)
 
     switch (searchChoice)
     {
-    case 1:
+    case 1:                                                         // DONE...maybe
     {
         string inputISBN;
         cout << "What's your book's ISBN value?: ";
         cin >> inputISBN;
 
-        BST<Book> *bookCatalog;
+//        BST<Book> *bookCatalog;
         bookCatalog->binarySearch(inputISBN);
 
         break;
@@ -154,8 +165,11 @@ void Reader::searchBook(BST<Book> *bookCatalog)
         string inputTitle;
         cout << "What's your book's title?: ";
         cin >> inputTitle;
-        QSInOrderTraversal(bookCatalog, inputTitle, searchMatches);
-        quickSort(searchMatches, 0, searchMatches.size() - 1);
+
+        inOrderSearch(bookCatalog, inputTitle, true);
+
+//        QSInOrderTraversal(bookCatalog, inputTitle, searchMatches);
+//        quickSort(searchMatches, 0, searchMatches.size() - 1);
         break;
     }
     case 3:
@@ -164,8 +178,10 @@ void Reader::searchBook(BST<Book> *bookCatalog)
         cout << "What's your book's category?: ";
         cin >> inputCategory;
 
-        QSInOrderTraversal(bookCatalog, inputCategory, searchMatches);
-        quickSort(searchMatches, 0, searchMatches.size() - 1);
+        inOrderSearch(bookCatalog, inputTitle, true);
+
+//        QSInOrderTraversal(bookCatalog, inputCategory, searchMatches);
+//        quickSort(searchMatches, 0, searchMatches.size() - 1);
         break;
     }
     case 4:
@@ -174,7 +190,10 @@ void Reader::searchBook(BST<Book> *bookCatalog)
         cout << "What's your book's ID?: ";
         cin >> inputID;
 
-        IDInOrderTraversal(bookCatalog, inputID);
+
+
+
+//        IDInOrderTraversal(bookCatalog, inputID);
 
         break;
     }
@@ -185,6 +204,7 @@ void Reader::searchBook(BST<Book> *bookCatalog)
     }
     }
 
+    // Is this even needed anymore?
     // Separate searchMatches into two separate vectors, one for available books and one for unavailable
     vector<Book> availableMatches;
     vector<Book> unavailableMatches;
@@ -275,9 +295,6 @@ void Reader::borrowBook(BST<Book>* &bookCatalog, time_t &zeroTime)
     BST<Book>* temp = bookCatalog;
     bool expired = false;
 
-    while (temp != NULL) {
-
-    }
     for (int i = 0; i < this->getBooksBorrowed().size(); i++)
     {
         if (this->getBooksBorrowed().at(i).getExpDate() < currentTime)
@@ -305,8 +322,7 @@ void Reader::borrowBook(BST<Book>* &bookCatalog, time_t &zeroTime)
     bool available = false;
     Book toBeBorrowed;
 
-    for (int i = 0; i < bookCatalog.size(); i++)
-    {
+    for (int i = 0; i < bookCatalog.size(); i++) {
         if (bookCatalog.at(i).getId() == inputID)
         {
             exists = true;
