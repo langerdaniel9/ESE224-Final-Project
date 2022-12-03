@@ -5,7 +5,7 @@
 #include "Student.h"
 #include "Teacher.h"
 #include "DateFunction.h"
-#include "BookCopies.h"
+#include "BookCopy.h"
 
 // Standard Files //
 #include <iostream>
@@ -41,7 +41,8 @@ Reader *userToReader(User *toCast)
 // Function Declarations //
 void getUsers(BST<User *> usersList);
 void getBooks(BST<Book> &bookCatalog, int &idcount);
-void getCopies(BST<BookCopy>& copyCatalog);
+void getCopies(BST<BookCopy> &copyCatalog);
+void addCopiesToBook(BST<Book> &bookCatalog, BST<BookCopy> &copyCatalog);
 User *login(BST<User *> usersList);
 void librarianLoop(Librarian *user, BST<Book> bookCatalog, BST<User *> usersList, time_t &zeroTime, int &idCount);
 void readerLoop(Reader *user, BST<Book> bookCatalog, time_t &zeroTime);
@@ -53,11 +54,14 @@ int main()
     // Data to be read in from text files
     BST<Book> bookCatalog;
     BST<User *> usersList;
+    BST<BookCopy> copyList;
 
     // Read in data from student.txt and book.txt
     int idCount = 0;                // TODO - needs to be changed since we are given id's (Ethan)
     getUsers(usersList);            // TODO - verify, but should not need any changed
     getBooks(bookCatalog, idCount); // TODO - needs to be changed since we are given id's (Ethan)
+    getCopies(copyList);            // TODO
+    addCopiesToBook(bookCatalog, copyList);
 
     // Login system, can log in and log out on the same run
 
@@ -162,6 +166,8 @@ void getBooks(BST<Book> &bookCatalog, int &idcount)
     books.close();
     copies.close();
 }
+
+addCopiesToBook(bookCatalog, copyList);
 
 User *login(BST<User *> usersList)
 {

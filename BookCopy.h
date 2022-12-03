@@ -1,7 +1,5 @@
 #pragma once
 
-#include "Book.h"
-
 #include <iostream>
 #include <string>
 
@@ -11,7 +9,6 @@ class BookCopy
 {
 private:
     int ID;
-    Book parent;
     string readerName;
     string reserverName; // unnecessary
     int reserveDate;     // unnecessary
@@ -19,12 +16,10 @@ private:
     int expirationDate;
 
 public:
-    // BookCopy(int newId, Book *newP, string newReadName, string newReserveName, int newReserveD, int newStartD, int newExpirationD);
     BookCopy(int newId, string newReadName, string newReserveName, int newReserveD, int newStartD, int newExpirationD);
 
     // ********** ACCESSORS **********
     int getID();
-    Book getParent();
     string getReaderName();
     string getReserverName();
     int getReserveDate();
@@ -33,7 +28,6 @@ public:
 
     // ********** MUTATORS **********
     void setID(int id);
-    void setParent(Book newP);
     void setReaderName(string newReadName);
     void setReserverName(string newReserveName);
     void setReserveDate(int newReserveD);
@@ -46,17 +40,6 @@ public:
 };
 
 // Leave functions in the .h file for now, will move them to their respective .cpp files when project is finished
-
-// BookCopy::BookCopy(int newId, Book newP, string newReadName, string newReserveName, int newReserveD, int newStartD, int newExpirationD)
-// {
-//     this->ID = newId;
-//     this->parent = newP;
-//     this->readerName = newReadName;
-//     this->reserverName = newReserveName;
-//     this->reserveDate = newReserveD;
-//     this->startDate = newStartD;
-//     this->expirationDate = newExpirationD;
-// }
 
 BookCopy::BookCopy(int newId, string newReadName, string newReserveName, int newReserveD, int newStartD, int newExpirationD)
 {
@@ -74,11 +57,6 @@ int BookCopy::getID()
 {
     return ID;
 };
-
-// Book BookCopy::getParent()
-// {
-//     return parent;
-// };
 
 string BookCopy::getReaderName()
 {
@@ -111,11 +89,6 @@ void BookCopy::setID(int newID)
 {
     this->ID = ID;
 }
-
-// void BookCopy::setParent(Book newP)
-// {
-//     this->parent = newP;
-// };
 
 void BookCopy::setReaderName(string newReadName)
 {
@@ -157,8 +130,7 @@ ostream &operator<<(ostream &output, BookCopy &book_copy)
     //    studentname = book.getReaderName();
     //}
 
-    output << book_copy.getParent() << endl
-           << "ID:\t" << book_copy.getID() << endl
+    output << "ID:\t" << book_copy.getID() << endl
            << "Reader Name:\t" << book_copy.getReaderName() << endl
            << "Reserver Name:\t" << book_copy.getReserverName() << endl
            << "Reservation Date:\t" << book_copy.getReserveDate() << endl
@@ -172,12 +144,10 @@ ostream &operator<<(ostream &output, BookCopy &book_copy)
 istream &operator>>(istream &input, BookCopy &book_copy)
 {
     int ID, reserveDate, startDate, expirationDate;
-    Book *parent;
     string readerName;
     string reserverName;
     //    input >> ID >> parent >> readerName >> reserverName >> reserveDate >> startDate >> expirationDate;
     book_copy.setID(ID);
-    book_copy.setParent(parent);
     book_copy.setReaderName(readerName);
     book_copy.setReserverName(reserverName);
     book_copy.setReserveDate(reserveDate);

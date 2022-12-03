@@ -144,6 +144,7 @@ public:
 
         return root;
     }
+
     TreeNode<Type> *deleteNodeBook(TreeNode<Type> *root, Type element)
     {
         if (root == NULL)
@@ -181,6 +182,7 @@ public:
 
         return root;
     }
+
     void deleteNode(Type element)
     {
         root = deleteNode(root, element);
@@ -220,18 +222,18 @@ public:
         root = binarySearch(root, element);
     }
 
-    void inorderTraversal(TreeNode *root)
-    {
-        TreeNode *temp = root;
-        if (temp == NULL)
-        {
-            return;
-        }
+    //void inorderTraversal(TreeNode *root)
+    //{
+    //    TreeNode *temp = root;
+    //    if (temp == NULL)
+    //    {
+    //        return;
+    //    }
 
-        inorderTraversal(temp->left);  // visit left child
-        cout << temp->val << " ";      // visit current node
-        inorderTraversal(temp->right); // visit right child
-    }
+    //    inorderTraversal(temp->left);  // visit left child
+    //    cout << temp->val << " ";      // visit current node
+    //    inorderTraversal(temp->right); // visit right child
+    //}
 
     void inOrderSearchRecursive(TreeNode<Book> *root, string searchTerm, vector<Book> &matches, bool TorC)
     {
@@ -276,7 +278,6 @@ public:
         inOrderSearchRecursive(root, searchTerm, matches, TitleOrCategory);
 
         //// Compiling the results
-
         // Separate matches into two separate vectors, one for available books and one for unavailable
         vector<Book> availableMatches;
         vector<Book> unavailableMatches;

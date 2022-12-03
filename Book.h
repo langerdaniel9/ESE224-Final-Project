@@ -6,6 +6,7 @@
 
 #include <iostream>
 #include <string>
+#include <vector>
 
 using namespace std;
 
@@ -25,7 +26,7 @@ private:
     string title;
     string author;
     string category;
-    BST<BookCopy> copiesList;
+    vector<BookCopy> copiesVector;
     LLNode *rrHead;
     int timesFavorited;
 
@@ -37,7 +38,7 @@ public:
     string getTitle();
     string getAuthor();
     string getCategory();
-    BST<BookCopy> getCopiesList();
+    vector<BookCopy> getCopiesVector();
     LLNode *getReservers();
     int getTimesFavorited();
 
@@ -64,7 +65,6 @@ Book::Book(string isbn, string title, string author, string category)
     this->title = title;
     this->author = author;
     this->category = category;
-    // TODO - initialization for copy list?
     rrHead = new LLNode;
     this->timesFavorited = 0;
 }
@@ -91,9 +91,9 @@ string Book::getCategory()
     return category;
 }
 
-BST<BookCopy> Book::getCopiesList()
+vector<BookCopy> Book::getCopiesVector()
 {
-    return copiesList;
+    return copiesVector;
 }
 
 LLNode *Book::getReservers()
@@ -132,15 +132,16 @@ void Book::setCategory(string category)
 
 ostream &operator<<(ostream &output, Book &book)
 {
+    // FIXME
     output << "ISBN:\t" << book.getIsbn() << endl
            << "Title:\t" << book.getTitle() << endl
            << "Author:\t" << book.getAuthor() << endl
            << "Category:\t" << book.getCategory() << endl
            << "Copies:\t" << endl;
-    // TODO - Print the id of each copy within copy binaary tree
+    // TODO - Print the id of each copy within copy binary tree
 
     // Print linked list
-    cout << "Reservers: " << endl;
+    output << "Reservers: " << endl;
     LLNode *head = book.getReservers();
     while (head != NULL)
     {

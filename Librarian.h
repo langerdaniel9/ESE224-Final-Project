@@ -5,6 +5,7 @@
 
 #include <string>
 #include <vector>
+#include <iostream>
 
 using namespace std;
 
@@ -13,7 +14,7 @@ class Librarian : public User
 public:
     Librarian();
     Librarian(string initUserName, string initPassword);
-    void addBook(BST<Book> &bookCatalog, );
+    void addBook(BST<Book> &bookCatalog);
     void deleteBook(BST<Book> &bookCatalog);
     void searchUser(BST<User *> usersList);
     void addUsers(BST<User *> usersList);
@@ -33,16 +34,14 @@ Librarian::Librarian(string initUserName, string initPassword)
     password = initPassword;
 }
 
-void Librarian::addBook(BST<Book *> &bookCatalog)
+void Librarian::addBook(BST<Book> &bookCatalog)
 {
     // TODO - (Ethan)
     string input;
-    Book temp;
+    Book *temp;
     cout << "Adding new book..." << endl;
     cout << "Please type the isbn of the new book: ";
     cin >> input;
-
-
 
     temp.setIsbn(input);
     cout << "Please type the title of the new book: ";
@@ -52,19 +51,11 @@ void Librarian::addBook(BST<Book *> &bookCatalog)
     cin >> input;
     temp.setCategory(input);
 
-
-
-
     bookCatalog.nodeInsert(temp);
 
-    
-
     //
-    //may need further modification for copies data struct
+    // may need further modification for copies data struct
     //
-
-    
-
 }
 
 void Librarian::deleteBook(BST<Book *> &bookCatalog)
