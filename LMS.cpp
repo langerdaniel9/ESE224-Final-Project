@@ -167,11 +167,7 @@ void getBooks(BST<Book> &bookCatalog)
         books >> isbnin >> titlein >> authorin >> catagoryin;
         string temp;
         getline(books, temp);
-        Book toinsert;
-        toinsert.setIsbn(isbnin);
-        toinsert.setTitle(titlein);
-        toinsert.setAuthor(authorin);
-        toinsert.setCategory(catagoryin);
+        Book toinsert(isbnin, titlein, authorin, catagoryin); // FIXME - does this need a new?
         bookCatalog.nodeInsert(toinsert);
     }
     books.close();
@@ -243,17 +239,19 @@ void addCopiesToBook(BST<Book> &bookCatalog, BST<copystruct> &copyCatalog)
     traverse(copyCatalog.root, bookCatalog);
 }
 
-bool verify(TreeNode *root, string user){
-    if (bookNode->val.getIsbn() == toInsert.isbnfile){
+bool verify(TreeNode *root, string user)
+{
+    if (bookNode->val.getIsbn() == toInsert.isbnfile)
+    {
         BookCopy newBookCopy = new BookCopy(toInsert.idfile);
         bookNode->val.copiesVector.push_back(newBookCopy);
         return;
     }
-        /* Traverse left*/
-        traverseToInsert(toInsert, bookNode->left);
-        /* Traverse right */
-        traverseToInsert(toInsert, bookNode->right);
-    }
+    /* Traverse left*/
+    traverseToInsert(toInsert, bookNode->left);
+    /* Traverse right */
+    traverseToInsert(toInsert, bookNode->right);
+}
 }
 
 User *login(BST<User *> usersList)
