@@ -194,9 +194,15 @@ void getCopies(BST<copystruct> &copyList)
 
 void traverseToInsert(copystruct toInsert, TreeNode<Book> *bookNode)
 {
+
+    if (bookNode = nullptr)
+    {
+        return;
+    }
+
     if (bookNode->val.getIsbn() == toInsert.isbnfile)
     {
-        BookCopy newBookCopy = new BookCopy(toInsert.idfile);
+        BookCopy newBookCopy(toInsert.idfile); // FIXME - might not work since its not a pointer
         bookNode->val.copiesVector.push_back(newBookCopy);
         return;
     }
@@ -208,11 +214,11 @@ void traverseToInsert(copystruct toInsert, TreeNode<Book> *bookNode)
     traverseToInsert(toInsert, bookNode->right);
 }
 
-void traverse(TreeNode<BookCopy> *node, BST<Book> &bookCatalog)
+void traverse(TreeNode<copystruct> *node, BST<Book> &bookCatalog)
 {
     if (node == nullptr)
     {
-        void getCopies(BST<copystruct> & copyList);
+        return;
     }
 
     /* Traverse left*/
@@ -240,11 +246,6 @@ Book inorderTraversal(TreeNode *root, string user)
     inorderTraversal(temp->left);  // visit left child
     cout << temp->val << " ";      // visit current node
     inorderTraversal(temp->right); // visit right child
-}
-
-void addCopiesToBook(BST<Book> &bookCatalog, BST<copystruct> &copyCatalog)
-{
-    traverse(copyCatalog.root, bookCatalog);
 }
 
 User *login(BST<User *> usersList)
