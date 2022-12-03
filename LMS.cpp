@@ -148,7 +148,7 @@ void getUsers(BST<User *> usersList)
     fin.close();
 }
 
-void getBooks(BST<Book> &bookCatalog, int &idcount)
+void getBooks(BST<Book> &bookCatalog)
 {
     // Do file I/O, filename is booksList.txt
     fstream books("booksList.txt");
@@ -167,6 +167,12 @@ void getBooks(BST<Book> &bookCatalog, int &idcount)
         books >> isbnin >> titlein >> authorin >> catagoryin;
         string temp;
         getline(books, temp);
+        Book toinsert;
+        toinsert.setIsbn(isbnin);
+        toinsert.setTitle(titlein);
+        toinsert.setAuthor(authorin);
+        toinsert.setCategory(catagoryin);
+        bookCatalog.nodeInsert(toinsert);
     }
     books.close();
 }
@@ -188,6 +194,7 @@ void getCopies(BST<copystruct> &copyList)
         copystruct temp;
         temp.isbnfile = isbn;
         temp.idfile = id;
+        copyList.nodeInsert(temp);
     }
     copyfin.close();
 }
@@ -230,16 +237,17 @@ void addCopiesToBook(BST<Book> &bookCatalog, BST<copystruct> &copyCatalog)
     traverse(copyCatalog.root, bookCatalog);
 }
 
-User inorderTraversal(TreeNode *root, string user)
-{
-    TreeNode *temp = root;
-    if (temp. == NULL)
-    {
+bool verify(TreeNode *root, string user){
+    if (bookNode->val.getIsbn() == toInsert.isbnfile){
+        BookCopy newBookCopy = new BookCopy(toInsert.idfile);
+        bookNode->val.copiesVector.push_back(newBookCopy);
         return;
     }
-    inorderTraversal(temp->left);  // visit left child
-    cout << temp->val << " ";      // visit current node
-    inorderTraversal(temp->right); // visit right child
+        /* Traverse left*/
+        traverseToInsert(toInsert, bookNode->left);
+        /* Traverse right */
+        traverseToInsert(toInsert, bookNode->right);
+    }
 }
 
 void addCopiesToBook(BST<Book> &bookCatalog, BST<copystruct> &copyCatalog)
