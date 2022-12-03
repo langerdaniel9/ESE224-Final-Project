@@ -108,19 +108,25 @@ BookCopy IDInOrderTraversal(BST<Book> *inputBST, int inputID)
 
     IDInOrderTraversal(inputBST->left, inputID); // visit left child
 //    inputBST->val->binarySearch(inputID);
+//    forLoopforBook(inputBST, inputID);            // visit current child
     for (int i = 0; i < inputBST->val.copiesVector.size(); i++) {
         if (inputBST->val.copiesVector.at(i).ID == inputID) {
             return inputBST->val.copiesVector.at(i);
         }
     }
+
     IDInOrderTraversal(inputBST->right, inputID); // visit right child
-    return NULL;
 }
 
-BookCopy forLoopforBook(BST<Book>* inputBST, int inputID) {
-    
-    return NULL;
-}
+//BookCopy forLoopforBook(BST<Book>* inputBST, int inputID) {
+//    for (int i = 0; i < inputBST->val.copiesVector.size(); i++) {
+//        if (inputBST->val.copiesVector.at(i).ID == inputID) {
+//            return inputBST->val.copiesVector.at(i);
+//        }
+//    }
+//
+//    return NULL;
+//}
 
 void QSInOrderTraversal(BST<Book> *inputBST, string inputStr, vector<Book> matches)
 { // not working either???
@@ -135,8 +141,29 @@ void QSInOrderTraversal(BST<Book> *inputBST, string inputStr, vector<Book> match
     QSInOrderTraversal(inputBST->right, inputStr, matches); // visit right child
 }
 
+string copiesInOrderTraversal(BST<copystruct>* inputBST, int inputID) {
+    if (inputBST == NULL)
+    {
+        return;
+    }
 
-void Reader::searchBook(BST<Book>* &bookCatalog)
+    copiesInOrderTraversal(inputBST->left, inputID); // visit left child
+//    forLoopforBook(inputBST, inputID);            // visit current child
+//    checkForIDfromCopyList(inputBST, inputID);
+    if (inputBST->val.ID == inputID) {
+        return inputBST->val.ISBN;
+    }
+
+    copiesInOrderTraversal(inputBST->right, inputID); // visit right child
+}
+
+//string checkForIDfromCopyList(BST<copystruct>* inputBST, int inputID) {
+//    if (inputBST->val.ID == inputID) {
+//        return inputBST->val.ISBN;
+//    }
+//}
+
+void Reader::searchBook(BST<Book> *bookCatalog)
 {
     // FIXME - (Daniel)
     int searchChoice;
@@ -180,7 +207,7 @@ void Reader::searchBook(BST<Book>* &bookCatalog)
         cout << "What's your book's category?: ";
         cin >> inputCategory;
 
-        inOrderSearch(bookCatalog, inputTitle, true);
+        inOrderSearch(bookCatalog, inputCategory, false);
 
 //        QSInOrderTraversal(bookCatalog, inputCategory, searchMatches);
 //        quickSort(searchMatches, 0, searchMatches.size() - 1);
@@ -192,8 +219,9 @@ void Reader::searchBook(BST<Book>* &bookCatalog)
         cout << "What's your book's ID?: ";
         cin >> inputID;
 
-
-
+        // NEEDS TO BE FIXED?!?!?!?!
+        string correspondingISBN = copiesInOrderTraversal(copyList, inputID);                      // gets the corresponding ISBN
+        bookCatalog->binarySearch(correspondingISBN);
 
 //        IDInOrderTraversal(bookCatalog, inputID);
 
