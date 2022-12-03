@@ -11,7 +11,7 @@ class BookCopy
 {
 private:
     int ID;
-    Book parent;
+//    Book parent;
     string readerName;
     string reserverName; // unnecessary
     int reserveDate;     // unnecessary
