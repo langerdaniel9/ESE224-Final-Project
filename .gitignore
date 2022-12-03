@@ -2,3 +2,8 @@ FileContentIndex/
 v17/
 ProjectSettings.json
 slnx.sqlite
+*.exe
+.gitattributes
+.vscode
+test.cpp
+/Report
