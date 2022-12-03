@@ -99,7 +99,7 @@ void quickSort(vector<Book>* lib, int low, int high)
 }
 
 
-void IDInOrderTraversal(BST<Book> *inputBST, int inputID)
+BookCopy IDInOrderTraversal(BST<Book> *inputBST, int inputID)
 { // not working either???
     if (inputBST == NULL)
     {
@@ -107,17 +107,25 @@ void IDInOrderTraversal(BST<Book> *inputBST, int inputID)
     }
 
     IDInOrderTraversal(inputBST->left, inputID); // visit left child
-    forLoopforBook(inputBST, inputID);            // visit current child
-    IDInOrderTraversal(inputBST->right, inputID); // visit right child
-}
-
-BookCopy forLoopforBook(BST<Book>* inputBST, int inputID) {
+//    forLoopforBook(inputBST, inputID);            // visit current child
     for (int i = 0; i < inputBST->val.copiesVector.size(); i++) {
         if (inputBST->val.copiesVector.at(i).ID == inputID) {
             return inputBST->val.copiesVector.at(i);
         }
     }
+
+    IDInOrderTraversal(inputBST->right, inputID); // visit right child
 }
+
+//BookCopy forLoopforBook(BST<Book>* inputBST, int inputID) {
+//    for (int i = 0; i < inputBST->val.copiesVector.size(); i++) {
+//        if (inputBST->val.copiesVector.at(i).ID == inputID) {
+//            return inputBST->val.copiesVector.at(i);
+//        }
+//    }
+//
+//    return NULL;
+//}
 
 void QSInOrderTraversal(BST<Book> *inputBST, string inputStr, vector<Book> matches)
 { // not working either???
@@ -132,18 +140,27 @@ void QSInOrderTraversal(BST<Book> *inputBST, string inputStr, vector<Book> match
     QSInOrderTraversal(inputBST->right, inputStr, matches); // visit right child
 }
 
-
-        // recursive call on the left of pivot
-        quickSort(lib, low, pi - 1);
-
-        // recursive call on the right of pivot
-        quickSort(lib, pi + 1, high);
+string copiesInOrderTraversal(BST<copystruct>* inputBST, int inputID) {
+    if (inputBST == NULL)
+    {
+        return;
     }
+
+    copiesInOrderTraversal(inputBST->left, inputID); // visit left child
+//    forLoopforBook(inputBST, inputID);            // visit current child
+//    checkForIDfromCopyList(inputBST, inputID);
+    if (inputBST->val.ID == inputID) {
+        return inputBST->val.ISBN;
+    }
+
+    copiesInOrderTraversal(inputBST->right, inputID); // visit right child
 }
 
-void() {
-
-}
+//string checkForIDfromCopyList(BST<copystruct>* inputBST, int inputID) {
+//    if (inputBST->val.ID == inputID) {
+//        return inputBST->val.ISBN;
+//    }
+//}
 
 void Reader::searchBook(BST<Book> *bookCatalog)
 {
@@ -189,7 +206,7 @@ void Reader::searchBook(BST<Book> *bookCatalog)
         cout << "What's your book's category?: ";
         cin >> inputCategory;
 
-       inOrderSearch(bookCatalog, inputTitle, true);
+        inOrderSearch(bookCatalog, inputCategory, false);
 
 //        QSInOrderTraversal(bookCatalog, inputCategory, searchMatches);
 //        quickSort(searchMatches, 0, searchMatches.size() - 1);
@@ -201,12 +218,11 @@ void Reader::searchBook(BST<Book> *bookCatalog)
         cout << "What's your book's ID?: ";
         cin >> inputID;
 
-
-
+        // NEEDS TO BE FIXED?!?!?!?!
+        string correspondingISBN = copiesInOrderTraversal(copyList, inputID);                      // gets the corresponding ISBN
+        bookCatalog->binarySearch(correspondingISBN);
 
 //        IDInOrderTraversal(bookCatalog, inputID);
-
-
 
         break;
     }

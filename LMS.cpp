@@ -188,10 +188,10 @@ void getCopies(BST<copystruct> &copyList)
     }
     string isbn;
     int id;
-    while (!fin.eof())
+    while (!copyfin.eof())
     {
         copyfin >> isbn;
-        copyin >> id;
+        copyfin >> id;
         copystruct temp;
         temp.isbnfile = isbn;
         temp.idfile = id;
