@@ -8,7 +8,7 @@
 
 using namespace std;
 
-class Student : public Reader
+class Student : public Reader, User
 {
 public:
     Student();

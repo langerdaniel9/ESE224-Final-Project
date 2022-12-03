@@ -1,5 +1,6 @@
 #pragma once
 
+#include "User.h"
 #include "Reader.h"
 #include "Book.h" // Might be unnecessary
 
@@ -8,7 +9,7 @@
 
 using namespace std;
 
-class Teacher : public Reader
+class Teacher : public Reader, User
 {
 public:
     Teacher();
