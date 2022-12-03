@@ -38,11 +38,17 @@ Reader *userToReader(User *toCast)
     return dynamic_cast<Reader *>(toCast);
 }
 /////////////
-
+// type for inserting to copy BST
+struct copystruct
+{
+    int idfile;
+    string isbnfile;
+};
+//
 // Function Declarations //
 void getUsers(BST<User *> usersList);
 void getBooks(BST<Book> &bookCatalog, int &idcount);
-void getCopies(BST<BookCopy> &copyCatalog);
+void getCopies(BST<copystruct> &copyCatalog);
 void addCopiesToBook(BST<Book> &bookCatalog, BST<BookCopy> &copyCatalog);
 User *login(BST<User *> usersList);
 void librarianLoop(Librarian *user, BST<Book> bookCatalog, BST<User *> usersList, time_t &zeroTime, int &idCount);
@@ -146,26 +152,30 @@ void getBooks(BST<Book> &bookCatalog, int &idcount)
 {
     // Do file I/O, filename is booksList.txt
     fstream books("booksList.txt");
-    fstream copies("copiesList.txt");
     if (books.fail() || copies.fail())
     {
         cerr << "error opening file" << endl;
         exit(1);
     }
-    /*
-     * Format of booksList.txt:
-     * ISBN  Title  Author  Category
-     *
-     * Format of copiesList.txt:
-     * ISBN  ID
-     */
+    string isbnin;
+    string titlein;
+    string authorin;
+    string catagoryin;
+    while (!fin.eof())
+    {
+        // For each line push a new Book object to the vector with the correct attributes
+        fin >> isbnin >> titlein >> authorin >> catagoryin >> copyin;
+        string temp;
+        getline(fin, temp);
 
-    // TODO - (Ethan)
-    Book temp;
-
-    // When everything is done, close the file and return
+        // If there are multiple copies
+        for (int i = 0; i < stoi(copyin); i++)
+        {
+            Book temp(idcount, isbnin, titlein, authorin, catagoryin);
+            bookCatalog.insertNode(temp);
+        }
+    }
     books.close();
-    copies.close();
 }
 
 void traverseToInsert(_struct_ toInsert, TreeNode<Book> *bookNode)
@@ -177,23 +187,56 @@ void traverseToInsert(_struct_ toInsert, TreeNode<Book> *bookNode)
 void traverse(TreeNode<BookCopy> *node, BST<Book> &bookCatalog)
 {
     if (node == nullptr)
+        void getCopies(BST<copystruct> & copyList)
+        {
+            fstream copyfin("copiesList.txt");
+            if (copyfin.fail())
+            {
+                cerr << "error opening file" << endl;
+                exit(1);
+            }
+            string isbn;
+            int id;
+            while (!fin.eof())
+            {
+                copyfin >> isbn;
+                copyin >> id;
+                copystruct temp;
+                temp.isbnfile = isbn;
+                temp.idfile = id;
+            }
+            copyfin.close();
+        }
+
+    void addCopiesToBook(BST<Book> & bookCatalog, BST<BookCopy> & copyCatalog)
     {
-        return;
     }
 
-    /* Traverse left*/
-    traverse(node->left, bookCatalog);
+    Book inorderTraversal(TreeNode * root, string user)
+    {
+        TreeNode *temp = root;
+        if (temp == NULL)
+        {
+            return;
+        }
 
-    /* Thing to do */
-    traverseToInsert(node->val, bookCatalog.root);
+        /* Traverse left*/
+        traverse(node->left, bookCatalog);
 
-    /* Traverse right */
-    traverse(node->right, bookCatalog);
-}
+        /* Thing to do */
+        traverseToInsert(node->val, bookCatalog.root);
 
-void addCopiesToBook(BST<Book> &bookCatalog, BST<_struct_> &copyCatalog)
-{
-    traverse(copyCatalog.root, bookCatalog);
+        /* Traverse right */
+        traverse(node->right, bookCatalog);
+    }
+
+    void addCopiesToBook(BST<Book> & bookCatalog, BST<_struct_> & copyCatalog)
+    {
+        traverse(copyCatalog.root, bookCatalog);
+    }
+    inorderTraversal(temp->left);  // visit left child
+    cout << temp->val << " ";      // visit current node
+    inorderTraversal(temp->right); // visit right child
 }
 
 User *login(BST<User *> usersList)
