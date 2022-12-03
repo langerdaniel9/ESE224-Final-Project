@@ -152,7 +152,7 @@ void getBooks(BST<Book> &bookCatalog, int &idcount)
 {
     // Do file I/O, filename is booksList.txt
     fstream books("booksList.txt");
-    if (books.fail() || copies.fail())
+    if (books.fail())
     {
         cerr << "error opening file" << endl;
         exit(1);
@@ -161,19 +161,12 @@ void getBooks(BST<Book> &bookCatalog, int &idcount)
     string titlein;
     string authorin;
     string catagoryin;
-    while (!fin.eof())
+    while (!books.eof())
     {
         // For each line push a new Book object to the vector with the correct attributes
-        fin >> isbnin >> titlein >> authorin >> catagoryin >> copyin;
+        books >> isbnin >> titlein >> authorin >> catagoryin;
         string temp;
-        getline(fin, temp);
-
-        // If there are multiple copies
-        for (int i = 0; i < stoi(copyin); i++)
-        {
-            Book temp(idcount, isbnin, titlein, authorin, catagoryin);
-            bookCatalog.insertNode(temp);
-        }
+        getline(books, temp);
     }
     books.close();
 }
@@ -188,10 +181,10 @@ void getCopies(BST<copystruct> &copyList)
     }
     string isbn;
     int id;
-    while (!fin.eof())
+    while (!copyfin.eof())
     {
         copyfin >> isbn;
-        copyin >> id;
+        copyfin >> id;
         copystruct temp;
         temp.isbnfile = isbn;
         temp.idfile = id;
@@ -203,8 +196,16 @@ void traverseToInsert(copystruct toInsert, TreeNode<Book> *bookNode)
 {
     if (bookNode->val.getIsbn() == toInsert.isbnfile)
     {
-        //
+        BookCopy newBookCopy = new BookCopy(toInsert.idfile);
+        bookNode->val.copiesVector.push_back(newBookCopy);
+        return;
     }
+
+    /* Traverse left*/
+    traverseToInsert(toInsert, bookNode->left);
+
+    /* Traverse right */
+    traverseToInsert(toInsert, bookNode->right);
 }
 
 void traverse(TreeNode<BookCopy> *node, BST<Book> &bookCatalog)
@@ -224,8 +225,9 @@ void traverse(TreeNode<BookCopy> *node, BST<Book> &bookCatalog)
     traverse(node->right, bookCatalog);
 }
 
-void addCopiesToBook(BST<Book> &bookCatalog, BST<BookCopy> &copyCatalog)
+void addCopiesToBook(BST<Book> &bookCatalog, BST<copystruct> &copyCatalog)
 {
+    traverse(copyCatalog.root, bookCatalog);
 }
 
 Book inorderTraversal(TreeNode *root, string user)
