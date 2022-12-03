@@ -5,7 +5,7 @@
 #include "Student.h"
 #include "Teacher.h"
 #include "DateFunction.h"
-#include "BookCopies.h"
+#include "BookCopy.h"
 
 // Standard Files //
 #include <iostream>
@@ -41,7 +41,7 @@ Reader *userToReader(User *toCast)
 // Function Declarations //
 void getUsers(BST<User *> usersList);
 void getBooks(BST<Book> &bookCatalog, int &idcount);
-void getCopies(BST<BookCopy>& copyCatalog);
+void getCopies(BST<BookCopy> &copyCatalog);
 User *login(BST<User *> usersList);
 void librarianLoop(Librarian *user, BST<Book> bookCatalog, BST<User *> usersList, time_t &zeroTime, int &idCount);
 void readerLoop(Reader *user, BST<Book> bookCatalog, time_t &zeroTime);
