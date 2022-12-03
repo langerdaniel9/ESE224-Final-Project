@@ -92,8 +92,7 @@ void IDInOrderTraversal(BST<Book> *inputBST, int inputID)
     }
 
     IDInOrderTraversal(inputBST->left, inputID); // visit left child
-//    inputBST->val->binarySearch(inputID);
-    forLoopforBook(inputBST, inputID);
+    forLoopforBook(inputBST, inputID);            // visit current child
     IDInOrderTraversal(inputBST->right, inputID); // visit right child
 }
 
@@ -130,6 +129,10 @@ void quickSort(vector<Book> lib, int low, int high)
         // recursive call on the right of pivot
         quickSort(lib, pi + 1, high);
     }
+}
+
+void() {
+
 }
 
 void Reader::searchBook(BST<Book> *bookCatalog)
@@ -176,7 +179,7 @@ void Reader::searchBook(BST<Book> *bookCatalog)
         cout << "What's your book's category?: ";
         cin >> inputCategory;
 
-        inOrderSearch(bookCatalog, inputTitle, true);
+       inOrderSearch(bookCatalog, inputTitle, true);
 
 //        QSInOrderTraversal(bookCatalog, inputCategory, searchMatches);
 //        quickSort(searchMatches, 0, searchMatches.size() - 1);
@@ -192,6 +195,8 @@ void Reader::searchBook(BST<Book> *bookCatalog)
 
 
 //        IDInOrderTraversal(bookCatalog, inputID);
+
+
 
         break;
     }
