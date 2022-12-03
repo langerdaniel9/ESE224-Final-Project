@@ -83,7 +83,6 @@ int partition(vector<Book>* lib, int low, int high)
     return i + 1;
 }
 
-void quickSort(vector<Book>* lib, int low, int high) {
 void IDInOrderTraversal(BST<Book> *inputBST, string inputID)
 { // not working either???
     if (inputBST == NULL)
@@ -154,8 +153,11 @@ void Reader::searchBook(BST<Book> *bookCatalog)
         string inputTitle;
         cout << "What's your book's title?: ";
         cin >> inputTitle;
-        QSInOrderTraversal(bookCatalog, inputTitle, searchMatches);
-        quickSort(searchMatches, 0, searchMatches.size() - 1);
+
+        inOrderSearch(bookCatalog, inputTitle, true);
+
+//        QSInOrderTraversal(bookCatalog, inputTitle, searchMatches);
+//        quickSort(searchMatches, 0, searchMatches.size() - 1);
         break;
     }
     case 3:
@@ -164,8 +166,10 @@ void Reader::searchBook(BST<Book> *bookCatalog)
         cout << "What's your book's category?: ";
         cin >> inputCategory;
 
-        QSInOrderTraversal(bookCatalog, inputCategory, searchMatches);
-        quickSort(searchMatches, 0, searchMatches.size() - 1);
+        inOrderSearch(bookCatalog, inputTitle, true);
+
+//        QSInOrderTraversal(bookCatalog, inputCategory, searchMatches);
+//        quickSort(searchMatches, 0, searchMatches.size() - 1);
         break;
     }
     case 4:
@@ -185,6 +189,7 @@ void Reader::searchBook(BST<Book> *bookCatalog)
     }
     }
 
+    // Is this even needed anymore?
     // Separate searchMatches into two separate vectors, one for available books and one for unavailable
     vector<Book> availableMatches;
     vector<Book> unavailableMatches;
