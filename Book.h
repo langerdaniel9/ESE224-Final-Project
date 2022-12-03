@@ -2,32 +2,40 @@
 
 #include <iostream>
 #include <string>
+#include "Reader.h"
 
 using namespace std;
+
+struct LLNode
+{
+    Reader data;
+    LLNode *next;
+    LLNode() : next(nullptr) {}
+    LLNode(Reader x) : data(x), next(nullptr) {}
+    LLNode(Reader x, LLNode *next) : data(x), next(next) {}
+};
 
 class Book
 {
 private:
-    // isbn, title, author, category, id, readers name, start date, return date,
     string isbn;
     string title;
     string author;
     string category;
     // TODO - copy list
-    // TODO - reserved reader linked list
+    LLNode *rrHead;
     int timesFavorited;
 
 public:
-    Book();
-    Book(int id, string isbn, string title, string author, string category);
+    Book(string isbn, string title, string author, string category);
 
     // ********** ACCESSORS **********
     string getIsbn();
     string getTitle();
     string getAuthor();
     string getCategory();
-    // copy list
-    // reserved reader linked list
+    // TODO - copy list
+    LLNode *getReservers();
     int getTimesFavorited();
 
     // ********** MUTATORS **********
@@ -35,31 +43,27 @@ public:
     void setTitle(string title);
     void setAuthor(string author);
     void setCategory(string category);
-    void setId(int id);
-    void setReaderName(string readerName);
-    void setStartDate(int startDate);
-    void setExpDate(int expDate);
 
     // ********** OPERATION OVERLOADING **********
     friend ostream &operator<<(ostream &output, Book &book);
     friend istream &operator>>(istream &input, Book &book);
+
+    // ********** RESERVED READER LINKED LIST **********
+    void insertReader(Reader newReader);
+    void deleteReader();
 };
 
 // Leave functions in the .h file for now, will move them to their respective .cpp files when project is finished
-Book::Book()
-{
-    isbn = "";
-    title = "";
-    author = "";
-    category = "";
-}
 
-Book::Book(int id, string isbn, string title, string author, string category)
+Book::Book(string isbn, string title, string author, string category)
 {
     this->isbn = isbn;
     this->title = title;
     this->author = author;
     this->category = category;
+    // TODO - initialization for copy list?
+    this->rrHead = new LLNode;
+    this->timesFavorited = 0;
 }
 
 // ******************** ACCESSORS ********************
@@ -82,6 +86,16 @@ string Book::getAuthor()
 string Book::getCategory()
 {
     return category;
+}
+
+LLNode *Book::getReservers()
+{
+    return rrHead;
+}
+
+int Book::getTimesFavorited()
+{
+    return timesFavorited;
 }
 
 // ******************** MUTATORS ********************
@@ -110,23 +124,24 @@ void Book::setCategory(string category)
 
 ostream &operator<<(ostream &output, Book &book)
 {
-    string studentname = "NONE";
-    // If book doesnt exist
-    if (book.getTitle() == "")
-    {
-        return output;
-    }
-    // FIXME - change book.getReaderName to (current node of the linked list).name
-    if ((book.getReaderName()) != "")
-    {
-        studentname = book.getReaderName();
-    }
     output << "ISBN:\t" << book.getIsbn() << endl
            << "Title:\t" << book.getTitle() << endl
            << "Author:\t" << book.getAuthor() << endl
            << "Category:\t" << book.getCategory() << endl
-           << "Reader:\t" << studentname << endl
-           << endl;
+           << "Copies:\t" << endl;
+    // TODO - Print the id of each copy within copy binaary tree
+
+    // Print linked list
+    cout << "Reservers: " << endl;
+    LLNode *head = book.getReservers();
+    while (head != NULL)
+    {
+        output << head->data << " ";
+        head = head->next;
+    }
+    output << endl;
+    //
+    output << "Number of Favorites: " << book.getTimesFavorited() << endl;
 
     return output;
 }
@@ -142,4 +157,23 @@ istream &operator>>(istream &input, Book &book)
     book.setCategory(category);
 
     return input;
+}
+
+// ******************** LINKED LIST ********************
+
+void Book::insertReader(Reader newReader)
+{
+    LLNode *head = rrHead;
+    while (head->next != nullptr)
+    {
+        head = head->next;
+    }
+    head->next = new LLNode(newReader);
+}
+
+void Book::deleteReader()
+{
+    LLNode *temp = rrHead;
+    rrHead = rrHead->next;
+    delete (temp);
 }
