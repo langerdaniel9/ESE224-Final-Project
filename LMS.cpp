@@ -6,6 +6,7 @@
 #include "Teacher.h"
 #include "DateFunction.h"
 #include "BookCopy.h"
+#include "Book.h"
 
 // Standard Files //
 #include <iostream>
@@ -167,7 +168,33 @@ void getBooks(BST<Book> &bookCatalog, int &idcount)
     copies.close();
 }
 
-addCopiesToBook(bookCatalog, copyList);
+void traverseToInsert(_struct_ toInsert, TreeNode<Book> *bookNode)
+{
+    if (bookNode->val.getIsbn() == toInsert.isbn)
+        ;
+}
+
+void traverse(TreeNode<BookCopy> *node, BST<Book> &bookCatalog)
+{
+    if (node == nullptr)
+    {
+        return;
+    }
+
+    /* Traverse left*/
+    traverse(node->left, bookCatalog);
+
+    /* Thing to do */
+    traverseToInsert(node->val, bookCatalog.root);
+
+    /* Traverse right */
+    traverse(node->right, bookCatalog);
+}
+
+void addCopiesToBook(BST<Book> &bookCatalog, BST<_struct_> &copyCatalog)
+{
+    traverse(copyCatalog.root, bookCatalog);
+}
 
 User *login(BST<User *> usersList)
 {
