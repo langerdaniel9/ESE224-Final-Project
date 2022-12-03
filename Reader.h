@@ -18,8 +18,8 @@ class Reader : public User
 protected:
     int maxCopies;
     int maxLoanTime;
-    BST<Book>* copiesBorrowed;
-    BST<Book>* BooksReserved;
+    vector<Book>* copiesBorrowed;
+    vector<Book>* BooksReserved;
     int penalties;
     string type();
 
@@ -27,7 +27,7 @@ public:
     // Getters //
     int getMaxCopies();
     int getMaxLoanTime();
-    BST<Book>* getBooksBorrowed();
+    vector<Book>* getBooksBorrowed();
     // Operator Overloading //
     friend ostream &operator<<(ostream &output, Book &book);
     friend istream &operator>>(istream &input, Book &book);
@@ -84,6 +84,21 @@ int partition(vector<Book>* lib, int low, int high)
     return i + 1;
 }
 
+void quickSort(vector<Book>* lib, int low, int high)
+{
+    if (low < high)
+    {
+        int pi = partition(lib, low, high);
+
+        // recursive call on the left of pivot
+        quickSort(lib, low, pi - 1);
+
+        // recursive call on the right of pivot
+        quickSort(lib, pi + 1, high);
+    }
+}
+
+
 void IDInOrderTraversal(BST<Book> *inputBST, int inputID)
 { // not working either???
     if (inputBST == NULL)
@@ -117,11 +132,6 @@ void QSInOrderTraversal(BST<Book> *inputBST, string inputStr, vector<Book> match
     QSInOrderTraversal(inputBST->right, inputStr, matches); // visit right child
 }
 
-void quickSort(vector<Book> lib, int low, int high)
-{
-    if (low < high)
-    {
-        int pi = partition(lib, low, high);
 
         // recursive call on the left of pivot
         quickSort(lib, low, pi - 1);
@@ -298,9 +308,6 @@ void Reader::borrowBook(BST<Book>* &bookCatalog, time_t &zeroTime)
     BST<Book>* temp = bookCatalog;
     bool expired = false;
 
-    while (temp != NULL) {
-
-    }
     for (int i = 0; i < this->getBooksBorrowed().size(); i++)
     {
         if (this->getBooksBorrowed().at(i).getExpDate() < currentTime)
@@ -328,8 +335,7 @@ void Reader::borrowBook(BST<Book>* &bookCatalog, time_t &zeroTime)
     bool available = false;
     Book toBeBorrowed;
 
-    for (int i = 0; i < bookCatalog.size(); i++)
-    {
+    for (int i = 0; i < bookCatalog.size(); i++) {
         if (bookCatalog.at(i).getId() == inputID)
         {
             exists = true;
