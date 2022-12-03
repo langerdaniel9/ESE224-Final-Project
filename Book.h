@@ -1,8 +1,11 @@
 #pragma once
 
+#include "Reader.h"
+#include "BST.h"
+#include "BookCopy.h"
+
 #include <iostream>
 #include <string>
-#include "Reader.h"
 
 using namespace std;
 
@@ -22,7 +25,7 @@ private:
     string title;
     string author;
     string category;
-    // TODO - copy list
+    BST<BookCopy> copiesList;
     LLNode *rrHead;
     int timesFavorited;
 
@@ -34,7 +37,7 @@ public:
     string getTitle();
     string getAuthor();
     string getCategory();
-    // TODO - copy list
+    BST<BookCopy> getCopiesList();
     LLNode *getReservers();
     int getTimesFavorited();
 
@@ -62,7 +65,7 @@ Book::Book(string isbn, string title, string author, string category)
     this->author = author;
     this->category = category;
     // TODO - initialization for copy list?
-    this->rrHead = new LLNode;
+    rrHead = new LLNode;
     this->timesFavorited = 0;
 }
 
@@ -86,6 +89,11 @@ string Book::getAuthor()
 string Book::getCategory()
 {
     return category;
+}
+
+BST<BookCopy> Book::getCopiesList()
+{
+    return copiesList;
 }
 
 LLNode *Book::getReservers()

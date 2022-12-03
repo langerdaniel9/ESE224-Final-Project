@@ -23,6 +23,7 @@ public:
     void setPassword(string newPassword);
     virtual string type() = 0;
     void changePassword();
+    // TODO - operator overloading
 };
 
 string User::getUserName()
