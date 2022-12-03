@@ -482,12 +482,12 @@ void Reader::renewBook(vector<Book> &bookCatalog)
     }
 }
 
-void cancelBook(vector<Book> &bookCatalog)
+void Reader::cancelBook(vector<Book> &bookCatalog)
 {
     // TODO - (Kenny)
 }
 
-void feelingLucky(vector<Book> &bookCatalog)
+void Reader::feelingLucky(vector<Book> &bookCatalog)
 {
     // TODO - maybe if we have time (Daniel)
 }
