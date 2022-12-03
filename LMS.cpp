@@ -61,7 +61,7 @@ int main()
     // Data to be read in from text files
     BST<Book> bookCatalog;
     BST<User *> usersList;
-    BST<BookCopy> copyList;
+    BST<copystruct> copyList;
 
     // Read in data from student.txt and book.txt
     int idCount = 0;                // TODO - needs to be changed since we are given id's (Ethan)
@@ -251,7 +251,6 @@ bool verify(TreeNode *root, string user)
     traverseToInsert(toInsert, bookNode->left);
     /* Traverse right */
     traverseToInsert(toInsert, bookNode->right);
-}
 }
 
 User *login(BST<User *> usersList)
