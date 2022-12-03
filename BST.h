@@ -137,7 +137,7 @@ public:
     }
 
     // Deleting an element from Binary Search Tree
-    TreeNode<Type>* deleteNode(TreeNode<Type>* root, Type element) {
+    TreeNode<Type>* deleteNodeUser(TreeNode<Type>* root, Type element) {
         if (root == NULL) {                             // Base case => deleting the root
             return root;
         }
@@ -167,7 +167,36 @@ public:
 
         return root;
     }
+    TreeNode<Type>* deleteNodeBook(TreeNode<Type>* root, Type element) {
+        if (root == NULL) {                             // Base case => deleting the root
+            return root;
+        }
 
+        if (element < root->val) {                      // Finding which node to delete
+            root->left = deleteNode(root->left, element);
+        }
+        else if (element > root->val) {
+            root->right = deleteNode(root->right, element);
+        }
+        else {
+            if (root->left == NULL) {
+                TreeNode<Type>* aux = root->right;
+                delete(root);
+                return aux;
+            }
+            else if (root->right == NULL) {
+                TreeNode<Type>* aux = root->left;
+                delete(root);
+                return aux;
+            }
+
+            TreeNode<Type>* toGetDeleted = inOrderSuccessor(root->right);                     // The deleting here does not work!
+            root->val = toGetDeleted->val;
+            root->right = deleteNode(root->right, toGetDeleted->val);
+        }
+
+        return root;
+    }
     void deleteNode(Type element) {
         root = deleteNode(root, element);
     }
@@ -185,7 +214,7 @@ public:
         if (root == NULL) {
             cout << root->val << endl;
         }
-
+        
         if (element < root->val) {
             root->left = nodeInsert(root->left, element);
         }
