@@ -191,7 +191,7 @@ void getCopies(BST<copystruct> &copyList)
     while (!fin.eof())
     {
         copyfin >> isbn;
-        copyin >> id;
+        copyfin >> id;
         copystruct temp;
         temp.isbnfile = isbn;
         temp.idfile = id;
@@ -228,10 +228,10 @@ void addCopiesToBook(BST<Book> &bookCatalog, BST<BookCopy> &copyCatalog)
 {
 }
 
-Book inorderTraversal(TreeNode *root, string user)
+User inorderTraversal(TreeNode *root, string user)
 {
     TreeNode *temp = root;
-    if (temp == NULL)
+    if (temp. == NULL)
     {
         return;
     }
