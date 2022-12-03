@@ -148,11 +148,11 @@ void getUsers(BST<User *> usersList)
     fin.close();
 }
 
-void getBooks(BST<Book> &bookCatalog, int &idcount)
+void getBooks(BST<Book> &bookCatalog)
 {
     // Do file I/O, filename is booksList.txt
     fstream books("booksList.txt");
-    if (books.fail() || copies.fail())
+    if (books.fail())
     {
         cerr << "error opening file" << endl;
         exit(1);
@@ -161,19 +161,18 @@ void getBooks(BST<Book> &bookCatalog, int &idcount)
     string titlein;
     string authorin;
     string catagoryin;
-    while (!fin.eof())
+    while (!books.eof())
     {
         // For each line push a new Book object to the vector with the correct attributes
-        fin >> isbnin >> titlein >> authorin >> catagoryin >> copyin;
+        books >> isbnin >> titlein >> authorin >> catagoryin;
         string temp;
-        getline(fin, temp);
-
-        // If there are multiple copies
-        for (int i = 0; i < stoi(copyin); i++)
-        {
-            Book temp(idcount, isbnin, titlein, authorin, catagoryin);
-            bookCatalog.insertNode(temp);
-        }
+        getline(books, temp);
+        Book toinsert;
+        toinsert.setIsbn(isbnin);
+        toinsert.setTitle(titlein);
+        toinsert.setAuthor(authorin);
+        toinsert.setCategory(catagoryin);
+        bookCatalog.nodeInsert(toinsert);
     }
     books.close();
 }
@@ -195,23 +194,38 @@ void getCopies(BST<copystruct> &copyList)
         copystruct temp;
         temp.isbnfile = isbn;
         temp.idfile = id;
+        copyList.nodeInsert(temp);
     }
     copyfin.close();
 }
 
 void traverseToInsert(copystruct toInsert, TreeNode<Book> *bookNode)
 {
+
+    if (bookNode = nullptr)
+    {
+        return;
+    }
+
     if (bookNode->val.getIsbn() == toInsert.isbnfile)
     {
-        //
+        BookCopy newBookCopy(toInsert.idfile); // FIXME - might not work since its not a pointer
+        bookNode->val.copiesVector.push_back(newBookCopy);
+        return;
     }
+
+    /* Traverse left*/
+    traverseToInsert(toInsert, bookNode->left);
+
+    /* Traverse right */
+    traverseToInsert(toInsert, bookNode->right);
 }
 
-void traverse(TreeNode<BookCopy> *node, BST<Book> &bookCatalog)
+void traverse(TreeNode<copystruct> *node, BST<Book> &bookCatalog)
 {
     if (node == nullptr)
     {
-        void getCopies(BST<copystruct> & copyList);
+        return;
     }
 
     /* Traverse left*/
@@ -224,25 +238,22 @@ void traverse(TreeNode<BookCopy> *node, BST<Book> &bookCatalog)
     traverse(node->right, bookCatalog);
 }
 
-void addCopiesToBook(BST<Book> &bookCatalog, BST<BookCopy> &copyCatalog)
-{
-}
-
-Book inorderTraversal(TreeNode *root, string user)
-{
-    TreeNode *temp = root;
-    if (temp == NULL)
-    {
-        return;
-    }
-    inorderTraversal(temp->left);  // visit left child
-    cout << temp->val << " ";      // visit current node
-    inorderTraversal(temp->right); // visit right child
-}
-
 void addCopiesToBook(BST<Book> &bookCatalog, BST<copystruct> &copyCatalog)
 {
     traverse(copyCatalog.root, bookCatalog);
+}
+
+bool verify(TreeNode *root, string user){
+    if (bookNode->val.getIsbn() == toInsert.isbnfile){
+        BookCopy newBookCopy = new BookCopy(toInsert.idfile);
+        bookNode->val.copiesVector.push_back(newBookCopy);
+        return;
+    }
+        /* Traverse left*/
+        traverseToInsert(toInsert, bookNode->left);
+        /* Traverse right */
+        traverseToInsert(toInsert, bookNode->right);
+    }
 }
 
 User *login(BST<User *> usersList)

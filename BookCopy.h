@@ -16,7 +16,7 @@ private:
     int expirationDate;
 
 public:
-    BookCopy(int newId, string newReadName, string newReserveName, int newReserveD, int newStartD, int newExpirationD);
+    BookCopy(int newId);
 
     // ********** ACCESSORS **********
     int getID();
@@ -41,14 +41,9 @@ public:
 
 // Leave functions in the .h file for now, will move them to their respective .cpp files when project is finished
 
-BookCopy::BookCopy(int newId, string newReadName, string newReserveName, int newReserveD, int newStartD, int newExpirationD)
+BookCopy::BookCopy(int newId)
 {
     this->ID = newId;
-    this->readerName = newReadName;
-    this->reserverName = newReserveName;
-    this->reserveDate = newReserveD;
-    this->startDate = newStartD;
-    this->expirationDate = newExpirationD;
 }
 
 // ******************** ACCESSORS ********************
