@@ -5,6 +5,7 @@
 #include "Student.h"
 #include "Teacher.h"
 #include "DateFunction.h"
+#include "BookCopies.h"
 
 // Standard Files //
 #include <iostream>
@@ -38,19 +39,20 @@ Reader *userToReader(User *toCast)
 /////////////
 
 // Function Declarations //
-void getUsers(vector<User *> usersList);
-void getBooks(vector<Book> &bookCatalog, int &idcount);
-User *login(vector<User *> usersList);
-void librarianLoop(Librarian *user, vector<Book> bookCatalog, vector<User *> usersList, time_t &zeroTime, int &idCount);
-void readerLoop(Reader *user, vector<Book> bookCatalog, time_t &zeroTime);
+void getUsers(BST<User *> usersList);
+void getBooks(BST<Book> &bookCatalog, int &idcount);
+void getCopies(BST<BookCopy>& copyCatalog);
+User *login(BST<User *> usersList);
+void librarianLoop(Librarian *user, BST<Book> bookCatalog, BST<User *> usersList, time_t &zeroTime, int &idCount);
+void readerLoop(Reader *user, BST<Book> bookCatalog, time_t &zeroTime);
 ///////////////////////////
 
 // Main Function //
 int main()
 {
     // Data to be read in from text files
-    vector<Book> bookCatalog;
-    vector<User *> usersList;
+    BST<Book> bookCatalog;
+    BST<User *> usersList;
 
     // Read in data from student.txt and book.txt
     int idCount = 0;                // TODO - needs to be changed since we are given id's (Ethan)
@@ -84,7 +86,7 @@ int main()
     }
 }
 
-void getUsers(vector<User *> usersList)
+void getUsers(BST<User *> usersList)
 {
     // Do file I/O, filename is usersList.txt
     fstream fin("usersList.txt");
@@ -114,28 +116,28 @@ void getUsers(vector<User *> usersList)
             // assign values and attributes to temp student
             Student *temp = new Student(userin, passwordin);
             // push to vector
-            usersList.push_back(temp);
+            usersList.nodeInsert(temp);
         }
         if (rolein == 1) // for teacher
         {
             // assign values and attributes to temp teacher
             Teacher *temp = new Teacher(userin, passwordin);
             // push to vector
-            usersList.push_back(temp);
+            usersList.nodeInsert(temp);
         }
         if (rolein == 2) // for librarian
         {
             // assign values and attributes to temp teacher
             Librarian *temp = new Librarian(userin, passwordin);
             // push to vector
-            usersList.push_back(temp);
+            usersList.nodeInsert(temp);
         }
     }
     // When finished reading in from file, close it
     fin.close();
 }
 
-void getBooks(vector<Book> &bookCatalog, int &idcount)
+void getBooks(BST<Book> &bookCatalog, int &idcount)
 {
     // Do file I/O, filename is booksList.txt
     fstream books("booksList.txt");
@@ -154,13 +156,14 @@ void getBooks(vector<Book> &bookCatalog, int &idcount)
      */
 
     // TODO - (Ethan)
+    Book temp;
 
     // When everything is done, close the file and return
     books.close();
     copies.close();
 }
 
-User *login(vector<User *> usersList)
+User *login(BST<User *> usersList)
 {
     while (true)
     {
@@ -202,7 +205,7 @@ User *login(vector<User *> usersList)
 }
 
 // TODO - (Daniel)
-void readerLoop(Reader *user, vector<Book> bookCatalog, time_t &zeroTime)
+void readerLoop(Reader *user, BST<Book> bookCatalog, time_t &zeroTime)
 {
     while (true)
     {
@@ -305,7 +308,7 @@ void readerLoop(Reader *user, vector<Book> bookCatalog, time_t &zeroTime)
 }
 
 // TODO - (Ethan)
-void librarianLoop(Librarian *user, vector<Book> bookCatalog, vector<User *> usersList, time_t &zeroTime, int &idCount)
+void librarianLoop(Librarian *user, BST<Book> bookCatalog, BST<User *> usersList, time_t &zeroTime, int &idCount)
 {
     while (true)
     {

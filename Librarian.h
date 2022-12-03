@@ -13,11 +13,11 @@ class Librarian : public User
 public:
     Librarian();
     Librarian(string initUserName, string initPassword);
-    void addBook(vector<Book> &bookCatalog);
-    void deleteBook(vector<Book> &bookCatalog);
-    void searchUser(vector<User *> usersList);
-    void addUsers(vector<User *> usersList);
-    void deleteUser(vector<User *> usersList);
+    void addBook(BST<Book> &bookCatalog, );
+    void deleteBook(BST<Book> &bookCatalog);
+    void searchUser(BST<User *> usersList);
+    void addUsers(BST<User *> usersList);
+    void deleteUser(BST<User *> usersList);
     string type();
 };
 
@@ -33,27 +33,57 @@ Librarian::Librarian(string initUserName, string initPassword)
     password = initPassword;
 }
 
-void Librarian::addBook(vector<Book> &bookCatalog)
+void Librarian::addBook(BST<Book *> &bookCatalog)
+{
+    // TODO - (Ethan)
+    string input;
+    Book temp;
+    cout << "Adding new book..." << endl;
+    cout << "Please type the isbn of the new book: ";
+    cin >> input;
+
+
+
+    temp.setIsbn(input);
+    cout << "Please type the title of the new book: ";
+    cin >> input;
+    temp.setTitle(input);
+    cout << "Please type the catagory of the new book: ";
+    cin >> input;
+    temp.setCategory(input);
+
+
+
+
+    bookCatalog.nodeInsert(temp);
+
+    
+
+    //
+    //may need further modification for copies data struct
+    //
+
+    
+
+}
+
+void Librarian::deleteBook(BST<Book *> &bookCatalog)
+{
+    // TODO - (Ethan)
+    cout << "Please input the "
+}
+
+void Librarian::searchUser(BST<User *> usersList)
 {
     // TODO - (Ethan)
 }
 
-void Librarian::deleteBook(vector<Book> &bookCatalog)
+void Librarian::addUsers(BST<User *> usersList)
 {
     // TODO - (Ethan)
 }
 
-void Librarian::searchUser(vector<User *> usersList)
-{
-    // TODO - (Ethan)
-}
-
-void Librarian::addUsers(vector<User *> usersList)
-{
-    // TODO - (Ethan)
-}
-
-void Librarian::deleteUser(vector<User *> usersList)
+void Librarian::deleteUser(BST<User *> usersList)
 {
     // TODO - (Ethan)
 }
