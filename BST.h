@@ -144,6 +144,7 @@ public:
 
         return root;
     }
+
     TreeNode<Type> *deleteNodeBook(TreeNode<Type> *root, Type element)
     {
         if (root == NULL)
@@ -181,6 +182,7 @@ public:
 
         return root;
     }
+
     void deleteNode(Type element)
     {
         root = deleteNode(root, element);
@@ -276,7 +278,6 @@ public:
         inOrderSearchRecursive(root, searchTerm, matches, TitleOrCategory);
 
         //// Compiling the results
-
         // Separate matches into two separate vectors, one for available books and one for unavailable
         vector<Book> availableMatches;
         vector<Book> unavailableMatches;
