@@ -4,6 +4,7 @@
 #include "Book.h"
 #include "BookCopy.h"
 
+#include <vector>
 #include <iostream>
 #include <fstream> // unnecessary?
 
@@ -198,6 +199,7 @@ public:
 
     void binarySearch(TreeNode<Type> *root, Type element)
     {
+        // Used for users (by username), books (by ISBN), and book copies (by ID)
         if (root == NULL)
         {
             cout << root->val << endl;
@@ -205,12 +207,17 @@ public:
 
         if (element < root->val)
         {
-            root->left = nodeInsert(root->left, element);
+            root->left = binarySearch(root->left, element);
         }
         else if (element > root->val)
         {
-            root->right = nodeInsert(root->right, element);
+            root->right = binarySearch(root->right, element);
         }
+    }
+
+    void binarySearch(Type element)
+    {
+        root = binarySearch(root, element);
     }
 
     void inorderTraversal(TreeNode *root)

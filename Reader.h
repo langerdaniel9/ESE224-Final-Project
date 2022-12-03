@@ -3,6 +3,7 @@
 #include "User.h"
 #include "Book.h"
 #include "DateFunction.h"
+#include "BST.h"
 
 #include <iostream>
 #include <string>
@@ -83,6 +84,33 @@ int partition(vector<Book>* lib, int low, int high)
 }
 
 void quickSort(vector<Book>* lib, int low, int high) {
+void IDInOrderTraversal(BST<Book> *inputBST, string inputID)
+{ // not working either???
+    if (inputBST == NULL)
+    {
+        return;
+    }
+
+    IDInOrderTraversal(inputBST->left, inputID); // visit left child
+    inputBST->val->binarySearch(inputID);
+    IDInOrderTraversal(inputBST->right, inputID); // visit right child
+}
+
+void QSInOrderTraversal(BST<Book> *inputBST, string inputStr, vector<Book> matches)
+{ // not working either???
+    if (inputBST == NULL)
+    {
+        return;
+    }
+
+    QSInOrderTraversal(inputBST->left, inputStr, matches); // visit left child
+                                                           //    inputBST->val->binarySearch(inputID);
+    matches.push_back(inputBST->val);
+    QSInOrderTraversal(inputBST->right, inputStr, matches); // visit right child
+}
+
+void quickSort(vector<Book> lib, int low, int high)
+{
     if (low < high)
     {
         int pi = partition(lib, low, high);
@@ -95,7 +123,7 @@ void quickSort(vector<Book>* lib, int low, int high) {
     }
 }
 
-void Reader::searchBook(BST<Book>* &bookCatalog)
+void Reader::searchBook(BST<Book> *bookCatalog)
 {
     // FIXME - (Daniel)
     int searchChoice;
@@ -115,18 +143,9 @@ void Reader::searchBook(BST<Book>* &bookCatalog)
         string inputISBN;
         cout << "What's your book's ISBN value?: ";
         cin >> inputISBN;
-        for (int i = 0; i < bookCatalog.size(); i++)
-        {
-            // At least a partial match on isbn
-            string s = bookCatalog.at(i).getIsbn();
-            transform(s.begin(), s.end(), s.begin(), ::tolower);
-            transform(inputISBN.begin(), inputISBN.end(), inputISBN.begin(), ::tolower);
-            if (s.find(inputISBN) != string::npos)
-            {
-                // Books with matching criteria get pushed to search results vector
-                searchMatches.push_back(bookCatalog.at(i));
-            }
-        }
+
+        BST<Book> *bookCatalog;
+        bookCatalog->binarySearch(inputISBN);
 
         break;
     }
@@ -135,18 +154,8 @@ void Reader::searchBook(BST<Book>* &bookCatalog)
         string inputTitle;
         cout << "What's your book's title?: ";
         cin >> inputTitle;
-        for (int i = 0; i < bookCatalog.size(); i++)
-        {
-            // At least a partial match on title
-            string s = bookCatalog.at(i).getTitle();
-            transform(s.begin(), s.end(), s.begin(), ::tolower);
-            transform(inputTitle.begin(), inputTitle.end(), inputTitle.begin(), ::tolower);
-            if (s.find(inputTitle) != string::npos)
-            {
-                // Books with matching criteria get pushed to search results vector
-                searchMatches.push_back(bookCatalog.at(i));
-            }
-        }
+        QSInOrderTraversal(bookCatalog, inputTitle, searchMatches);
+        quickSort(searchMatches, 0, searchMatches.size() - 1);
         break;
     }
     case 3:
@@ -154,18 +163,9 @@ void Reader::searchBook(BST<Book>* &bookCatalog)
         string inputCategory;
         cout << "What's your book's category?: ";
         cin >> inputCategory;
-        for (int i = 0; i < bookCatalog.size(); i++)
-        {
-            // At least a partial match on category
-            string s = bookCatalog.at(i).getCategory();
-            transform(s.begin(), s.end(), s.begin(), ::tolower);
-            transform(inputCategory.begin(), inputCategory.end(), inputCategory.begin(), ::tolower);
-            if (s.find(inputCategory) != string::npos)
-            {
-                // Books with matching criteria get pushed to search results vector
-                searchMatches.push_back(bookCatalog.at(i));
-            }
-        }
+
+        QSInOrderTraversal(bookCatalog, inputCategory, searchMatches);
+        quickSort(searchMatches, 0, searchMatches.size() - 1);
         break;
     }
     case 4:
@@ -173,29 +173,8 @@ void Reader::searchBook(BST<Book>* &bookCatalog)
         int inputID;
         cout << "What's your book's ID?: ";
         cin >> inputID;
-        // Binary Search
-        int lo = 0, hi = bookCatalog.size() - 1;
-        int mid;
-        while (hi - lo > 1)
-        {
-            int mid = (hi + lo) / 2;
-            if (bookCatalog[mid].getId() < inputID)
-            {
-                lo = mid + 1;
-            }
-            else
-            {
-                hi = mid;
-            }
-        }
-        if (bookCatalog[lo].getId() == inputID)
-        {
-            searchMatches.push_back(bookCatalog.at(lo));
-        }
-        else if (bookCatalog[hi].getId() == inputID)
-        {
-            searchMatches.push_back(bookCatalog.at(hi));
-        }
+
+        IDInOrderTraversal(bookCatalog, inputID);
 
         break;
     }
