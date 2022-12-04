@@ -156,6 +156,11 @@ public:
         return root;
     }
 
+    void deleteNodeUser(Type element)
+    {
+        root = deleteNode(root, element);
+    }
+
     TreeNode<Type> *deleteNodeBook(TreeNode<Type> *root, Type element)
     {
         if (root == NULL)
@@ -194,9 +199,9 @@ public:
         return root;
     }
 
-    void deleteNode(Type element)
+    void deleteNodeBook(Type element)
     {
-        root = deleteNode(root, element);
+        root = deleteNodeBook(root, element);
     }
 
     TreeNode<Type> *inOrderSuccessor(TreeNode<Type> *root)
@@ -232,19 +237,6 @@ public:
     {
         root = binarySearch(root, element);
     }
-
-    // void inorderTraversal(TreeNode *root)
-    //{
-    //     TreeNode *temp = root;
-    //     if (temp == NULL)
-    //     {
-    //         return;
-    //     }
-
-    //    inorderTraversal(temp->left);  // visit left child
-    //    cout << temp->val << " ";      // visit current node
-    //    inorderTraversal(temp->right); // visit right child
-    //}
 
     void inOrderSearchRecursive(TreeNode<Book> *root, string searchTerm, vector<Book> &matches, bool TorC)
     {
