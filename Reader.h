@@ -474,16 +474,18 @@ void Reader::returnBook(vector<Book> &bookCatalog)
     }
 
     // Change the properties of the returned book to reflect that it is available
-    for (int i = 0; i < bookCatalog.size(); i++)
-    {
-        if (bookCatalog.at(i).getId() == id)
-        {
-            bookCatalog.at(i).setStartDate(-1);
-            bookCatalog.at(i).setExpDate(-1);
-            bookCatalog.at(i).setReaderName("");
-        }
-    }
-    cout << endl;
+    IDInOrderTraversal2(bookCatalog, inputID, -1, -1, "");
+
+    //for (int i = 0; i < bookCatalog.size(); i++)
+    //{
+    //    if (bookCatalog.at(i).getId() == id)
+    //    {
+    //        bookCatalog.at(i).setStartDate(-1);
+    //        bookCatalog.at(i).setExpDate(-1);
+    //        bookCatalog.at(i).setReaderName("");
+    //    }
+    //}
+    //cout << endl;
 }
 
 void Reader::renewBook(vector<Book> &bookCatalog)
