@@ -259,6 +259,35 @@ int verifytype(TreeNode<User> *root, string user, string pass)
     /* Traverse right */
     verifytype(root, user, pass);
 }
+Student verifypersonS(TreeNode<User>* root, string user, string pass, Student& temp) {
+    if ((root->val.getUsername() == user) && (root->val.getPassword() == pass)) {
+
+    }
+    /* Traverse left*/
+    verifyperson(root, user, pass, temp);
+    /* Traverse right */
+    verifyperson(root, user, pass, temp);
+}
+
+Student verifypersonT(TreeNode<User>* root, string user, string pass, Student& temp) {
+    if ((root->val.getUsername() == user) && (root->val.getPassword() == pass)) {
+
+    }
+    /* Traverse left*/
+    verifyperson(root, user, pass, temp);
+    /* Traverse right */
+    verifyperson(root, user, pass, temp);
+}
+
+Student verifypersonL(TreeNode<User>* root, string user, string pass, Student& temp) {
+    if ((root->val.getUsername() == user) && (root->val.getPassword() == pass)) {
+
+    }
+    /* Traverse left*/
+    verifyperson(root, user, pass, temp);
+    /* Traverse right */
+    verifyperson(root, user, pass, temp);
+}
 
 User *login(BST<User *> usersList)
 {
