@@ -1,26 +1,15 @@
 #pragma once
 
+#include "Structs.h"
 #include "User.h"
 #include "Book.h"
 #include "BookCopy.h"
-#include "Structs.h"
 
 #include <vector>
 #include <iostream>
 #include <fstream> // unnecessary?
 
 using namespace std;
-
-template <typename Type>
-struct TreeNode
-{
-    Type val;
-    TreeNode *left;
-    TreeNode *right;
-    TreeNode() : val(nullptr), left(nullptr), right(nullptr) {}
-    TreeNode(Type x) : val(x), left(nullptr), right(nullptr) {}
-    TreeNode(Type x, TreeNode *left, TreeNode *right) : val(x), left(left), right(right) {}
-};
 
 // Overload all comparison operators for string, user, book, and book copy //
 
@@ -234,6 +223,11 @@ public:
     }
 
     void binarySearch(Type element)
+    {
+        root = binarySearch(root, element);
+    }
+
+    void binarySearchISBN(string element)
     {
         root = binarySearch(root, element);
     }

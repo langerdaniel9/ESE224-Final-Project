@@ -1,6 +1,5 @@
 #pragma once
 
-#include "Reader.h"
 #include "BST.h"
 #include "BookCopy.h"
 
@@ -12,11 +11,11 @@ using namespace std;
 
 struct LLNode
 {
-    Reader data;
+    string data;
     LLNode *next;
     LLNode() : next(nullptr) {}
-    LLNode(Reader x) : data(x), next(nullptr) {}
-    LLNode(Reader x, LLNode *next) : data(x), next(next) {}
+    LLNode(string x) : data(x), next(nullptr) {}
+    LLNode(string x, LLNode *next) : data(x), next(next) {}
 };
 
 class Book
@@ -53,7 +52,7 @@ public:
     friend istream &operator>>(istream &input, Book &book);
 
     // ********** RESERVED READER LINKED LIST **********
-    void insertReader(Reader newReader);
+    void insertReader(string newReaderUsername);
     void deleteReader();
 };
 
@@ -170,14 +169,14 @@ istream &operator>>(istream &input, Book &book)
 
 // ******************** LINKED LIST ********************
 
-void Book::insertReader(Reader newReader)
+void Book::insertReader(string newReaderUsername)
 {
     LLNode *head = rrHead;
     while (head->next != nullptr)
     {
         head = head->next;
     }
-    head->next = new LLNode(newReader);
+    head->next = new LLNode(newReaderUsername);
 }
 
 void Book::deleteReader()

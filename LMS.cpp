@@ -8,6 +8,7 @@
 #include "BookCopy.h"
 #include "Book.h"
 #include "Structs.h"
+#include "BST.h"
 
 // Standard Files //
 #include <iostream>
@@ -192,6 +193,7 @@ void getCopies(BST<copystruct> &copyList)
 
 void traverseToInsert(copystruct toInsert, TreeNode<Book> *bookNode)
 {
+    bookNode;
     if (bookNode = nullptr)
     {
         return;
@@ -213,6 +215,8 @@ void traverseToInsert(copystruct toInsert, TreeNode<Book> *bookNode)
 
 void traverse(TreeNode<copystruct> *node, BST<Book> &bookCatalog)
 {
+    node;
+    bookCatalog;
     if (node == nullptr)
     {
         return;
