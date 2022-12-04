@@ -568,7 +568,7 @@ void Reader::reserveBook(BST<Book> *&bookCatalog)
 {
 }
 
-void Reader::cancelBook(vector<Book> &bookCatalog)
+void Reader::cancelBook(BST<Book> *&bookCatalog)
 {
     // TODO - (Kenny)
 }

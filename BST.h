@@ -47,18 +47,6 @@ bool operator>(User &u1, User &u2)
     return (val == 1) ? true : false;
 }
 
-bool operator<(Book &b1, Book &b2)
-{
-    int val = b1.getIsbn().compare(b2.getIsbn());
-    return (val == -1) ? true : false;
-}
-
-bool operator>(Book &b1, Book &b2)
-{
-    int val = b1.getIsbn().compare(b2.getIsbn());
-    return (val == 1) ? true : false;
-}
-
 bool operator<(BookCopy &bc1, BookCopy &bc2)
 {
     return bc1.getID() < bc2.getID();

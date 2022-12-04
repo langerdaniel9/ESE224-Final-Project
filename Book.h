@@ -2,12 +2,25 @@
 
 #include "BST.h"
 #include "BookCopy.h"
+#include "Structs.h"
 
 #include <iostream>
 #include <string>
 #include <vector>
 
 using namespace std;
+
+bool operator<(Book &b1, Book &b2)
+{
+    int val = b1.getIsbn().compare(b2.getIsbn());
+    return (val == -1) ? true : false;
+}
+
+bool operator>(Book &b1, Book &b2)
+{
+    int val = b1.getIsbn().compare(b2.getIsbn());
+    return (val == 1) ? true : false;
+}
 
 struct LLNode
 {
@@ -53,7 +66,8 @@ public:
 
     // ********** RESERVED READER LINKED LIST **********
     void insertReader(string newReaderUsername);
-    void deleteReader();
+    void deleteReader(Reader r1);
+    void deleteFirst();
 };
 
 // Leave functions in the .h file for now, will move them to their respective .cpp files when project is finished
@@ -188,14 +202,17 @@ void Book::deleteFirst()
 
 void Book::deleteReader(Reader r1)
 {
-    LLNode* temp = rrHead;
-    while (temp != NULL) {
-        if (temp->data == r1) {
+    LLNode *temp = rrHead;
+    while (temp != NULL)
+    {
+        if (temp->data == r1)
+        {
             break;
         }
         temp = temp->next;
     }
-    while (temp->next != NULL) {
+    while (temp->next != NULL)
+    {
         temp->data = temp->next->data;
         temp = temp->next;
     }
