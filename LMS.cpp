@@ -192,7 +192,6 @@ void getCopies(BST<copystruct> &copyList)
 
 void traverseToInsert(copystruct toInsert, TreeNode<Book> *bookNode)
 {
-
     if (bookNode = nullptr)
     {
         return;
