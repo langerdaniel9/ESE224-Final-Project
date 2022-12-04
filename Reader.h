@@ -118,6 +118,29 @@ BookCopy IDInOrderTraversal(BST<Book> *inputBST, int inputID)
     IDInOrderTraversal(inputBST->right, inputID); // visit right child
 }
 
+void IDInOrderTraversal2(BST<Book>* inputBST, int inputID, int start, int end, string reader)
+{ // not working either???
+    if (inputBST == NULL)
+    {
+        return;
+    }
+
+    IDInOrderTraversal2(inputBST->left, inputID); // visit left child
+    //    inputBST->val->binarySearch(inputID);
+    //    forLoopforBook(inputBST, inputID);            // visit current child
+    for (int i = 0; i < inputBST->val.copiesVector.size(); i++) {
+        if (inputBST->val.copiesVector.at(i).ID == inputID) {
+            inputBST->val.copiesVector.at(i).setStartDate(start);
+            inputBST->val.copiesVector.at(i).setExpirationDate(end);
+            inputBST->val.copiesVector.at(i).setReaderName(reader);
+        }
+    }
+
+    IDInOrderTraversal2(inputBST->right, inputID); // visit right child
+}
+
+
+
 //BookCopy forLoopforBook(BST<Book>* inputBST, int inputID) {
 //    for (int i = 0; i < inputBST->val.copiesVector.size(); i++) {
 //        if (inputBST->val.copiesVector.at(i).ID == inputID) {
@@ -395,7 +418,8 @@ void Reader::borrowBook(BST<Book>* &bookCatalog, time_t &zeroTime)
     toBeBorrowed.setReaderName(this->getUserName());
     this->copiesBorrowed.push_back(toBeBorrowed);
 
-    for (int i = 0; i < bookCatalog.size(); i++)
+    IDInOrderTraversal2(bookCatalog, inputID, currentTime, currentTime + this->getMaxLoanTime(), this->getUserName());
+    /*for (int i = 0; i < bookCatalog.size(); i++)
     {
         if (bookCatalog.at(i).getId() == toBeBorrowed.getId())
         {
@@ -404,7 +428,7 @@ void Reader::borrowBook(BST<Book>* &bookCatalog, time_t &zeroTime)
             bookCatalog.at(i).setExpirationDate(currentTime + this->getMaxLoanTime());
             bookCatalog.at(i).setReaderName(this->getUserName());
         }
-    }
+    }*/
 }
 
 void Reader::returnBook(vector<Book> &bookCatalog)
