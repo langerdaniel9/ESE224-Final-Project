@@ -118,6 +118,48 @@ BookCopy IDInOrderTraversal(BST<Book> *inputBST, int inputID)
     IDInOrderTraversal(inputBST->right, inputID); // visit right child
 }
 
+void IDInOrderTraversal2(BST<Book>* inputBST, int inputID, int start, int end, string reader)
+{ // not working either???
+    if (inputBST == NULL)
+    {
+        return;
+    }
+
+    IDInOrderTraversal2(inputBST->left, inputID); // visit left child
+    //    inputBST->val->binarySearch(inputID);
+    //    forLoopforBook(inputBST, inputID);            // visit current child
+    for (int i = 0; i < inputBST->val.copiesVector.size(); i++) {
+        if (inputBST->val.copiesVector.at(i).ID == inputID) {
+            inputBST->val.copiesVector.at(i).setStartDate(start);
+            inputBST->val.copiesVector.at(i).setExpirationDate(end);
+            inputBST->val.copiesVector.at(i).setReaderName(reader);
+        }
+    }
+
+    IDInOrderTraversal2(inputBST->right, inputID); // visit right child
+}
+
+void IDInOrderTraversal3(BST<Book>* inputBST, int inputID)
+{ // not working either???
+    if (inputBST == NULL)
+    {
+        return;
+    }
+
+    IDInOrderTraversal3(inputBST->left, inputID); // visit left child
+    //    inputBST->val->binarySearch(inputID);
+    //    forLoopforBook(inputBST, inputID);            // visit current child
+    for (int i = 0; i < inputBST->val.copiesVector.size(); i++) {
+        if (inputBST->val.copiesVector.at(i).ID == inputID) {
+            inputBST->val.copiesVector.at(i).setExpirationDate(inputBST->val.copiesVector.at(i).getExpDate() + this->getMaxLoanTime());
+        }
+    }
+
+    IDInOrderTraversal3(inputBST->right, inputID); // visit right child
+}
+
+
+
 //BookCopy forLoopforBook(BST<Book>* inputBST, int inputID) {
 //    for (int i = 0; i < inputBST->val.copiesVector.size(); i++) {
 //        if (inputBST->val.copiesVector.at(i).ID == inputID) {
@@ -395,7 +437,8 @@ void Reader::borrowBook(BST<Book>* &bookCatalog, time_t &zeroTime)
     toBeBorrowed.setReaderName(this->getUserName());
     this->copiesBorrowed.push_back(toBeBorrowed);
 
-    for (int i = 0; i < bookCatalog.size(); i++)
+    IDInOrderTraversal2(bookCatalog, inputID, currentTime, currentTime + this->getMaxLoanTime(), this->getUserName());
+    /*for (int i = 0; i < bookCatalog.size(); i++)
     {
         if (bookCatalog.at(i).getId() == toBeBorrowed.getId())
         {
@@ -404,7 +447,7 @@ void Reader::borrowBook(BST<Book>* &bookCatalog, time_t &zeroTime)
             bookCatalog.at(i).setExpirationDate(currentTime + this->getMaxLoanTime());
             bookCatalog.at(i).setReaderName(this->getUserName());
         }
-    }
+    }*/
 }
 
 void Reader::returnBook(vector<Book> &bookCatalog)
@@ -450,16 +493,18 @@ void Reader::returnBook(vector<Book> &bookCatalog)
     }
 
     // Change the properties of the returned book to reflect that it is available
-    for (int i = 0; i < bookCatalog.size(); i++)
-    {
-        if (bookCatalog.at(i).getId() == id)
-        {
-            bookCatalog.at(i).setStartDate(-1);
-            bookCatalog.at(i).setExpDate(-1);
-            bookCatalog.at(i).setReaderName("");
-        }
-    }
-    cout << endl;
+    IDInOrderTraversal2(bookCatalog, inputID, -1, -1, "");
+
+    //for (int i = 0; i < bookCatalog.size(); i++)
+    //{
+    //    if (bookCatalog.at(i).getId() == id)
+    //    {
+    //        bookCatalog.at(i).setStartDate(-1);
+    //        bookCatalog.at(i).setExpDate(-1);
+    //        bookCatalog.at(i).setReaderName("");
+    //    }
+    //}
+    //cout << endl;
 }
 
 void Reader::renewBook(vector<Book> &bookCatalog)
@@ -499,14 +544,15 @@ void Reader::renewBook(vector<Book> &bookCatalog)
 
     if (renewed)
     {
-        // Needs to be changed
+        IDInOrderTraversal3(bookCatalog, id);
+        /*// Needs to be changed
         for (int i = 0; i < bookCatalog.size(); i++)
         {
             if (bookCatalog.at(i).getId() == id)
             {
                 bookCatalog.at(i).setExpDate(bookCatalog.at(i).getExpDate() + this->getMaxLoanTime());
             }
-        }
+        }*/
     }
 
     if (!renewed)
