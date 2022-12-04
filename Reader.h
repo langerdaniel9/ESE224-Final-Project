@@ -185,7 +185,7 @@ void Reader::searchBook(BST<Book> *bookCatalog)
         cin >> inputISBN;
 
 //        BST<Book> *bookCatalog;
-        bookCatalog->binarySearch(inputISBN);
+        bookCatalog->binarySearch(inputISBN);                       // Should print out info about Book
 
         break;
     }
@@ -221,7 +221,7 @@ void Reader::searchBook(BST<Book> *bookCatalog)
 
         // NEEDS TO BE FIXED?!?!?!?!
         string correspondingISBN = copiesInOrderTraversal(copyList, inputID);                      // gets the corresponding ISBN
-        bookCatalog->binarySearch(correspondingISBN);
+        bookCatalog->binarySearch(correspondingISBN);                                   // Should print out info about Book
 
 //        IDInOrderTraversal(bookCatalog, inputID);
 
@@ -499,6 +499,7 @@ void Reader::renewBook(vector<Book> &bookCatalog)
 
     if (renewed)
     {
+        // Needs to be changed
         for (int i = 0; i < bookCatalog.size(); i++)
         {
             if (bookCatalog.at(i).getId() == id)
