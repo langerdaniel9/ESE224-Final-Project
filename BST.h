@@ -3,6 +3,7 @@
 #include "User.h"
 #include "Book.h"
 #include "BookCopy.h"
+#include "Structs.h"
 
 #include <vector>
 #include <iostream>
@@ -33,6 +34,16 @@ bool operator>(string &s1, string &s2)
 {
     int val = s1.compare(s2);
     return (val == 1) ? true : false;
+}
+
+bool operator<(copystruct &cs1, copystruct cs2)
+{
+    return cs1.idfile < cs2.idfile;
+}
+
+bool operator>(copystruct &cs1, copystruct &cs2)
+{
+    return cs1.idfile > cs2.idfile;
 }
 
 bool operator<(User &u1, User &u2)
@@ -145,6 +156,11 @@ public:
         return root;
     }
 
+    void deleteNodeUser(Type element)
+    {
+        root = deleteNode(root, element);
+    }
+
     TreeNode<Type> *deleteNodeBook(TreeNode<Type> *root, Type element)
     {
         if (root == NULL)
@@ -183,9 +199,9 @@ public:
         return root;
     }
 
-    void deleteNode(Type element)
+    void deleteNodeBook(Type element)
     {
-        root = deleteNode(root, element);
+        root = deleteNodeBook(root, element);
     }
 
     TreeNode<Type> *inOrderSuccessor(TreeNode<Type> *root)
@@ -221,19 +237,6 @@ public:
     {
         root = binarySearch(root, element);
     }
-
-    //void inorderTraversal(TreeNode *root)
-    //{
-    //    TreeNode *temp = root;
-    //    if (temp == NULL)
-    //    {
-    //        return;
-    //    }
-
-    //    inorderTraversal(temp->left);  // visit left child
-    //    cout << temp->val << " ";      // visit current node
-    //    inorderTraversal(temp->right); // visit right child
-    //}
 
     void inOrderSearchRecursive(TreeNode<Book> *root, string searchTerm, vector<Book> &matches, bool TorC)
     {

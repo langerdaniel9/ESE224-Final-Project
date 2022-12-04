@@ -7,6 +7,7 @@
 #include "DateFunction.h"
 #include "BookCopy.h"
 #include "Book.h"
+#include "Structs.h"
 
 // Standard Files //
 #include <iostream>
@@ -38,13 +39,7 @@ Reader *userToReader(User *toCast)
     return dynamic_cast<Reader *>(toCast);
 }
 /////////////
-// type for inserting to copy BST
-struct copystruct
-{
-    int idfile;
-    string isbnfile;
-};
-//
+
 // Function Declarations //
 void getUsers(BST<User *> usersList);
 void getBooks(BST<Book> &bookCatalog, int &idcount);
@@ -61,7 +56,7 @@ int main()
     // Data to be read in from text files
     BST<Book> bookCatalog;
     BST<User *> usersList;
-    BST<BookCopy> copyList;
+    BST<copystruct> copyList;
 
     // Read in data from student.txt and book.txt
     int idCount = 0;                // TODO - needs to be changed since we are given id's (Ethan)
@@ -239,19 +234,16 @@ void addCopiesToBook(BST<Book> &bookCatalog, BST<copystruct> &copyCatalog)
     traverse(copyCatalog.root, bookCatalog);
 }
 
-bool verify(TreeNode *root, string user)
-{
-    if (bookNode->val.getIsbn() == toInsert.isbnfile)
-    {
-        BookCopy newBookCopy = new BookCopy(toInsert.idfile);
-        bookNode->val.copiesVector.push_back(newBookCopy);
+
+void verify(TreeNode *root, string user,string pass,User &temp){
+    if ((root->val->username == user)&&(root->val->pass)){
+        temp = root.val;
         return;
     }
     /* Traverse left*/
     traverseToInsert(toInsert, bookNode->left);
     /* Traverse right */
     traverseToInsert(toInsert, bookNode->right);
-}
 }
 
 User *login(BST<User *> usersList)
@@ -276,17 +268,14 @@ User *login(BST<User *> usersList)
             // Else prompt for password
             cout << "Please enter a password:" << endl;
             cin >> passwordin;
-            for (int i = 0; i < usersList.size(); i++)
-            {
-                // Check if user at i matches the username and password input
-                if ((usersList.at(i)->getUserName() == userin) && (usersList.at(i)->getPassword() == passwordin))
-                {
-                    // If exists, return that user
-                    cout
-                        << "Account found. Logging in..." << endl
-                        << endl;
-                    return usersList.at(i);
-                }
+            //
+            // 
+            User temp;
+            temp.setUser("fail");
+            // Working on now: traversal of Users. find and return the proper 
+            verify(usersList, userin);
+            if (temp.getUsername() != "fail") {
+                return temp;
             }
             // If not, print an error and say try again
             cout << "Account with those credentials was not found. Please try again" << endl
