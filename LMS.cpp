@@ -243,10 +243,10 @@ void addCopiesToBook(BST<Book> &bookCatalog, BST<copystruct> &copyCatalog)
     traverse(copyCatalog.root, bookCatalog);
 }
 
-bool verify(TreeNode *root, string user){
-    if (bookNode->val.getIsbn() == toInsert.isbnfile){
-        BookCopy newBookCopy = new BookCopy(toInsert.idfile);
-        bookNode->val.copiesVector.push_back(newBookCopy);
+
+void verify(TreeNode *root, string user,string pass,User &temp){
+    if ((root->val->username == user)&&(root->val->pass)){
+        temp = root.val;
         return;
     }
         /* Traverse left*/
@@ -278,17 +278,14 @@ User *login(BST<User *> usersList)
             // Else prompt for password
             cout << "Please enter a password:" << endl;
             cin >> passwordin;
-            for (int i = 0; i < usersList.size(); i++)
-            {
-                // Check if user at i matches the username and password input
-                if ((usersList.at(i)->getUserName() == userin) && (usersList.at(i)->getPassword() == passwordin))
-                {
-                    // If exists, return that user
-                    cout
-                        << "Account found. Logging in..." << endl
-                        << endl;
-                    return usersList.at(i);
-                }
+            //
+            // 
+            User temp;
+            temp.setUser("fail");
+            // Working on now: traversal of Users. find and return the proper 
+            verify(usersList, userin);
+            if (temp.getUsername() != "fail") {
+                return temp;
             }
             // If not, print an error and say try again
             cout << "Account with those credentials was not found. Please try again" << endl
