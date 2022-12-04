@@ -7,6 +7,7 @@
 #include "DateFunction.h"
 #include "BookCopy.h"
 #include "Book.h"
+#include "Structs.h"
 
 // Standard Files //
 #include <iostream>
@@ -38,13 +39,7 @@ Reader *userToReader(User *toCast)
     return dynamic_cast<Reader *>(toCast);
 }
 /////////////
-// type for inserting to copy BST
-struct copystruct
-{
-    int idfile;
-    string isbnfile;
-};
-//
+
 // Function Declarations //
 void getUsers(BST<User *> usersList);
 void getBooks(BST<Book> &bookCatalog, int &idcount);
