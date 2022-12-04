@@ -192,7 +192,6 @@ void getCopies(BST<copystruct> &copyList)
 
 void traverseToInsert(copystruct toInsert, TreeNode<Book> *bookNode)
 {
-
     if (bookNode = nullptr)
     {
         return;
@@ -234,17 +233,60 @@ void addCopiesToBook(BST<Book> &bookCatalog, BST<copystruct> &copyCatalog)
     traverse(copyCatalog.root, bookCatalog);
 }
 
-void verify(TreeNode<User *> *root, string user, string pass, User &temp)
+int verifytype(TreeNode<User> *root, string user, string pass)
 {
-    if (((root->val->getUserName()) == user) && (root->val->getPassword() == pass))
+    if ((root->val.getUserName() == user) && (root->val.getPassword() == pass))
     {
-        temp = root->val;
-        return;
+        if (root->val.type() == "Student")
+        {
+            return 1;
+        }
+        if (root->val.type() == "Teacher")
+        {
+            return 2;
+        }
+        if (root->val.type() == "Librarian")
+        {
+            return 3;
+        }
+    }
+    else
+    {
+        return 4;
     }
     /* Traverse left*/
-    verify(root->left, user, pass, temp);
+    verifytype(root, user, pass);
     /* Traverse right */
-    verify(root->right, user, pass, temp);
+    verifytype(root, user, pass);
+}
+Student verifypersonS(TreeNode<User>* root, string user, string pass, Student& temp) {
+    if ((root->val.getUsername() == user) && (root->val.getPassword() == pass)) {
+        temp
+    }
+    /* Traverse left*/
+    verifyperson(root, user, pass, temp);
+    /* Traverse right */
+    verifyperson(root, user, pass, temp);
+}
+
+Student verifypersonT(TreeNode<User>* root, string user, string pass, Teacher& temp) {
+    if ((root->val.getUsername() == user) && (root->val.getPassword() == pass)) {
+
+    }
+    /* Traverse left*/
+    verifyperson(root, user, pass, temp);
+    /* Traverse right */
+    verifyperson(root, user, pass, temp);
+}
+
+Student verifypersonL(TreeNode<User>* root, string user, string pass, Librarian& temp) {
+    if ((root->val.getUsername() == user) && (root->val.getPassword() == pass)) {
+
+    }
+    /* Traverse left*/
+    verifyperson(root, user, pass, temp);
+    /* Traverse right */
+    verifyperson(root, user, pass, temp);
 }
 
 User *login(BST<User *> usersList)
@@ -271,17 +313,30 @@ User *login(BST<User *> usersList)
             cin >> passwordin;
             //
             //
-            User temp();
-            temp.setUser("fail");
-            // Working on now: traversal of Users. find and return the proper
-            verify(usersList, userin);
-            if (temp.getUsername() != "fail")
+            verifytype(usersList, userin, passwordin);
+            if (type == 1)
             {
+                Student temp;
+                verifypersonS(userList, userin, passwordin, &temp);
                 return temp;
             }
-            // If not, print an error and say try again
-            cout << "Account with those credentials was not found. Please try again" << endl
-                 << endl;
+            if (type == 2)
+            {
+                Teacher temp;
+                verifypersonT(userList, userin, passwordin, &temp);
+                return temp;
+            }
+            if (type == 3)
+            {
+                Librarian temp(;
+                verifypersonL(userList, userin, passwordin, &temp);
+                return temp;
+            }
+            if (type == 4)
+            {
+                // If not, print an error and say try again
+                cout << "Account with those credentials was not found. Please try again" << endl << endl;
+            }
         }
     }
 }

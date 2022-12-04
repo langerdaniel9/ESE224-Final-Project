@@ -18,8 +18,8 @@ class Reader : public User
 protected:
     int maxCopies;
     int maxLoanTime;
-    vector<BookCopy>* copiesBorrowed;
-    vector<BookCopy>* BooksReserved;
+    vector<BookCopy> copiesBorrowed;
+    vector<BookCopy> BooksReserved;
     int penalties;
     string type();
 
@@ -27,17 +27,17 @@ public:
     // Getters //
     int getMaxCopies();
     int getMaxLoanTime();
-    vector<Book>* getBooksBorrowed();
+    vector<BookCopy> getBooksBorrowed();
     // Operator Overloading //
     friend ostream &operator<<(ostream &output, Book &book);
     friend istream &operator>>(istream &input, Book &book);
     // Main functions //
-    void searchBook(BST<Book>* &bookCatalog);
-    void borrowBook(BST<Book>* &bookCatalog, time_t &zeroTime);
-    void returnBook(BST<Book>* &bookCatalog);
-    void renewBook(BST<Book>* &bookCatalog);
-    void cancelBook(BST<Book>* &bookCatalog);
-    void feelingLucky(BST<Book>* &bookCatalog);
+    void searchBook(BST<Book> *&bookCatalog);
+    void borrowBook(BST<Book> *&bookCatalog, time_t &zeroTime);
+    void returnBook(BST<Book> *&bookCatalog);
+    void renewBook(BST<Book> *&bookCatalog);
+    void cancelBook(BST<Book> *&bookCatalog);
+    void feelingLucky(BST<Book> *&bookCatalog);
 };
 
 // Leave functions in the .h file for now, will move them to their respective .cpp files when project is finished
@@ -52,39 +52,35 @@ int Reader::getMaxLoanTime()
     return maxLoanTime;
 }
 
-BST<Book>* Reader::getBooksBorrowed()
+vector<BookCopy> Reader::getBooksBorrowed()
 {
     return this->copiesBorrowed;
 }
 
-int partition(vector<Book>* lib, int low, int high)
+int partition(vector<BookCopy> lib, int low, int high)
 {
     // partition starting from first element;
     // then comparing each element by the last element in the array
 
     int i = low - 1; // i => index of first array (array lower than "high" value)
 
-    Book temp;
     for (int j = low; j < high; j++)
     { // j => index of second array (array greater than "high" value)
-        if (lib.at(j).getId() <= lib.at(high).getId())
+        if (lib.at(j).getID() <= lib.at(high).getID())
         {
             i++;
-
             swap(lib.at(i), lib.at(j));
         }
     }
 
     // Swapping the "high" value to where it needs to be
-    temp = lib.at(high);
-    lib.at(high) = lib.at(i + 1);
-    lib.at(i + 1) = temp;
+    swap(lib.at(high), lib.at(i + 1));
 
     // returns the index of where the "high" value is
     return i + 1;
 }
 
-void quickSort(vector<Book>* lib, int low, int high)
+void quickSort(vector<BookCopy> lib, int low, int high)
 {
     if (low < high)
     {
@@ -98,19 +94,21 @@ void quickSort(vector<Book>* lib, int low, int high)
     }
 }
 
-
-BookCopy IDInOrderTraversal(BST<Book> *inputBST, int inputID)
+BookCopy IDInOrderTraversal(TreeNode<Book> *inputBST, int inputID)
 { // not working either???
     if (inputBST == NULL)
     {
         return;
     }
 
-    IDInOrderTraversal(inputBST->left, inputID); // visit left child
-//    inputBST->val->binarySearch(inputID);
-//    forLoopforBook(inputBST, inputID);            // visit current child
-    for (int i = 0; i < inputBST->val.copiesVector.size(); i++) {
-        if (inputBST->val.copiesVector.at(i).ID == inputID) {
+    return IDInOrderTraversal(inputBST->left, inputID); // visit left child
+                                                        //    inputBST->val->binarySearch(inputID);
+                                                        //    forLoopforBook(inputBST, inputID);            // visit current child
+    for (int i = 0; i < inputBST->val.copiesVector.size(); i++)
+    {
+
+        if (inputBST->val.copiesVector.at(i).ID() == inputID)
+        {
             return inputBST->val.copiesVector.at(i);
         }
     }
@@ -118,7 +116,7 @@ BookCopy IDInOrderTraversal(BST<Book> *inputBST, int inputID)
     IDInOrderTraversal(inputBST->right, inputID); // visit right child
 }
 
-void IDInOrderTraversal2(BST<Book>* inputBST, int inputID, int start, int end, string reader)
+void IDInOrderTraversal2(BST<Book> *inputBST, int inputID, int start, int end, string reader)
 { // not working either???
     if (inputBST == NULL)
     {
@@ -128,8 +126,10 @@ void IDInOrderTraversal2(BST<Book>* inputBST, int inputID, int start, int end, s
     IDInOrderTraversal2(inputBST->left, inputID); // visit left child
     //    inputBST->val->binarySearch(inputID);
     //    forLoopforBook(inputBST, inputID);            // visit current child
-    for (int i = 0; i < inputBST->val.copiesVector.size(); i++) {
-        if (inputBST->val.copiesVector.at(i).ID == inputID) {
+    for (int i = 0; i < inputBST->val.copiesVector.size(); i++)
+    {
+        if (inputBST->val.copiesVector.at(i).ID == inputID)
+        {
             inputBST->val.copiesVector.at(i).setStartDate(start);
             inputBST->val.copiesVector.at(i).setExpirationDate(end);
             inputBST->val.copiesVector.at(i).setReaderName(reader);
@@ -139,7 +139,7 @@ void IDInOrderTraversal2(BST<Book>* inputBST, int inputID, int start, int end, s
     IDInOrderTraversal2(inputBST->right, inputID); // visit right child
 }
 
-void IDInOrderTraversal3(BST<Book>* inputBST, int inputID)
+void IDInOrderTraversal3(BST<Book> *inputBST, int inputID)
 { // not working either???
     if (inputBST == NULL)
     {
@@ -149,8 +149,10 @@ void IDInOrderTraversal3(BST<Book>* inputBST, int inputID)
     IDInOrderTraversal3(inputBST->left, inputID); // visit left child
     //    inputBST->val->binarySearch(inputID);
     //    forLoopforBook(inputBST, inputID);            // visit current child
-    for (int i = 0; i < inputBST->val.copiesVector.size(); i++) {
-        if (inputBST->val.copiesVector.at(i).ID == inputID) {
+    for (int i = 0; i < inputBST->val.copiesVector.size(); i++)
+    {
+        if (inputBST->val.copiesVector.at(i).ID == inputID)
+        {
             inputBST->val.copiesVector.at(i).setExpirationDate(inputBST->val.copiesVector.at(i).getExpDate() + this->getMaxLoanTime());
         }
     }
@@ -158,17 +160,15 @@ void IDInOrderTraversal3(BST<Book>* inputBST, int inputID)
     IDInOrderTraversal3(inputBST->right, inputID); // visit right child
 }
 
-
-
-//BookCopy forLoopforBook(BST<Book>* inputBST, int inputID) {
-//    for (int i = 0; i < inputBST->val.copiesVector.size(); i++) {
-//        if (inputBST->val.copiesVector.at(i).ID == inputID) {
-//            return inputBST->val.copiesVector.at(i);
-//        }
-//    }
+// BookCopy forLoopforBook(BST<Book>* inputBST, int inputID) {
+//     for (int i = 0; i < inputBST->val.copiesVector.size(); i++) {
+//         if (inputBST->val.copiesVector.at(i).ID == inputID) {
+//             return inputBST->val.copiesVector.at(i);
+//         }
+//     }
 //
-//    return NULL;
-//}
+//     return NULL;
+// }
 
 void QSInOrderTraversal(BST<Book> *inputBST, string inputStr, vector<Book> matches)
 { // not working either???
@@ -183,27 +183,29 @@ void QSInOrderTraversal(BST<Book> *inputBST, string inputStr, vector<Book> match
     QSInOrderTraversal(inputBST->right, inputStr, matches); // visit right child
 }
 
-string copiesInOrderTraversal(BST<copystruct>* inputBST, int inputID) {
+string copiesInOrderTraversal(BST<copystruct> *inputBST, int inputID)
+{
     if (inputBST == NULL)
     {
         return;
     }
 
     copiesInOrderTraversal(inputBST->left, inputID); // visit left child
-//    forLoopforBook(inputBST, inputID);            // visit current child
-//    checkForIDfromCopyList(inputBST, inputID);
-    if (inputBST->val.ID == inputID) {
+                                                     //    forLoopforBook(inputBST, inputID);            // visit current child
+                                                     //    checkForIDfromCopyList(inputBST, inputID);
+    if (inputBST->val.ID == inputID)
+    {
         return inputBST->val.ISBN;
     }
 
     copiesInOrderTraversal(inputBST->right, inputID); // visit right child
 }
 
-//string checkForIDfromCopyList(BST<copystruct>* inputBST, int inputID) {
-//    if (inputBST->val.ID == inputID) {
-//        return inputBST->val.ISBN;
-//    }
-//}
+// string checkForIDfromCopyList(BST<copystruct>* inputBST, int inputID) {
+//     if (inputBST->val.ID == inputID) {
+//         return inputBST->val.ISBN;
+//     }
+// }
 
 void Reader::searchBook(BST<Book> *bookCatalog)
 {
@@ -216,18 +218,18 @@ void Reader::searchBook(BST<Book> *bookCatalog)
     cout << "(4) - ID" << endl;
     cin >> searchChoice;
 
-    Book* searchMatches = NULL;
+    Book *searchMatches = NULL;
 
     switch (searchChoice)
     {
-    case 1:                                                         // DONE...maybe
+    case 1: // DONE...maybe
     {
         string inputISBN;
         cout << "What's your book's ISBN value?: ";
         cin >> inputISBN;
 
-//        BST<Book> *bookCatalog;
-        bookCatalog->binarySearch(inputISBN);                       // Should print out info about Book
+        //        BST<Book> *bookCatalog;
+        bookCatalog->binarySearch(inputISBN); // Should print out info about Book
 
         break;
     }
@@ -239,8 +241,8 @@ void Reader::searchBook(BST<Book> *bookCatalog)
 
         inOrderSearch(bookCatalog, inputTitle, true);
 
-//        QSInOrderTraversal(bookCatalog, inputTitle, searchMatches);
-//        quickSort(searchMatches, 0, searchMatches.size() - 1);
+        //        QSInOrderTraversal(bookCatalog, inputTitle, searchMatches);
+        //        quickSort(searchMatches, 0, searchMatches.size() - 1);
         break;
     }
     case 3:
@@ -251,8 +253,8 @@ void Reader::searchBook(BST<Book> *bookCatalog)
 
         inOrderSearch(bookCatalog, inputCategory, false);
 
-//        QSInOrderTraversal(bookCatalog, inputCategory, searchMatches);
-//        quickSort(searchMatches, 0, searchMatches.size() - 1);
+        //        QSInOrderTraversal(bookCatalog, inputCategory, searchMatches);
+        //        quickSort(searchMatches, 0, searchMatches.size() - 1);
         break;
     }
     case 4:
@@ -262,10 +264,10 @@ void Reader::searchBook(BST<Book> *bookCatalog)
         cin >> inputID;
 
         // NEEDS TO BE FIXED?!?!?!?!
-        string correspondingISBN = copiesInOrderTraversal(copyList, inputID);                      // gets the corresponding ISBN
-        bookCatalog->binarySearch(correspondingISBN);                                   // Should print out info about Book
+        string correspondingISBN = copiesInOrderTraversal(copyList, inputID); // gets the corresponding ISBN
+        bookCatalog->binarySearch(correspondingISBN);                         // Should print out info about Book
 
-//        IDInOrderTraversal(bookCatalog, inputID);
+        //        IDInOrderTraversal(bookCatalog, inputID);
 
         break;
     }
@@ -358,13 +360,13 @@ void Reader::searchBook(BST<Book> *bookCatalog)
     }
 }
 
-void Reader::borrowBook(BST<Book>* &bookCatalog, time_t &zeroTime)
+void Reader::borrowBook(BST<Book> *&bookCatalog, time_t &zeroTime)
 {
     // FIXME - (Daniel)
     // Check if there are overdue books
     int currentTime = date(zeroTime);
-    BST<Book>* expiredBooks;
-    BST<Book>* temp = bookCatalog;
+    BST<Book> *expiredBooks;
+    BST<Book> *temp = bookCatalog;
     bool expired = false;
 
     for (int i = 0; i < this->getBooksBorrowed().size(); i++)
@@ -392,12 +394,12 @@ void Reader::borrowBook(BST<Book>* &bookCatalog, time_t &zeroTime)
     // Check if that ID exists in bookCatalog and that there are available copies
     bool exists = false;
     bool available = false;
-    BookCopy toBeBorrowed;
-
-    toBeBorrowed = IDInOrderTraversal(bookCatalog, inputID);
-    if (toBeBorrowed) {
+    BookCopy toBeBorrowed = IDInOrderTraversal(bookCatalog, inputID);
+    if (toBeBorrowed)
+    {
         exists = true;
-        if (toBeBorrowed.getReaderName() == "") {
+        if (toBeBorrowed.getReaderName() == "")
+        {
             available = true;
         }
     }
@@ -495,16 +497,16 @@ void Reader::returnBook(vector<Book> &bookCatalog)
     // Change the properties of the returned book to reflect that it is available
     IDInOrderTraversal2(bookCatalog, inputID, -1, -1, "");
 
-    //for (int i = 0; i < bookCatalog.size(); i++)
+    // for (int i = 0; i < bookCatalog.size(); i++)
     //{
-    //    if (bookCatalog.at(i).getId() == id)
-    //    {
-    //        bookCatalog.at(i).setStartDate(-1);
-    //        bookCatalog.at(i).setExpDate(-1);
-    //        bookCatalog.at(i).setReaderName("");
-    //    }
-    //}
-    //cout << endl;
+    //     if (bookCatalog.at(i).getId() == id)
+    //     {
+    //         bookCatalog.at(i).setStartDate(-1);
+    //         bookCatalog.at(i).setExpDate(-1);
+    //         bookCatalog.at(i).setReaderName("");
+    //     }
+    // }
+    // cout << endl;
 }
 
 void Reader::renewBook(vector<Book> &bookCatalog)
