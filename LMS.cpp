@@ -234,16 +234,17 @@ void addCopiesToBook(BST<Book> &bookCatalog, BST<copystruct> &copyCatalog)
     traverse(copyCatalog.root, bookCatalog);
 }
 
-
-void verify(TreeNode *root, string user,string pass,User &temp){
-    if ((root->val->username == user)&&(root->val->pass)){
-        temp = root.val;
+void verify(TreeNode<User *> *root, string user, string pass, User &temp)
+{
+    if (((root->val->getUserName()) == user) && (root->val->getPassword() == pass))
+    {
+        temp = root->val;
         return;
     }
     /* Traverse left*/
-    traverseToInsert(toInsert, bookNode->left);
+    verify(root->left, user, pass, temp);
     /* Traverse right */
-    traverseToInsert(toInsert, bookNode->right);
+    verify(root->right, user, pass, temp);
 }
 
 User *login(BST<User *> usersList)
@@ -269,12 +270,13 @@ User *login(BST<User *> usersList)
             cout << "Please enter a password:" << endl;
             cin >> passwordin;
             //
-            // 
-            User temp;
+            //
+            User temp();
             temp.setUser("fail");
-            // Working on now: traversal of Users. find and return the proper 
+            // Working on now: traversal of Users. find and return the proper
             verify(usersList, userin);
-            if (temp.getUsername() != "fail") {
+            if (temp.getUsername() != "fail")
+            {
                 return temp;
             }
             // If not, print an error and say try again
