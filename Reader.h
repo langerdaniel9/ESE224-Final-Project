@@ -566,6 +566,8 @@ void Reader::renewBook(vector<Book> &bookCatalog)
     }
 }
 
+void Reader::reserveBook()
+
 void Reader::cancelBook(vector<Book> &bookCatalog)
 {
     // TODO - (Kenny)
