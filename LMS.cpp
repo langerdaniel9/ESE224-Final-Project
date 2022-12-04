@@ -259,9 +259,10 @@ int verifytype(TreeNode<User> *root, string user, string pass)
     /* Traverse right */
     verifytype(root, user, pass);
 }
-Student verifypersonS(TreeNode<User>* root, string user, string pass, Student& temp) {
+
+Student verifypersonS(TreeNode<User>* root, string user, string pass) {
     if ((root->val.getUsername() == user) && (root->val.getPassword() == pass)) {
-        temp
+        return root->val
     }
     /* Traverse left*/
     verifyperson(root, user, pass, temp);
@@ -269,9 +270,9 @@ Student verifypersonS(TreeNode<User>* root, string user, string pass, Student& t
     verifyperson(root, user, pass, temp);
 }
 
-Student verifypersonT(TreeNode<User>* root, string user, string pass, Teacher& temp) {
+Teacher verifypersonT(TreeNode<User>* root, string user, string pass) {
     if ((root->val.getUsername() == user) && (root->val.getPassword() == pass)) {
-
+        return root->val
     }
     /* Traverse left*/
     verifyperson(root, user, pass, temp);
@@ -279,9 +280,9 @@ Student verifypersonT(TreeNode<User>* root, string user, string pass, Teacher& t
     verifyperson(root, user, pass, temp);
 }
 
-Student verifypersonL(TreeNode<User>* root, string user, string pass, Librarian& temp) {
+Librarian verifypersonL(TreeNode<User>* root, string user, string pass) {
     if ((root->val.getUsername() == user) && (root->val.getPassword() == pass)) {
-
+        return root->val
     }
     /* Traverse left*/
     verifyperson(root, user, pass, temp);
@@ -313,24 +314,18 @@ User *login(BST<User *> usersList)
             cin >> passwordin;
             //
             //
-            verifytype(usersList, userin, passwordin);
+            int type = verifytype(usersList, userin, passwordin);
             if (type == 1)
             {
-                Student temp;
-                verifypersonS(userList, userin, passwordin, &temp);
-                return temp;
+                return verifypersonS(userList, userin, passwordin, &temp);
             }
             if (type == 2)
             {
-                Teacher temp;
-                verifypersonT(userList, userin, passwordin, &temp);
-                return temp;
+                return verifypersonT(userList, userin, passwordin, &temp);
             }
             if (type == 3)
             {
-                Librarian temp(;
-                verifypersonL(userList, userin, passwordin, &temp);
-                return temp;
+                return verifypersonL(userList, userin, passwordin, &temp);
             }
             if (type == 4)
             {
