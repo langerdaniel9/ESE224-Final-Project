@@ -139,6 +139,25 @@ void IDInOrderTraversal2(BST<Book>* inputBST, int inputID, int start, int end, s
     IDInOrderTraversal2(inputBST->right, inputID); // visit right child
 }
 
+void IDInOrderTraversal3(BST<Book>* inputBST, int inputID)
+{ // not working either???
+    if (inputBST == NULL)
+    {
+        return;
+    }
+
+    IDInOrderTraversal3(inputBST->left, inputID); // visit left child
+    //    inputBST->val->binarySearch(inputID);
+    //    forLoopforBook(inputBST, inputID);            // visit current child
+    for (int i = 0; i < inputBST->val.copiesVector.size(); i++) {
+        if (inputBST->val.copiesVector.at(i).ID == inputID) {
+            inputBST->val.copiesVector.at(i).setExpirationDate(inputBST->val.copiesVector.at(i).getExpDate() + this->getMaxLoanTime());
+        }
+    }
+
+    IDInOrderTraversal3(inputBST->right, inputID); // visit right child
+}
+
 
 
 //BookCopy forLoopforBook(BST<Book>* inputBST, int inputID) {
@@ -523,14 +542,15 @@ void Reader::renewBook(vector<Book> &bookCatalog)
 
     if (renewed)
     {
-        // Needs to be changed
+        IDInOrderTraversal3(bookCatalog, id);
+        /*// Needs to be changed
         for (int i = 0; i < bookCatalog.size(); i++)
         {
             if (bookCatalog.at(i).getId() == id)
             {
                 bookCatalog.at(i).setExpDate(bookCatalog.at(i).getExpDate() + this->getMaxLoanTime());
             }
-        }
+        }*/
     }
 
     if (!renewed)
