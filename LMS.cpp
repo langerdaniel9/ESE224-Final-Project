@@ -264,6 +264,36 @@ int verifytype(TreeNode<User> *root, string user, string pass)
     verifytype(root, user, pass);
 }
 
+Student verifypersonS(TreeNode<User>* root, string user, string pass) {
+    if ((root->val.getUsername() == user) && (root->val.getPassword() == pass)) {
+        return root->val
+    }
+    /* Traverse left*/
+    verifyperson(root, user, pass, temp);
+    /* Traverse right */
+    verifyperson(root, user, pass, temp);
+}
+
+Teacher verifypersonT(TreeNode<User>* root, string user, string pass) {
+    if ((root->val.getUsername() == user) && (root->val.getPassword() == pass)) {
+        return root->val
+    }
+    /* Traverse left*/
+    verifyperson(root, user, pass, temp);
+    /* Traverse right */
+    verifyperson(root, user, pass, temp);
+}
+
+Librarian verifypersonL(TreeNode<User>* root, string user, string pass) {
+    if ((root->val.getUsername() == user) && (root->val.getPassword() == pass)) {
+        return root->val
+    }
+    /* Traverse left*/
+    verifyperson(root, user, pass, temp);
+    /* Traverse right */
+    verifyperson(root, user, pass, temp);
+}
+
 User *login(BST<User *> usersList)
 {
     while (true)
@@ -288,30 +318,23 @@ User *login(BST<User *> usersList)
             cin >> passwordin;
             //
             //
-            verifytype(usersList, userin, passwordin);
+            int type = verifytype(usersList, userin, passwordin);
             if (type == 1)
             {
-                Student temp;
-                verifyperson(userList, userin, passwordin, &temp);
-                return temp;
+                return verifypersonS(userList, userin, passwordin, &temp);
             }
             if (type == 2)
             {
-                Teacher temp;
-                verifyperson(userList, userin, passwordin, &temp);
-                return temp;
+                return verifypersonT(userList, userin, passwordin, &temp);
             }
             if (type == 3)
             {
-                Teacher temp;
-                verifyperson(userList, userin, passwordin, &temp);
-                return temp;
+                return verifypersonL(userList, userin, passwordin, &temp);
             }
             if (type == 4)
             {
                 // If not, print an error and say try again
-                cout << "Account with those credentials was not found. Please try again" << endl
-                     << endl;
+                cout << "Account with those credentials was not found. Please try again" << endl << endl;
             }
         }
     }
