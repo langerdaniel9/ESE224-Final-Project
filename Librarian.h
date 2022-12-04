@@ -43,6 +43,10 @@ void Librarian::addBook(BST<Book> &bookCatalog)
     cout << "Please type the isbn of the new book: ";
     cin >> input;
 
+
+    //todo search for book, if it exists, add a copy with a unique id.else create a new book and add it
+
+    
     temp.setIsbn(input);
     cout << "Please type the title of the new book: ";
     cin >> input;
@@ -118,7 +122,9 @@ void Librarian::addUsers(BST<User *> usersList)
 
 void Librarian::deleteUser(BST<User *> usersList)
 {
-    // TODO - (Ethan)
+    cout << "please enter the username of the user you wish to delete: ";
+    string userin;
+    cin >> userin;
 }
 
 string Librarian::type()
