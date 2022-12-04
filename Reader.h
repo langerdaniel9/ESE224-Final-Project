@@ -36,7 +36,8 @@ public:
     void borrowBook(BST<Book> *&bookCatalog, time_t &zeroTime);
     void returnBook(BST<Book> *&bookCatalog);
     void renewBook(BST<Book> *&bookCatalog);
-    void cancelBook(BST<Book> *&bookCatalog);
+    void reserveBook(BST<Book>*& bookCatalog);                                  // Gotta do this
+    void cancelBook(BST<Book> *&bookCatalog);                                   // Gotta do this
     void feelingLucky(BST<Book> *&bookCatalog);
 };
 
@@ -96,6 +97,9 @@ void quickSort(vector<BookCopy> lib, int low, int high)
 
 BookCopy IDInOrderTraversal(TreeNode<Book> *inputBST, int inputID)
 { // not working either???
+
+    inputBST;
+
     if (inputBST == NULL)
     {
         return;
@@ -566,11 +570,15 @@ void Reader::renewBook(vector<Book> &bookCatalog)
     }
 }
 
-void Reader::reserveBook()
+void Reader::reserveBook() {
+
+}
 
 void Reader::cancelBook(vector<Book> &bookCatalog)
 {
     // TODO - (Kenny)
+
+
 }
 
 void Reader::feelingLucky(vector<Book> &bookCatalog)
