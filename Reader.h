@@ -18,8 +18,8 @@ class Reader : public User
 protected:
     int maxCopies;
     int maxLoanTime;
-    vector<Book>* copiesBorrowed;
-    vector<Book>* BooksReserved;
+    vector<BookCopy>* copiesBorrowed;
+    vector<BookCopy>* BooksReserved;
     int penalties;
     string type();
 
@@ -107,6 +107,7 @@ BookCopy IDInOrderTraversal(BST<Book> *inputBST, int inputID)
     }
 
     IDInOrderTraversal(inputBST->left, inputID); // visit left child
+//    inputBST->val->binarySearch(inputID);
 //    forLoopforBook(inputBST, inputID);            // visit current child
     for (int i = 0; i < inputBST->val.copiesVector.size(); i++) {
         if (inputBST->val.copiesVector.at(i).ID == inputID) {
@@ -349,9 +350,16 @@ void Reader::borrowBook(BST<Book>* &bookCatalog, time_t &zeroTime)
     // Check if that ID exists in bookCatalog and that there are available copies
     bool exists = false;
     bool available = false;
-    Book toBeBorrowed;
+    BookCopy toBeBorrowed;
 
-    for (int i = 0; i < bookCatalog.size(); i++) {
+    toBeBorrowed = IDInOrderTraversal(bookCatalog, inputID);
+    if (toBeBorrowed) {
+        exists = true;
+        if (toBeBorrowed.getReaderName() == "") {
+            available = true;
+        }
+    }
+    /*for (int i = 0; i < bookCatalog.size(); i++) {
         if (bookCatalog.at(i).getId() == inputID)
         {
             exists = true;
@@ -362,7 +370,7 @@ void Reader::borrowBook(BST<Book>* &bookCatalog, time_t &zeroTime)
                 toBeBorrowed = bookCatalog.at(i);
             }
         }
-    }
+    }*/
     if (!exists)
     {
         cout << "That ID does not exist in the library, double check the ID and try again" << endl;
@@ -383,7 +391,7 @@ void Reader::borrowBook(BST<Book>* &bookCatalog, time_t &zeroTime)
 
     // If all of the conditions are met, add the book to copiesBorrowed and change the attributes of the book
     toBeBorrowed.setStartDate(currentTime);
-    toBeBorrowed.setExpDate(currentTime + this->getMaxLoanTime());
+    toBeBorrowed.setExpirationDate(currentTime + this->getMaxLoanTime());
     toBeBorrowed.setReaderName(this->getUserName());
     this->copiesBorrowed.push_back(toBeBorrowed);
 
@@ -393,7 +401,7 @@ void Reader::borrowBook(BST<Book>* &bookCatalog, time_t &zeroTime)
         {
             int currentTime = date(zeroTime);
             bookCatalog.at(i).setStartDate(currentTime);
-            bookCatalog.at(i).setExpDate(currentTime + this->getMaxLoanTime());
+            bookCatalog.at(i).setExpirationDate(currentTime + this->getMaxLoanTime());
             bookCatalog.at(i).setReaderName(this->getUserName());
         }
     }
