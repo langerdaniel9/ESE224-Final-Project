@@ -7,6 +7,7 @@
 #include "DateFunction.h"
 #include "BookCopy.h"
 #include "Book.h"
+#include "Structs.h"
 
 // Standard Files //
 #include <iostream>
@@ -38,13 +39,7 @@ Reader *userToReader(User *toCast)
     return dynamic_cast<Reader *>(toCast);
 }
 /////////////
-// type for inserting to copy BST
-struct copystruct
-{
-    int idfile;
-    string isbnfile;
-};
-//
+
 // Function Declarations //
 void getUsers(BST<User *> usersList);
 void getBooks(BST<Book> &bookCatalog, int &idcount);
@@ -61,7 +56,7 @@ int main()
     // Data to be read in from text files
     BST<Book> bookCatalog;
     BST<User *> usersList;
-    BST<BookCopy> copyList;
+    BST<copystruct> copyList;
 
     // Read in data from student.txt and book.txt
     int idCount = 0;                // TODO - needs to be changed since we are given id's (Ethan)
@@ -167,11 +162,7 @@ void getBooks(BST<Book> &bookCatalog)
         books >> isbnin >> titlein >> authorin >> catagoryin;
         string temp;
         getline(books, temp);
-        Book toinsert;
-        toinsert.setIsbn(isbnin);
-        toinsert.setTitle(titlein);
-        toinsert.setAuthor(authorin);
-        toinsert.setCategory(catagoryin);
+        Book toinsert(isbnin, titlein, authorin, catagoryin); // FIXME - does this need a new?
         bookCatalog.nodeInsert(toinsert);
     }
     books.close();
@@ -249,11 +240,10 @@ void verify(TreeNode *root, string user,string pass,User &temp){
         temp = root.val;
         return;
     }
-        /* Traverse left*/
-        traverseToInsert(toInsert, bookNode->left);
-        /* Traverse right */
-        traverseToInsert(toInsert, bookNode->right);
-    }
+    /* Traverse left*/
+    traverseToInsert(toInsert, bookNode->left);
+    /* Traverse right */
+    traverseToInsert(toInsert, bookNode->right);
 }
 
 User *login(BST<User *> usersList)
