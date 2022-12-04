@@ -36,8 +36,8 @@ public:
     void borrowBook(BST<Book> *&bookCatalog, time_t &zeroTime);
     void returnBook(BST<Book> *&bookCatalog);
     void renewBook(BST<Book> *&bookCatalog);
-    void reserveBook(BST<Book>*& bookCatalog);                                  // Gotta do this
-    void cancelBook(BST<Book> *&bookCatalog);                                   // Gotta do this
+    void reserveBook(BST<Book>*& bookCatalog);
+    void cancelBook(BST<Book> *&bookCatalog);
     void feelingLucky(BST<Book> *&bookCatalog);
 };
 
@@ -426,7 +426,12 @@ void Reader::borrowBook(BST<Book> *&bookCatalog, time_t &zeroTime)
     }
     if (!available)
     {
-        cout << "There are no more copies of this book left, try again after some time has passed" << endl;
+        char res;
+        cout << "There are no more copies of this book left, would you like to reserve a copy (y/n)? ";
+        cin >> res;
+        if (res == 'y') {
+            reserveBook(bookCatalog);
+        }
         return;
     }
 
@@ -570,7 +575,7 @@ void Reader::renewBook(vector<Book> &bookCatalog)
     }
 }
 
-void Reader::reserveBook() {
+void Reader::reserveBook(BST<Book>*& bookCatalog) {
 
 }
 
