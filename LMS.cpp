@@ -233,26 +233,31 @@ void addCopiesToBook(BST<Book> &bookCatalog, BST<copystruct> &copyCatalog)
     traverse(copyCatalog.root, bookCatalog);
 }
 
-
-int verifytype(TreeNode<User> *root, string user,string pass){
-    if ((root->val.getUsername() == user) && (root->val.getPassword() == pass)) {
-        if (root->val->type() == "Student") {
+int verifytype(TreeNode<User> *root, string user, string pass)
+{
+    if ((root->val.getUserName() == user) && (root->val.getPassword() == pass))
+    {
+        if (root->val.type() == "Student")
+        {
             return 1;
         }
-        if (root->val->type() == "Teacher") {
+        if (root->val.type() == "Teacher")
+        {
             return 2;
         }
-        if (root->val->type() == "Librarian") {
+        if (root->val.type() == "Librarian")
+        {
             return 3;
         }
     }
-    else {
+    else
+    {
         return 4;
     }
     /* Traverse left*/
-    verifytype(root, user, pass, temp);
+    verifytype(root, user, pass);
     /* Traverse right */
-    verifytype(root, user, pass, temp);
+    verifytype(root, user, pass);
 }
 
 User *login(BST<User *> usersList)
@@ -278,27 +283,31 @@ User *login(BST<User *> usersList)
             cout << "Please enter a password:" << endl;
             cin >> passwordin;
             //
-            // 
+            //
             verifytype(usersList, userin, passwordin);
-            if (type == 1) {
+            if (type == 1)
+            {
                 Student temp;
                 verifyperson(userList, userin, passwordin, &temp);
                 return temp;
             }
-            if (type == 2) {
+            if (type == 2)
+            {
                 Teacher temp;
                 verifyperson(userList, userin, passwordin, &temp);
                 return temp;
             }
-            if (type == 3) {
+            if (type == 3)
+            {
                 Teacher temp;
                 verifyperson(userList, userin, passwordin, &temp);
                 return temp;
             }
-            if (type == 4) {
+            if (type == 4)
+            {
                 // If not, print an error and say try again
                 cout << "Account with those credentials was not found. Please try again" << endl
-                    << endl;
+                     << endl;
             }
         }
     }
