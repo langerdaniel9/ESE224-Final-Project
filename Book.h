@@ -180,9 +180,25 @@ void Book::insertReader(Reader newReader)
     head->next = new LLNode(newReader);
 }
 
-void Book::deleteReader()
+void Book::deleteFirst()
 {
     LLNode *temp = rrHead;
     rrHead = rrHead->next;
+    delete (temp);
+}
+
+void Book::deleteReader(Reader r1)
+{
+    LLNode* temp = rrHead;
+    while (temp != NULL) {
+        if (temp->data == r1) {
+            break;
+        }
+        temp = temp->next;
+    }
+    while (temp->next != NULL) {
+        temp->data = temp->next->data;
+        temp = temp->next;
+    }
     delete (temp);
 }
