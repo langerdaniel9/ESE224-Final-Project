@@ -51,7 +51,7 @@ void Librarian::addBook(BST<Book> &bookCatalog)
     cin >> input;
     temp.setCategory(input);
 
-    bookCatalog.nodeInsert(temp);
+    //bookCatalog.nodeInsert(temp);
 
     //
     // may need further modification for copies data struct
@@ -61,17 +61,59 @@ void Librarian::addBook(BST<Book> &bookCatalog)
 void Librarian::deleteBook(BST<Book *> &bookCatalog)
 {
     // TODO - (Ethan)
-    cout << "Please input the "
+    cout << "Please input the book id to be removed: ";
+    int idin;
+    cin >> idin;
+
 }
 
-void Librarian::searchUser(BST<User *> usersList)
+User Librarian::searchUser(BST<User *> usersList)
 {
-    // TODO - (Ethan)
+        if ((root->val.getUserName() == user) && (root->val.getPassword() == pass))
+        {
+            return root->val;
+        }
+        else
+        {
+            false;
+        }
+        /* Traverse left*/
+        verifytype(root, user, pass);
+        /* Traverse right */
+        verifytype(root, user, pass);
 }
 
 void Librarian::addUsers(BST<User *> usersList)
 {
-    // TODO - (Ethan)
+    int typein;
+    string userin;
+    string passwordin;
+    cout << "What kind of user would you like to add? 1 for Student, 2 for Teacher, 3 for Librarian: ";
+    cin >> typein;
+    if (typein == 1) {
+        cout << "Please input the desired username of the new user: ";
+        cin >> userin;
+        cout << "Please input the desired password of the new user: ";
+        cin >> passwordin;
+        Student temp(userin, passwordin);
+        usersList.nodeInsert(temp);
+    }
+    if (typein == 2) {
+        cout << "Please input the desired username of the new user: ";
+        cin >> userin;
+        cout << "Please input the desired password of the new user: ";
+        cin >> passwordin;
+        Teacher temp(userin, passwordin);
+        usersList.nodeInsert(temp);
+    }
+    if (typein == 3) {
+        cout << "Please input the desired username of the new user: ";
+        cin >> userin;
+        cout << "Please input the desired password of the new user: ";
+        cin >> passwordin;
+        Librarian temp(userin, passwordin);
+        usersList.nodeInsert(temp);
+    }
 }
 
 void Librarian::deleteUser(BST<User *> usersList)
