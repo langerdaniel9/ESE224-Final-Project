@@ -3,10 +3,11 @@
 #include "Structs.h"
 #include "User.h"
 #include "Book.h"
-//#include "Reader.h"
+// #include "Reader.h"
 
 #include <vector>
 #include <iostream>
+#include <string>
 
 using namespace std;
 
@@ -44,7 +45,7 @@ TreeNode<Type> *nodeInsert(TreeNode<Type> *root, Type element)
 {
     if (root == nullptr)
     {
-        root = new TreeNode<Type>(element);                                         // Comes from creating a new TreeNode from Structs.h
+        root = new TreeNode<Type>(element); // Comes from creating a new TreeNode from Structs.h
         return root;
     }
 
@@ -81,7 +82,7 @@ TreeNode<Type> *inOrderSuccessor(TreeNode<Type> *root)
     return successor;
 }
 
-TreeNode<Book> *deleteNode(TreeNode<Book> *root, Book element)                                  // deleteNode for Books BST
+TreeNode<Book> *deleteNode(TreeNode<Book> *root, Book element) // deleteNode for Books BST
 {
     if (root == NULL)
     { // Base case => deleting the root
@@ -119,7 +120,7 @@ TreeNode<Book> *deleteNode(TreeNode<Book> *root, Book element)                  
     return root;
 }
 
-TreeNode<User*> *deleteNode(TreeNode<User*> *root, User *element)                                  // deleteNode for User BST
+TreeNode<User *> *deleteNode(TreeNode<User *> *root, User *element) // deleteNode for User BST
 {
     if (root == NULL)
     { // Base case => deleting the root
@@ -138,18 +139,18 @@ TreeNode<User*> *deleteNode(TreeNode<User*> *root, User *element)               
     {
         if (root->left == NULL)
         {
-            TreeNode<User*> *aux = root->right;
+            TreeNode<User *> *aux = root->right;
             delete (root);
             return aux;
         }
         else if (root->right == NULL)
         {
-            TreeNode<User*> *aux = root->left;
+            TreeNode<User *> *aux = root->left;
             delete (root);
             return aux;
         }
 
-        TreeNode<User*> *toGetDeleted = inOrderSuccessor(root->right); // The deleting here does not work!
+        TreeNode<User *> *toGetDeleted = inOrderSuccessor(root->right); // The deleting here does not work!
         root->val = toGetDeleted->val;
         root->right = deleteNode(root->right, toGetDeleted->val);
     }
@@ -160,12 +161,12 @@ TreeNode<User*> *deleteNode(TreeNode<User*> *root, User *element)               
 template <typename Type>
 void BST<Type>::deleteNode(Type element)
 {
-    root = deleteNode(root, element);                                                   // Assuming this works?? (Going to either Book or User types)
+    root = deleteNode(root, element); // Assuming this works?? (Going to either Book or User types)
 }
 ////////////////////////////////////
 
 ////////////////////////////////////
-// Binary Search   
+// Binary Search
 void binarySearch(TreeNode<Book> *root, string isbn)
 {
     // Used for users (by username), books (by ISBN), and book copies (by ID)
@@ -173,12 +174,15 @@ void binarySearch(TreeNode<Book> *root, string isbn)
     {
         return;
     }
-    if (root->val.getIsbn() == isbn) {
+    if (root->val.getIsbn() == isbn)
+    {
         // Should be used to print out info about a book through operator overloading (<<)
         cout << root->val << endl;
         cout << "Copies Available: " << endl;
-        for (BookCopy copy: root->val.copiesVector) {
-            if (copy.getReaderName() == "") {
+        for (BookCopy copy : root->val.copiesVector)
+        {
+            if (copy.getReaderName() == "")
+            {
                 cout << copy.getID() << " ";
             }
         }
@@ -186,20 +190,20 @@ void binarySearch(TreeNode<Book> *root, string isbn)
         return;
     }
 
-    if (element < root->val)
+    if (isbn < root->val.getIsbn())
     {
-        root->left = binarySearch(root->left, isbn);
+        binarySearch(root->left, isbn);
     }
-    else if (element > root->val)
+    else if (isbn > root->val.getIsbn())
     {
-        root->right = binarySearch(root->right, isbn);
+        binarySearch(root->right, isbn);
     }
 }
 
 template <typename Type>
 void BST<Type>::binarySearch(Type element)
 {
-    root = binarySearch(root, element);                                                   // Assuming this works?? (Going to either Book or User types)
+    root = binarySearch(root, element); // Assuming this works?? (Going to either Book or User types)
 }
 ////////////////////////////////////
 
@@ -238,6 +242,82 @@ void searchRecursive(TreeNode<Book> *root, string searchTerm, vector<Book> &matc
     searchRecursive(root->right, searchTerm, matches, TorC);
 }
 
+int partitionForUnavailableCopies(vector<BookCopy> lib, int low, int high)
+{
+    // partition starting from first element
+    // then comparing each element by the last element in the array
+
+    int i = low - 1; // i => index of first array (array lower than "high" value)
+
+    for (int j = low; j < high; j++)
+    { // j => index of second array (array greater than "high" value)
+        if (lib.at(j).getExpirationDate() <= lib.at(high).getExpirationDate())
+        {
+            i++;
+            swap(lib.at(i), lib.at(j));
+        }
+    }
+
+    // Swapping the "high" value to where it needs to be
+    swap(lib.at(high), lib.at(i + 1));
+
+    // returns the index of where the "high" value is
+    return i + 1;
+}
+
+void quickSortForUnavailableCopies(vector<BookCopy> lib, int low, int high)
+{
+    if (low < high)
+    {
+        int pi = partitionForUnavailableCopies(lib, low, high);
+
+        // recursive call on the left of pivot
+        quickSortForUnavailableCopies(lib, low, pi - 1);
+
+        // recursive call on the right of pivot
+        quickSortForUnavailableCopies(lib, pi + 1, high);
+    }
+}
+
+int partitionForMatches(vector<Book> lib, int low, int high)
+{
+    // partition starting from first element
+    // then comparing each element by the last element in the array
+
+    int i = low - 1; // i => index of first array (array lower than "high" value)
+
+    for (int j = low; j < high; j++)
+    { // j => index of second array (array greater than "high" value)
+        int result = lib.at(j).getTitle().compare(lib.at(high).getTitle());
+
+        if (result <= 0)
+        {
+            i++;
+            swap(lib.at(i), lib.at(j));
+        }
+    }
+
+    // Swapping the "high" value to where it needs to be
+    swap(lib.at(high), lib.at(i + 1));
+
+    // returns the index of where the "high" value is
+    return i + 1;
+}
+
+void quickSortForMatches(vector<Book> lib, int low, int high)
+{
+    if (low < high)
+    {
+        int pi = partitionForMatches(lib, low, high);
+
+        // recursive call on the left of pivot
+        quickSortForMatches(lib, low, pi - 1);
+
+        // recursive call on the right of pivot
+        quickSortForMatches(lib, pi + 1, high);
+    }
+}
+
 void BST<Book>::search(TreeNode<Book> *root, string searchTerm, bool TitleOrCategory)
 {
     //// Make array for result of search
@@ -247,86 +327,57 @@ void BST<Book>::search(TreeNode<Book> *root, string searchTerm, bool TitleOrCate
     //// Search for matches and add them to the array
     searchRecursive(root, searchTerm, matches, TitleOrCategory);
 
-    //// Compiling the results
-    // Separate matches into two separate vectors, one for available books and one for unavailable
-    vector<Book> availableMatches;
-    vector<Book> unavailableMatches;
-    availableMatches.clear();
-    unavailableMatches.clear();
-
-    for (int i = 0; i < matches.size(); i++)
-    {
-        
-        
-        for (BookCopy copy: matches.at(i).copiesVector) {
-            if (copy.getReaderName() == "") {
-                availableMatches.push_back(matches.at(i));
-            }
-        }
-
-
-        
-    }
-
-    // Sort availableMatches
-    if (availableMatches.size() >= 2)
-    {
-        // sorting by title
-        for (int i = 0; i < availableMatches.size() - 1; i++)
-        {
-            for (int j = 0; j < (availableMatches.size() - i - 1); j++)
-            {
-                int titleCompare = availableMatches.at(j).getTitle().compare(availableMatches.at(j + 1).getTitle());
-                if (titleCompare > 0)
-                {
-                    swap(availableMatches.at(j), availableMatches.at(j + 1));
-                }
-            }
-        }
-
-        // sorting by ID
-        quickSort(availableMatches, 0, availableMatches.size() - 1);
-    }
-
-    // Sort unavailableMatches
-    for (int i = 0; i < unavailableMatches.size(); i++)
-    {
-        for (int j = 0; j < unavailableMatches.size() - i; j++)
-        {
-            if (unavailableMatches.at(i).getExpDate() > unavailableMatches.at(j).getExpDate())
-            {
-                swap(unavailableMatches.at(i), unavailableMatches.at(j));
-            }
-        }
-    }
-
-    // Combine the two back together into one finished, sorted vector
-    matches.clear();
-    for (int i = 0; i < availableMatches.size(); i++)
-    {
-        matches.push_back(availableMatches.at(i));
-    }
-    for (int i = 0; i < unavailableMatches.size(); i++)
-    {
-        matches.push_back(unavailableMatches.at(i));
-    }
-
-    // Print matches
-    if (matches.size() > 0)
-    {
-        cout << endl
-             << "Books that match your search critera:" << endl
-             << endl;
-        for (auto searchResult : matches)
-        {
-            cout << searchResult;
-        }
-    }
-    else
+    if (matches.size() == 0)
     {
         cout << endl
              << "There were no books that match that search critera, try again with a different search." << endl
              << endl;
+        return;
+    }
+
+    // Sort matches by title
+    quickSortForMatches(matches, 0, matches.size() - 1);
+
+    //// Compiling the results
+    for (int i = 0; i < matches.size(); i++)
+    {
+        vector<BookCopy> unavailable;
+        vector<int> available;
+        unavailable.clear();
+        available.clear();
+        for (int j = 0; j < matches.at(i).copiesVector.size(); j++)
+        {
+            if (matches.at(i).copiesVector.at(j).getReaderName() == "")
+            {
+                available.push_back(matches.at(i).copiesVector.at(j).getID());
+            }
+            else
+            {
+                unavailable.push_back(matches.at(i).copiesVector.at(j));
+            }
+        }
+
+        // Print the Book
+        cout << matches.at(i);
+
+        // Print available ID's
+        cout << "Available ID's: ";
+
+        for (int avail : available)
+        {
+            cout << avail << " ";
+        }
+        cout << endl;
+
+        // Sort unavailable BookCopies
+        quickSortForUnavailableCopies(unavailable, 0, unavailable.size() - 1);
+
+        // Print unavailable ID's
+        for (int j = 0; j < unavailable.size(); j++)
+        {
+            cout << unavailable.at(j).getID() << " ";
+        }
+        cout << endl;
     }
 }
 ////////////////////////////////////
