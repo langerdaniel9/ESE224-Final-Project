@@ -43,7 +43,7 @@ TreeNode<Type> *nodeInsert(TreeNode<Type> *root, Type element)
 {
     if (root == nullptr)
     {
-        root = new TreeNode<Type>(element);
+        root = new TreeNode<Type>(element);                                         // Comes from creating a new TreeNode from Structs.h
         return root;
     }
 
@@ -79,9 +79,8 @@ TreeNode<Type> *inOrderSuccessor(TreeNode<Type> *root)
 
     return successor;
 }
-// FIXME
-template <typename Type>
-TreeNode<Type> *deleteNode(TreeNode<Type> *root, Book element)
+
+TreeNode<Book> *deleteNode(TreeNode<Book> *root, Book element)                                  // deleteNode for Books BST
 {
     if (root == NULL)
     { // Base case => deleting the root
@@ -100,18 +99,18 @@ TreeNode<Type> *deleteNode(TreeNode<Type> *root, Book element)
     {
         if (root->left == NULL)
         {
-            TreeNode<Type> *aux = root->right;
+            TreeNode<Book> *aux = root->right;
             delete (root);
             return aux;
         }
         else if (root->right == NULL)
         {
-            TreeNode<Type> *aux = root->left;
+            TreeNode<Book> *aux = root->left;
             delete (root);
             return aux;
         }
 
-        TreeNode<Type> *toGetDeleted = inOrderSuccessor(root->right); // The deleting here does not work!
+        TreeNode<Book> *toGetDeleted = inOrderSuccessor(root->right); // The deleting here does not work!
         root->val = toGetDeleted->val;
         root->right = deleteNode(root->right, toGetDeleted->val);
     }
@@ -119,8 +118,7 @@ TreeNode<Type> *deleteNode(TreeNode<Type> *root, Book element)
     return root;
 }
 
-template <typename Type>
-TreeNode<Type> *deleteNode(TreeNode<Type> *root, User *element)
+TreeNode<User*> *deleteNode(TreeNode<User*> *root, User *element)                                  // deleteNode for User BST
 {
     if (root == NULL)
     { // Base case => deleting the root
@@ -139,18 +137,18 @@ TreeNode<Type> *deleteNode(TreeNode<Type> *root, User *element)
     {
         if (root->left == NULL)
         {
-            TreeNode<Type> *aux = root->right;
+            TreeNode<User*> *aux = root->right;
             delete (root);
             return aux;
         }
         else if (root->right == NULL)
         {
-            TreeNode<Type> *aux = root->left;
+            TreeNode<User*> *aux = root->left;
             delete (root);
             return aux;
         }
 
-        TreeNode<Type> *toGetDeleted = inOrderSuccessor(root->right); // The deleting here does not work!
+        TreeNode<User*> *toGetDeleted = inOrderSuccessor(root->right); // The deleting here does not work!
         root->val = toGetDeleted->val;
         root->right = deleteNode(root->right, toGetDeleted->val);
     }
@@ -161,19 +159,18 @@ TreeNode<Type> *deleteNode(TreeNode<Type> *root, User *element)
 template <typename Type>
 void BST<Type>::deleteNode(Type element)
 {
-    root = deleteNode(root, element);
+    root = deleteNode(root, element);                                                   // Assuming this works?? (Going to either Book or User types)
 }
 ////////////////////////////////////
 
 ////////////////////////////////////
 // Binary Search
-template <typename Type>
-void binarySearch(TreeNode<Type> *root, Type element)
+void binarySearch(TreeNode<User *> *root, Type element)                                   // maybe specifiy this??
 {
     // Used for users (by username), books (by ISBN), and book copies (by ID)
     if (root == NULL)
     {
-        cout << root->val << endl;
+        cout << root->val << endl;                                      // Should be used to print out info about a user through operator overloading (<<)
     }
 
     if (element < root->val)
@@ -184,32 +181,30 @@ void binarySearch(TreeNode<Type> *root, Type element)
     {
         root->right = binarySearch(root->right, element);
     }
-}
+}           
 
-// FIXME
-template <typename Type>
-void binarySearch(TreeNode<Type> *root, string isbn)
+void binarySearch(TreeNode<Book> *root, string isbn)
 {
     // Used for users (by username), books (by ISBN), and book copies (by ID)
     if (root == NULL)
     {
-        cout << root->val << endl;
+        cout << root->val << endl;                                      // Should be used to print out info about a book through operator overloading (<<)
     }
 
     if (element < root->val)
     {
-        root->left = binarySearch(root->left, element);
+        root->left = binarySearch(root->left, isbn);
     }
     else if (element > root->val)
     {
-        root->right = binarySearch(root->right, element);
+        root->right = binarySearch(root->right, isbn);
     }
 }
 
 template <typename Type>
 void BST<Type>::binarySearch(Type element)
 {
-    root = binarySearch(root, element);
+    root = binarySearch(root, element);                                                   // Assuming this works?? (Going to either Book or User types)
 }
 ////////////////////////////////////
 
