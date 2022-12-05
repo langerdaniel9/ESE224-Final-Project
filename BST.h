@@ -3,6 +3,7 @@
 #include "Structs.h"
 #include "User.h"
 #include "Book.h"
+//#include "Reader.h"
 
 #include <vector>
 #include <iostream>
@@ -164,31 +165,25 @@ void BST<Type>::deleteNode(Type element)
 ////////////////////////////////////
 
 ////////////////////////////////////
-// Binary Search
-void binarySearch(TreeNode<User *> *root, Type element)                                   // maybe specifiy this??
-{
-    // Used for users (by username), books (by ISBN), and book copies (by ID)
-    if (root == NULL)
-    {
-        cout << root->val << endl;                                      // Should be used to print out info about a user through operator overloading (<<)
-    }
-
-    if (element < root->val)
-    {
-        root->left = binarySearch(root->left, element);
-    }
-    else if (element > root->val)
-    {
-        root->right = binarySearch(root->right, element);
-    }
-}           
-
+// Binary Search   
 void binarySearch(TreeNode<Book> *root, string isbn)
 {
     // Used for users (by username), books (by ISBN), and book copies (by ID)
     if (root == NULL)
     {
-        cout << root->val << endl;                                      // Should be used to print out info about a book through operator overloading (<<)
+        return;
+    }
+    if (root->val.getIsbn() == isbn) {
+        // Should be used to print out info about a book through operator overloading (<<)
+        cout << root->val << endl;
+        cout << "Copies Available: " << endl;
+        for (BookCopy copy: root->val.copiesVector) {
+            if (copy.getReaderName() == "") {
+                cout << copy.getID() << " ";
+            }
+        }
+        cout << endl;
+        return;
     }
 
     if (element < root->val)
@@ -243,15 +238,14 @@ void searchRecursive(TreeNode<Book> *root, string searchTerm, vector<Book> &matc
     searchRecursive(root->right, searchTerm, matches, TorC);
 }
 
-template <typename Type>
-void BST<Type>::search(TreeNode<Type> *root, string searchTerm, bool TitleOrCategory)
+void BST<Book>::search(TreeNode<Book> *root, string searchTerm, bool TitleOrCategory)
 {
     //// Make array for result of search
-    vector<Type> matches;
+    vector<Book> matches;
     matches.clear();
 
     //// Search for matches and add them to the array
-    inOrderSearchRecursive(root, searchTerm, matches, TitleOrCategory);
+    searchRecursive(root, searchTerm, matches, TitleOrCategory);
 
     //// Compiling the results
     // Separate matches into two separate vectors, one for available books and one for unavailable
@@ -262,16 +256,16 @@ void BST<Type>::search(TreeNode<Type> *root, string searchTerm, bool TitleOrCate
 
     for (int i = 0; i < matches.size(); i++)
     {
-        // FIXME - replace this with correct logic
-        if (matches.at(i).getReaderName() == "")
-        {
-            // If nobody has checked out this book -> it is available
-            availableMatches.push_back(matches.at(i));
+        
+        
+        for (BookCopy copy: matches.at(i).copiesVector) {
+            if (copy.getReaderName() == "") {
+                availableMatches.push_back(matches.at(i));
+            }
         }
-        else
-        {
-            unavailableMatches.push_back(matches.at(i));
-        }
+
+
+        
     }
 
     // Sort availableMatches

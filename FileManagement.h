@@ -53,7 +53,19 @@ void UserInOrderTraversal(TreeNode<User*>* inputBST, fstream output)
 
     UserInOrderTraversal(inputBST->left, output); // visit left child
 
-    output << inputBST->val->type() << " " << inputBST->val->getUserName() << " " << inputBST->val->getPassword() << endl;
+    int type;
+    string actualType = inputBST->val->type();
+    if (actualType == "Student") {
+        type = 0;
+    }
+    else if (actualType == "Teacher") {
+        type = 1;
+    }
+    else if (actualType == "Librarian") {
+        type = 2;
+    }
+
+    output << type << "\t" << inputBST->val->getUserName() << "\t" << inputBST->val->getPassword() << endl;
 
     UserInOrderTraversal(inputBST->right, output); // visit right child
 }
