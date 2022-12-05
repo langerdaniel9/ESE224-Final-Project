@@ -23,7 +23,7 @@ public:
     BST<Type>();
     void nodeInsert(Type element);
     void deleteNode(Type element);
-    void binarySearch(Type element);
+    void binarySearch(string element);
     void search(TreeNode<Type> *root, string searchTerm, bool TitleOrCategory);
 };
 
@@ -201,7 +201,7 @@ void binarySearch(TreeNode<Book> *root, string isbn)
 }
 
 template <typename Type>
-void BST<Type>::binarySearch(Type element)
+void BST<Type>::binarySearch(string element)
 {
     root = binarySearch(root, element); // Assuming this works?? (Going to either Book or User types)
 }
