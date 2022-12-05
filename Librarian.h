@@ -12,8 +12,11 @@ using namespace std;
 class Librarian : public User
 {
 public:
+    // ********** CONSTRUCTORS **********
     Librarian();
     Librarian(string initUserName, string initPassword);
+
+    // ********** FUNCTIONS **********
     void addBook(BST<Book> &bookCatalog);
     void deleteBook(BST<Book> &bookCatalog);
     User *searchUser(BST<User *> usersList);

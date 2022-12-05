@@ -9,27 +9,6 @@
 
 using namespace std;
 
-bool operator<(Book &b1, Book &b2)
-{
-    int val = b1.getIsbn().compare(b2.getIsbn());
-    return (val == -1) ? true : false;
-}
-
-bool operator>(Book &b1, Book &b2)
-{
-    int val = b1.getIsbn().compare(b2.getIsbn());
-    return (val == 1) ? true : false;
-}
-
-struct LLNode
-{
-    string data;
-    LLNode *next;
-    LLNode() : next(nullptr) {}
-    LLNode(string x) : data(x), next(nullptr) {}
-    LLNode(string x, LLNode *next) : data(x), next(next) {}
-};
-
 class Book
 {
 private:
@@ -178,6 +157,18 @@ istream &operator>>(istream &input, Book &book)
     book.setCategory(category);
 
     return input;
+}
+
+bool operator<(Book &b1, Book &b2)
+{
+    int val = b1.getIsbn().compare(b2.getIsbn());
+    return (val == -1) ? true : false;
+}
+
+bool operator>(Book &b1, Book &b2)
+{
+    int val = b1.getIsbn().compare(b2.getIsbn());
+    return (val == 1) ? true : false;
 }
 
 // ******************** LINKED LIST ********************

@@ -13,15 +13,21 @@ protected:
     string password;
 
 public:
-    // Getters //
+    // ********** ACCESSORS **********
     string getUserName();
     string getPassword();
-    // Setters //
+
+    // ********** MUTATORS **********
     void setUserName(string newUserName);
     void setPassword(string newPassword);
+
+    // ********** FUNCTIONS **********
     virtual string type() = 0;
     void changePassword();
-    // TODO - operator overloading
+
+    // ********** OPERATOR OVERLOADING **********
+    friend ostream &operator<<(ostream &output, User &user);
+    friend istream &operator>>(istream &input, User &user);
 };
 
 string User::getUserName()
@@ -50,6 +56,25 @@ void User::changePassword()
     string newPass;
     cin >> newPass;
     password = newPass;
+}
+
+ostream &operator<<(ostream &output, User &user)
+{
+    output << "Username:\t" << user.getUserName() << endl
+           << "Password:\t" << user.getPassword() << endl
+           << endl;
+
+    return output;
+}
+
+istream &operator>>(istream &input, User &user)
+{
+    string newUsername, newPassword;
+    input >> newUsername, newPassword;
+    user.setUserName(newUsername);
+    user.setPassword(newPassword);
+
+    return input;
 }
 
 bool operator<(User &u1, User &u2)

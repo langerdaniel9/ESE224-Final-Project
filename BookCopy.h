@@ -5,27 +5,19 @@
 
 using namespace std;
 
-bool operator<(BookCopy &bc1, BookCopy &bc2)
-{
-    return bc1.getID() < bc2.getID();
-}
-
-bool operator>(BookCopy &bc1, BookCopy &bc2)
-{
-    return bc1.getID() > bc2.getID();
-}
-
 class BookCopy
 {
 private:
     int ID;
     string readerName;
-    string reserverName; // unnecessary
-    int reserveDate;     // unnecessary
+    string reserverName;
+    int reserveDate;
     int startDate;
     int expirationDate;
 
 public:
+    // ********** CONSTRUCTORS **********
+    BookCopy();
     BookCopy(int newId);
 
     // ********** ACCESSORS **********
@@ -50,6 +42,11 @@ public:
 };
 
 // Leave functions in the .h file for now, will move them to their respective .cpp files when project is finished
+
+BookCopy::BookCopy()
+{
+    this->ID = -1;
+}
 
 BookCopy::BookCopy(int newId)
 {
@@ -125,15 +122,10 @@ void BookCopy::setExpirationDate(int newExpirationD)
 ostream &operator<<(ostream &output, BookCopy &book_copy)
 {
     // If book doesnt exist
-    if (book_copy.getID() == NULL) // Needs to be fixed??
+    if (book_copy.getID() == -1)
     {
         return output;
     }
-    // FIXME - change book.getReaderName to (current node of the linked list).name          // Needs to be fixed??
-    // if ((book.getReaderName()) != "")
-    //{
-    //    studentname = book.getReaderName();
-    //}
 
     output << "ID:\t" << book_copy.getID() << endl
            << "Reader Name:\t" << book_copy.getReaderName() << endl
@@ -149,9 +141,10 @@ ostream &operator<<(ostream &output, BookCopy &book_copy)
 istream &operator>>(istream &input, BookCopy &book_copy)
 {
     int ID, reserveDate, startDate, expirationDate;
-    string readerName;
-    string reserverName;
-    //    input >> ID >> parent >> readerName >> reserverName >> reserveDate >> startDate >> expirationDate;
+    string readerName, reserverName;
+
+    input >> ID >> readerName >> reserverName >> reserveDate >> startDate >> expirationDate;
+
     book_copy.setID(ID);
     book_copy.setReaderName(readerName);
     book_copy.setReserverName(reserverName);
@@ -160,4 +153,14 @@ istream &operator>>(istream &input, BookCopy &book_copy)
     book_copy.setExpirationDate(expirationDate);
 
     return input;
+}
+
+bool operator<(BookCopy &bc1, BookCopy &bc2)
+{
+    return bc1.getID() < bc2.getID();
+}
+
+bool operator>(BookCopy &bc1, BookCopy &bc2)
+{
+    return bc1.getID() > bc2.getID();
 }

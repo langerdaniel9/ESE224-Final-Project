@@ -4,8 +4,12 @@
 
 using namespace std;
 
+/*
+ * Things that we use in a few files but dont fit in any other .h files
+ */
+
 ///////////////////////////////////////////////////
-// type for inserting to copy BST
+
 struct copystruct
 {
     int idfile;
@@ -48,3 +52,16 @@ struct TreeNode
     TreeNode(Type x) : val(x), left(nullptr), right(nullptr) {}
     TreeNode(Type x, TreeNode *left, TreeNode *right) : val(x), left(left), right(right) {}
 };
+
+///////////////////////////////////////////////////
+
+struct LLNode
+{
+    string data;
+    LLNode *next;
+    LLNode() : next(nullptr) {}
+    LLNode(string x) : data(x), next(nullptr) {}
+    LLNode(string x, LLNode *next) : data(x), next(next) {}
+};
+
+///////////////////////////////////////////////////
