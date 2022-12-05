@@ -121,6 +121,7 @@ Book bookIdInOrderTraversal(TreeNode<Book>* node, int inputID)
     IDInOrderTraversal(node->right, inputID);
 }
 
+// TODO - when fixed move to Book.h
 BookCopy IDInOrderTraversal(TreeNode<Book> *node, int inputID)
 {
     if (node == nullptr)
