@@ -224,8 +224,8 @@ void Reader::searchBook(BST<Book> *bookCatalog, BST<copystruct> *copyList)
 
         //        BST<Book> *bookCatalog;
 
-        bookCatalog->binarySearchISBN(inputISBN);
-        //        bookCatalog->binarySearch(inputISBN); // Should print out info about Book
+//        bookCatalog->binarySearchISBN(inputISBN);
+        bookCatalog->binarySearch(inputISBN);                               // Should print out info about Book
 
         break;
     }
@@ -258,7 +258,7 @@ void Reader::searchBook(BST<Book> *bookCatalog, BST<copystruct> *copyList)
         // NEEDS TO BE FIXED?!?!?!?!
         string correspondingISBN = copiesInOrderTraversal(copyList->root, inputID); // gets the corresponding ISBN
 
-        bookCatalog->binarySearchISBN(correspondingISBN); // Should print out info about Book
+        bookCatalog->binarySearch(correspondingISBN);                         // Should print out info about Book
 
         //        IDInOrderTraversal(bookCatalog, inputID);
 
