@@ -155,7 +155,7 @@ ostream &operator<<(ostream &output, Book &book)
     // TODO - Print the id of each copy within copy binary tree
 
     // Print linked list
-    output << "Reservers: " << endl;
+    /*output << "Reservers: " << endl;
     LLNode *head = book.getReservers();
     while (head != NULL)
     {
@@ -164,7 +164,7 @@ ostream &operator<<(ostream &output, Book &book)
     }
     output << endl;
     //
-    output << "Number of Favorites: " << book.getTimesFavorited() << endl;
+    output << "Number of Favorites: " << book.getTimesFavorited() << endl;*/
 
     return output;
 }

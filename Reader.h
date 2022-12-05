@@ -180,8 +180,7 @@ void IDInOrderTraversal3(TreeNode<Book> *inputBST, int inputID, int maxLoanTime)
     //    forLoopforBook(inputBST, inputID);            // visit current child
     for (int i = 0; i < inputBST->val.copiesVector.size(); i++)
     {
-        if (inputBST->val.copiesVector.at(i).getID() == inputID)
-        {
+        if (inputBST->val.copiesVector.at(i).getID() == inputID) {
             inputBST->val.copiesVector.at(i).setExpirationDate(inputBST->val.copiesVector.at(i).getExpirationDate() + maxLoanTime);
         }
     }
@@ -625,7 +624,7 @@ void Reader::cancelBook(BST<Book> *&bookCatalog) {
     cin >> inputID;
 
     bool reserved = false;
-    Book book = bookIdInOrderTraversal(book->catalog->root, inputID);
+    Book* book = bookIdInOrderTraversal(book->catalog->root, inputID);
     for (int i = 0; i < BooksReserved.size(); i++) {
         if (BooksReserved.at(i) == book) {
             book.deleteReader(this->getUserName());
@@ -643,6 +642,23 @@ void Reader::cancelBook(BST<Book> *&bookCatalog) {
 void Reader::feelingLucky(BST<Book> *&bookCatalog)
 {
     // TODO - maybe if we have time (Daniel)
+}
+
+void Reader::myInformation() {
+    cout << "Username: " << this->getUserName() << endl;
+    cout << "Password: " << this->getPassword() << endl << endl;
+
+    cout << "Books currently borrowed:" << endl;
+    for (int i = 0; i < copiesBorrowed.size(); i++) {
+        Book* book = bookIdInOrderTraversal(book->catalog->root, copiesBorrowed.at(i).getID());
+        cout << "ID:\t" << copiesBorrowed.at(i).getID() << endl;
+        cout << book << endl;
+    }
+
+    cout << "Books currently reserved:" << endl;
+    for (int i = 0; i < BooksReserved.size(); i++) {
+        cout << BooksReserved.at(i) << endl;
+    }
 }
 
 string Reader::type()

@@ -24,6 +24,7 @@ public:
     // ********** FUNCTIONS **********
     virtual string type() = 0;
     void changePassword();
+    virtual void myInformation();
 
     // ********** OPERATOR OVERLOADING **********
     friend ostream &operator<<(ostream &output, User &user);
@@ -56,6 +57,11 @@ void User::changePassword()
     string newPass;
     cin >> newPass;
     password = newPass;
+}
+
+void User::myInformation() {
+    cout << "Username: " << userName << endl;
+    cout << "Password: " << password << endl;
 }
 
 ostream &operator<<(ostream &output, User &user)
