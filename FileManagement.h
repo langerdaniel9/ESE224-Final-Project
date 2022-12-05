@@ -9,15 +9,6 @@
 
 using namespace std;
 
-class File_Management {
-
-public:
-	void writeBackToBookFile();
-    void writeBackToBCFile();
-    void writeBackToUserFile();
-
-};
-
 void BookInOrderTraversal(TreeNode<Book>* inputBST, fstream output)
 { 
     if (inputBST == NULL)
@@ -68,21 +59,21 @@ void UserInOrderTraversal(TreeNode<User*>* inputBST, fstream output)
 }
 
 
-void File_Management::writeBackToBookFile(BST<Book>* bookCatalog) {
+void writeBackToBookFile(BST<Book>* bookCatalog) {
     fstream outputBooks;
     outputBooks.open("outputBooks.txt");
 
     BookInOrderTraversal(bookCatalog->root, outputBooks);           // Writes into another outputBooks.txt file
 }
 
-void File_Management::writeBackToBCFile(BST<Book>* bookCatalog) {
+void writeBackToBCFile(BST<Book>* bookCatalog) {
     fstream outputBookCopy;
     outputBookCopy.open("outputBookCopy.txt");
 
     BCInOrderTraversal(bookCatalog->root, outputBookCopy);          // Writes into another outputBookCopy.txt file
 }
 
-void File_Management::writeBackToUserFile(BST<User*>* usersList) {
+void writeBackToUserFile(BST<User*>* usersList) {
     fstream outputUsers;
     outputUsers.open("outputUsers.txt");
 

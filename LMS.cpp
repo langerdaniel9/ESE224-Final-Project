@@ -363,6 +363,8 @@ void readerLoop(Reader *user, BST<Book> bookCatalog, time_t &zeroTime)
         {
         case 0:
         {
+            writeBackToBookFile(bookCatalog.root);                  // writing back to book text file
+            writeBackToBCFile(bookCatalog.root);                    // writing back to book copy text file
             return;
         }
         case 1:
@@ -464,6 +466,7 @@ void librarianLoop(Librarian *user, BST<Book> bookCatalog, BST<User *> usersList
         {
         case 0:
         {
+            writeBackToUserFile(bookCatalog.root);                  // writing back to user text file
             return;
         }
         case 2:
