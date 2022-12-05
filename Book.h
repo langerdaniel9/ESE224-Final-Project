@@ -1,7 +1,7 @@
 #pragma once
 
-#include "BookCopy.h"
 #include "Structs.h"
+#include "BookCopy.h"
 
 #include <iostream>
 #include <string>
@@ -21,6 +21,9 @@ private:
 
 public:
     vector<BookCopy> copiesVector;
+
+    // ********** CONSTRUCTORS **********
+    Book();
     Book(string isbn, string title, string author, string category);
 
     // ********** ACCESSORS **********
@@ -38,17 +41,29 @@ public:
     void setAuthor(string author);
     void setCategory(string category);
 
+    // ********** FUNCTIONS **********
+    void favorite();
+
     // ********** OPERATION OVERLOADING **********
     friend ostream &operator<<(ostream &output, Book &book);
     friend istream &operator>>(istream &input, Book &book);
 
-    // ********** RESERVED READER LINKED LIST **********
+    // ********** LINKED LIST **********
     void insertReader(string newReaderUsername);
-    void deleteReader(Reader r1);
+    void deleteReader(string readerName);
     void deleteFirst();
 };
 
 // Leave functions in the .h file for now, will move them to their respective .cpp files when project is finished
+
+// ******************** CONSTRUCTORS ********************
+
+Book::Book()
+{
+    this->rrHead = new LLNode("-1");
+    this->getCopiesVector().clear();
+    this->timesFavorited = 0;
+}
 
 Book::Book(string isbn, string title, string author, string category)
 {
@@ -56,7 +71,8 @@ Book::Book(string isbn, string title, string author, string category)
     this->title = title;
     this->author = author;
     this->category = category;
-    rrHead = new LLNode;
+    this->rrHead = new LLNode("-1");
+    this->getCopiesVector().clear();
     this->timesFavorited = 0;
 }
 
@@ -119,6 +135,13 @@ void Book::setCategory(string category)
     this->category = category;
 }
 
+// ******************** FUNCTIONS ********************
+
+void Book::favorite()
+{
+    timesFavorited++;
+}
+
 // ******************** OPERATION OVERLOADING ********************
 
 ostream &operator<<(ostream &output, Book &book)
@@ -175,12 +198,21 @@ bool operator>(Book &b1, Book &b2)
 
 void Book::insertReader(string newReaderUsername)
 {
+    LLNode *newNode = new LLNode(newReaderUsername);
     LLNode *head = rrHead;
+
+    if (head == nullptr)
+    {
+        head = newNode;
+        return;
+    }
+
     while (head->next != nullptr)
     {
         head = head->next;
     }
-    head->next = new LLNode(newReaderUsername);
+    head->next = newNode;
+    return;
 }
 
 void Book::deleteFirst()
@@ -192,20 +224,27 @@ void Book::deleteFirst()
 
 void Book::deleteReader(string readerName)
 {
-    // FIXME - change to string readerName
-    LLNode *temp = rrHead;
-    while (temp != NULL)
+    LLNode *head = rrHead;
+    LLNode *prev = nullptr;
+
+    if (head != nullptr && head->data == readerName)
     {
-        if (temp->data == r1)
-        {
-            break;
-        }
-        temp = temp->next;
+        rrHead = head->next;
+        delete head;
+        return;
     }
-    while (temp->next != NULL)
+
+    while (head != nullptr && head->data != readerName)
     {
-        temp->data = temp->next->data;
-        temp = temp->next;
+        prev = head;
+        head = head->next;
     }
-    delete (temp);
+
+    if (head == nullptr)
+    {
+        return;
+    }
+
+    prev->next = head->next;
+    delete head;
 }
