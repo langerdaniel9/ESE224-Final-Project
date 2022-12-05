@@ -9,6 +9,7 @@
 #include "Reader.h"
 #include "Student.h"
 #include "Teacher.h"
+#include "FileManagement.h"
 
 // Standard Files //
 #include <iostream>
@@ -172,7 +173,7 @@ void getCopies(BST<copystruct> &copyList)
 void traverseToInsert(copystruct toInsert, TreeNode<Book> *bookNode)
 {
     bookNode;
-    if (bookNode = nullptr)
+    if (bookNode == nullptr)
     {
         return;
     }
