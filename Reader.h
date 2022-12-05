@@ -479,8 +479,7 @@ void Reader::returnBook(BST<Book> *&bookCatalog)
 
     cout << "Here are all the books you are currently borrowing:" << endl;
 
-    for (BookCopy book : this->getBooksBorrowed())
-    {
+    for (BookCopy book : this->getBooksBorrowed()) {
         cout << book;
     }
 
@@ -511,6 +510,14 @@ void Reader::returnBook(BST<Book> *&bookCatalog)
 
     // Change the properties of the returned book to reflect that it is available
     IDInOrderTraversal2(bookCatalog->root, id, -1, -1, "");
+
+    // Must check if there are reservers and start 5 day period in which only first reserver can check it out
+    /*Book book1 = bookIdInOrderTraversal(bookCatalog->root, id);
+    if (book1.getReservers() != NULL) {
+
+    }*/
+
+    return;
 
     // for (int i = 0; i < bookCatalog.size(); i++)
     //{
