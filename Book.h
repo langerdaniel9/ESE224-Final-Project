@@ -1,6 +1,5 @@
 #pragma once
 
-#include "BST.h"
 #include "BookCopy.h"
 #include "Structs.h"
 
@@ -200,8 +199,9 @@ void Book::deleteFirst()
     delete (temp);
 }
 
-void Book::deleteReader(Reader r1)
+void Book::deleteReader(string readerName)
 {
+    // FIXME - change to string readerName
     LLNode *temp = rrHead;
     while (temp != NULL)
     {

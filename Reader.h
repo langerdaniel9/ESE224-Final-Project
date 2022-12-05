@@ -582,3 +582,9 @@ string Reader::type()
 {
     return "Reader";
 }
+
+// Casting //
+Reader *userToReader(User *toCast)
+{
+    return dynamic_cast<Reader *>(toCast);
+}

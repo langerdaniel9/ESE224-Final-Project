@@ -3,7 +3,6 @@
 #include "Structs.h"
 #include "User.h"
 #include "Book.h"
-#include "BookCopy.h"
 
 #include <vector>
 #include <iostream>
@@ -12,50 +11,6 @@
 using namespace std;
 
 // Overload all comparison operators for string, user, book, and book copy //
-
-bool operator<(string &s1, string s2)
-{
-    int val = s1.compare(s2);
-    return (val == -1) ? true : false;
-}
-
-bool operator>(string &s1, string &s2)
-{
-    int val = s1.compare(s2);
-    return (val == 1) ? true : false;
-}
-
-bool operator<(copystruct &cs1, copystruct cs2)
-{
-    return cs1.idfile < cs2.idfile;
-}
-
-bool operator>(copystruct &cs1, copystruct &cs2)
-{
-    return cs1.idfile > cs2.idfile;
-}
-
-bool operator<(User &u1, User &u2)
-{
-    int val = u1.getUserName().compare(u2.getUserName());
-    return (val == -1) ? true : false;
-}
-
-bool operator>(User &u1, User &u2)
-{
-    int val = u1.getUserName().compare(u2.getUserName());
-    return (val == 1) ? true : false;
-}
-
-bool operator<(BookCopy &bc1, BookCopy &bc2)
-{
-    return bc1.getID() < bc2.getID();
-}
-
-bool operator>(BookCopy &bc1, BookCopy &bc2)
-{
-    return bc1.getID() > bc2.getID();
-}
 
 /////////////////////////////////////////////////////////////////////////////
 
@@ -332,7 +287,7 @@ public:
             cout << endl
                  << "Books that match your search critera:" << endl
                  << endl;
-            for (BookCopy searchResult : matches)
+            for (auto searchResult : matches)
             {
                 cout << searchResult;
             }

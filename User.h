@@ -1,7 +1,5 @@
 #pragma once
 
-#include "Book.h"
-
 #include <string>
 #include <vector>
 #include <iostream>
@@ -52,4 +50,16 @@ void User::changePassword()
     string newPass;
     cin >> newPass;
     password = newPass;
+}
+
+bool operator<(User &u1, User &u2)
+{
+    int val = u1.getUserName().compare(u2.getUserName());
+    return (val == -1) ? true : false;
+}
+
+bool operator>(User &u1, User &u2)
+{
+    int val = u1.getUserName().compare(u2.getUserName());
+    return (val == 1) ? true : false;
 }

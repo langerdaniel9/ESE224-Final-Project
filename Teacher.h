@@ -1,15 +1,13 @@
 #pragma once
 
-#include "User.h"
 #include "Reader.h"
-#include "Book.h" // Might be unnecessary
 
 #include <string>
 #include <vector>
 
 using namespace std;
 
-class Teacher : public Reader, User
+class Teacher : public Reader
 {
 public:
     Teacher();
@@ -36,4 +34,10 @@ Teacher::Teacher(string initUserName, string initPassword)
 string Teacher::type()
 {
     return "Teacher";
+}
+
+// Casting //
+Teacher *userToTeacher(User *toCast)
+{
+    return dynamic_cast<Teacher *>(toCast);
 }

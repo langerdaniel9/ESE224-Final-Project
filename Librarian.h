@@ -1,7 +1,7 @@
 #pragma once
 
 #include "User.h"
-#include "Book.h" // Might be unnecessary
+#include "Book.h"
 
 #include <string>
 #include <vector>
@@ -16,7 +16,7 @@ public:
     Librarian(string initUserName, string initPassword);
     void addBook(BST<Book> &bookCatalog);
     void deleteBook(BST<Book> &bookCatalog);
-    void searchUser(BST<User *> usersList);
+    User *searchUser(BST<User *> usersList);
     void addUsers(BST<User *> usersList);
     void deleteUser(BST<User *> usersList);
     string type();
@@ -43,48 +43,45 @@ void Librarian::addBook(BST<Book> &bookCatalog)
     cout << "Please type the isbn of the new book: ";
     cin >> input;
 
+    // TODO - search for book, if it exists, add a copy with a unique id.else create a new book and add it
 
-    //todo search for book, if it exists, add a copy with a unique id.else create a new book and add it
-
-    
-    temp.setIsbn(input);
+    temp->setIsbn(input);
     cout << "Please type the title of the new book: ";
     cin >> input;
-    temp.setTitle(input);
+    temp->setTitle(input);
     cout << "Please type the catagory of the new book: ";
     cin >> input;
-    temp.setCategory(input);
+    temp->setCategory(input);
 
-    //bookCatalog.nodeInsert(temp);
+    // bookCatalog.nodeInsert(temp);
 
     //
     // may need further modification for copies data struct
     //
 }
 
-void Librarian::deleteBook(BST<Book *> &bookCatalog)
+void Librarian::deleteBook(BST<Book> &bookCatalog)
 {
     // TODO - (Ethan)
     cout << "Please input the book id to be removed: ";
     int idin;
     cin >> idin;
-
 }
 
-User Librarian::searchUser(BST<User *> usersList)
+User *Librarian::searchUser(BST<User *> usersList)
 {
-        if ((root->val.getUserName() == user) && (root->val.getPassword() == pass))
-        {
-            return root->val;
-        }
-        else
-        {
-            false;
-        }
-        /* Traverse left*/
-        verifytype(root, user, pass);
-        /* Traverse right */
-        verifytype(root, user, pass);
+    if ((root->val.getUserName() == user) && (root->val.getPassword() == pass))
+    {
+        return root->val;
+    }
+    else
+    {
+        false;
+    }
+    /* Traverse left*/
+    verifytype(root, user, pass);
+    /* Traverse right */
+    verifytype(root, user, pass);
 }
 
 void Librarian::addUsers(BST<User *> usersList)
@@ -94,7 +91,8 @@ void Librarian::addUsers(BST<User *> usersList)
     string passwordin;
     cout << "What kind of user would you like to add? 1 for Student, 2 for Teacher, 3 for Librarian: ";
     cin >> typein;
-    if (typein == 1) {
+    if (typein == 1)
+    {
         cout << "Please input the desired username of the new user: ";
         cin >> userin;
         cout << "Please input the desired password of the new user: ";
@@ -102,7 +100,8 @@ void Librarian::addUsers(BST<User *> usersList)
         Student temp(userin, passwordin);
         usersList.nodeInsert(temp);
     }
-    if (typein == 2) {
+    if (typein == 2)
+    {
         cout << "Please input the desired username of the new user: ";
         cin >> userin;
         cout << "Please input the desired password of the new user: ";
@@ -110,7 +109,8 @@ void Librarian::addUsers(BST<User *> usersList)
         Teacher temp(userin, passwordin);
         usersList.nodeInsert(temp);
     }
-    if (typein == 3) {
+    if (typein == 3)
+    {
         cout << "Please input the desired username of the new user: ";
         cin >> userin;
         cout << "Please input the desired password of the new user: ";
@@ -130,4 +130,10 @@ void Librarian::deleteUser(BST<User *> usersList)
 string Librarian::type()
 {
     return "Librarian";
+}
+
+// Casting //
+Librarian *userToLibrarian(User *toCast)
+{
+    return dynamic_cast<Librarian *>(toCast);
 }

@@ -5,6 +5,16 @@
 
 using namespace std;
 
+bool operator<(BookCopy &bc1, BookCopy &bc2)
+{
+    return bc1.getID() < bc2.getID();
+}
+
+bool operator>(BookCopy &bc1, BookCopy &bc2)
+{
+    return bc1.getID() > bc2.getID();
+}
+
 class BookCopy
 {
 private:

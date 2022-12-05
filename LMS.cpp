@@ -1,14 +1,14 @@
 // Local Files //
+#include "DateFunction.h"
+#include "Structs.h"
+#include "BookCopy.h"
+#include "Book.h"
 #include "User.h"
+#include "BST.h"
 #include "Librarian.h"
 #include "Reader.h"
 #include "Student.h"
 #include "Teacher.h"
-#include "DateFunction.h"
-#include "BookCopy.h"
-#include "Book.h"
-#include "Structs.h"
-#include "BST.h"
 
 // Standard Files //
 #include <iostream>
@@ -18,28 +18,6 @@
 #include <fstream>
 
 using namespace std;
-
-// Casting //
-Librarian *userToLibrarian(User *toCast)
-{
-    return dynamic_cast<Librarian *>(toCast);
-}
-
-Student *userToStudent(User *toCast)
-{
-    return dynamic_cast<Student *>(toCast);
-}
-
-Teacher *userToTeacher(User *toCast)
-{
-    return dynamic_cast<Teacher *>(toCast);
-}
-
-Reader *userToReader(User *toCast)
-{
-    return dynamic_cast<Reader *>(toCast);
-}
-/////////////
 
 // Function Declarations //
 void getUsers(BST<User *> usersList);
@@ -264,8 +242,10 @@ int verifytype(TreeNode<User> *root, string user, string pass)
     verifytype(root, user, pass);
 }
 
-Student verifypersonS(TreeNode<User>* root, string user, string pass) {
-    if ((root->val.getUsername() == user) && (root->val.getPassword() == pass)) {
+Student verifypersonS(TreeNode<User> *root, string user, string pass)
+{
+    if ((root->val.getUsername() == user) && (root->val.getPassword() == pass))
+    {
         return root->val
     }
     /* Traverse left*/
@@ -274,8 +254,10 @@ Student verifypersonS(TreeNode<User>* root, string user, string pass) {
     verifyperson(root, user, pass, temp);
 }
 
-Teacher verifypersonT(TreeNode<User>* root, string user, string pass) {
-    if ((root->val.getUsername() == user) && (root->val.getPassword() == pass)) {
+Teacher verifypersonT(TreeNode<User> *root, string user, string pass)
+{
+    if ((root->val.getUsername() == user) && (root->val.getPassword() == pass))
+    {
         return root->val
     }
     /* Traverse left*/
@@ -284,8 +266,10 @@ Teacher verifypersonT(TreeNode<User>* root, string user, string pass) {
     verifyperson(root, user, pass, temp);
 }
 
-Librarian verifypersonL(TreeNode<User>* root, string user, string pass) {
-    if ((root->val.getUsername() == user) && (root->val.getPassword() == pass)) {
+Librarian verifypersonL(TreeNode<User> *root, string user, string pass)
+{
+    if ((root->val.getUsername() == user) && (root->val.getPassword() == pass))
+    {
         return root->val
     }
     /* Traverse left*/
@@ -334,7 +318,8 @@ User *login(BST<User *> usersList)
             if (type == 4)
             {
                 // If not, print an error and say try again
-                cout << "Account with those credentials was not found. Please try again" << endl << endl;
+                cout << "Account with those credentials was not found. Please try again" << endl
+                     << endl;
             }
         }
     }
