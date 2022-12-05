@@ -98,6 +98,7 @@ void quickSort(vector<BookCopy> lib, int low, int high)
     }
 }
 
+// TODO - when fixed move to Book.h
 BookCopy IDInOrderTraversal(TreeNode<Book> *node, int inputID)
 {
     if (node == nullptr)
