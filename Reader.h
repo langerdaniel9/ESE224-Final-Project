@@ -22,7 +22,7 @@ protected:
     int maxCopies;
     int maxLoanTime;
     vector<BookCopy> copiesBorrowed;
-    vector<BookCopy> BooksReserved;
+    vector<Book> BooksReserved;
     int penalties;
     string type();
 
@@ -96,6 +96,29 @@ void quickSort(vector<BookCopy> lib, int low, int high)
         // recursive call on the right of pivot
         quickSort(lib, pi + 1, high);
     }
+}
+
+Book bookIdInOrderTraversal(TreeNode<Book>* node, int inputID)
+{
+    if (node == nullptr)
+    {
+        Book defaultBook(-1);
+        return defaultBook;
+    }
+
+    // visit left child
+    IDInOrderTraversal(node->left, inputID);
+
+    // What to do at current node
+    for (int i = 0; i < node->val.copiesVector.size(); i++)
+    {
+        if (node->val.copiesVector.at(i).getID() == inputID)
+        {
+            return node->val;
+        }
+    }
+    // visit right child
+    IDInOrderTraversal(node->right, inputID);
 }
 
 // TODO - when fixed move to Book.h
@@ -415,13 +438,7 @@ void Reader::borrowBook(BST<Book> *&bookCatalog, time_t &zeroTime)
     }
     if (!available)
     {
-        char res;
-        cout << "There are no more copies of this book left, would you like to reserve a copy (y/n)? ";
-        cin >> res;
-        if (res == 'y')
-        {
-            reserveBook(bookCatalog);
-        }
+        cout << "There are no more copies of this book left, try reserving this book.";
         return;
     }
 
@@ -565,13 +582,62 @@ void Reader::renewBook(BST<Book> *&bookCatalog)
     }
 }
 
-void Reader::reserveBook(BST<Book> *&bookCatalog)
-{
+void Reader::reserveBook(BST<Book>*& bookCatalog) {
+    int inputID;
+    cout << "What is an ID of the book you wish to reserve? ";
+    cin >> inputID;
+
+    // Check if that ID exists in bookCatalog and that there are available copies
+    bool exists = false;
+    bool available = false;
+    BookCopy toBeBorrowed = IDInOrderTraversal(bookCatalog->root, inputID);
+    if (toBeBorrowed.getID() != -1)
+    {
+        exists = true;
+        if (toBeBorrowed.getReaderName() == "")
+        {
+            available = true;
+        }
+    }
+
+    if (!exists)
+    {
+        cout << "That ID does not exist in the library, double check the ID and try again" << endl;
+        return;
+    }
+    if (!available)
+    {
+        Book book = bookIdInOrderTraversal(book->catalog->root, inputID);
+        book.insertReader(this->getUserName());
+        BooksReserved.push_back(book);
+        return;
+    }
+    else {
+        cout << "This book is currently available, try borrowing this book." << endl;
+        return;
+    }
 }
 
-void Reader::cancelBook(BST<Book> *&bookCatalog)
-{
-    // TODO - (Kenny)
+void Reader::cancelBook(BST<Book> *&bookCatalog) {
+    // Check that reader currently is reserving book
+    string inputID;
+    cout << "What is an ID of the book you wish to cancel? ";
+    cin >> inputID;
+
+    bool reserved = false;
+    Book book = bookIdInOrderTraversal(book->catalog->root, inputID);
+    for (int i = 0; i < BooksReserved.size(); i++) {
+        if (BooksReserved.at(i) == book) {
+            book.deleteReader(this->getUserName());
+            BooksReserved.erase(BooksReserved.begin() + i);
+            reserved = true;
+            return
+        }
+    }
+    if (!reserved) {
+        cout << "You are not currently reserving this book." << endl;
+        return;
+    }
 }
 
 void Reader::feelingLucky(BST<Book> *&bookCatalog)
