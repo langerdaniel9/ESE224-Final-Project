@@ -53,7 +53,7 @@ int main()
 
         if (currentUser->type() == "Librarian")
         {
-            librarianLoop(userToLibrarian(currentUser), bookCatalog, usersList, zeroTime);
+            librarianLoop(userToLibrarian(currentUser), *bookCatalog, *usersList, zeroTime);
         }
         else if (currentUser->type() == "Student")
         {
@@ -71,7 +71,7 @@ int main()
     }
 }
 
-void getUsers(BST<User *> usersList)
+void getUsers(BST<User *> *usersList)
 {
     // Do file I/O, filename is usersList.txt
     fstream fin("usersList.txt");
@@ -101,28 +101,28 @@ void getUsers(BST<User *> usersList)
             // assign values and attributes to temp student
             Student *temp = new Student(userin, passwordin);
             // push to vector
-            usersList.nodeInsert(temp);
+            usersList->nodeInsert(temp);
         }
         if (rolein == 1) // for teacher
         {
             // assign values and attributes to temp teacher
             Teacher *temp = new Teacher(userin, passwordin);
             // push to vector
-            usersList.nodeInsert(temp);
+            usersList->nodeInsert(temp);
         }
         if (rolein == 2) // for librarian
         {
             // assign values and attributes to temp teacher
             Librarian *temp = new Librarian(userin, passwordin);
             // push to vector
-            usersList.nodeInsert(temp);
+            usersList->nodeInsert(temp);
         }
     }
     // When finished reading in from file, close it
     fin.close();
 }
 
-void getBooks(BST<Book> &bookCatalog)
+void getBooks(BST<Book> *&bookCatalog)
 {
     // Do file I/O, filename is booksList.txt
     fstream books("booksList.txt");
@@ -142,12 +142,12 @@ void getBooks(BST<Book> &bookCatalog)
         string temp;
         getline(books, temp);
         Book toinsert(isbnin, titlein, authorin, catagoryin); // FIXME - does this need a new?
-        bookCatalog.nodeInsert(toinsert);
+        bookCatalog->nodeInsert(toinsert);
     }
     books.close();
 }
 
-void getCopies(BST<copystruct> &copyList)
+void getCopies(BST<copystruct> *&copyList)
 {
     fstream copyfin("copiesList.txt");
     if (copyfin.fail())
@@ -164,7 +164,7 @@ void getCopies(BST<copystruct> &copyList)
         copystruct temp;
         temp.isbnfile = isbn;
         temp.idfile = id;
-        copyList.nodeInsert(temp);
+        copyList->nodeInsert(temp);
     }
     copyfin.close();
 }
@@ -210,24 +210,25 @@ void traverse(TreeNode<copystruct> *node, BST<Book> &bookCatalog)
     traverse(node->right, bookCatalog);
 }
 
-void addCopiesToBook(BST<Book> &bookCatalog, BST<copystruct> &copyCatalog)
+void addCopiesToBook(BST<Book> *&bookCatalog, BST<copystruct> *&copyCatalog)
 {
-    traverse(copyCatalog.root, bookCatalog);
+    traverse(copyCatalog->root, *bookCatalog);
 }
 
 int verifytype(TreeNode<User *> *root, string user, string pass)
 {
-    if ((root->val.getUserName() == user) && (root->val.getPassword() == pass))
+
+    if ((root->val->getUserName() == user) && (root->val->getPassword() == pass))
     {
-        if (root->val.type() == "Student")
+        if (root->val->type() == "Student")
         {
             return 1;
         }
-        if (root->val.type() == "Teacher")
+        if (root->val->type() == "Teacher")
         {
             return 2;
         }
-        if (root->val.type() == "Librarian")
+        if (root->val->type() == "Librarian")
         {
             return 3;
         }
@@ -466,6 +467,7 @@ void librarianLoop(Librarian *user, BST<Book> *bookCatalog, BST<User *> *usersLi
         case 0:
         {
             writeBackToUserFile(usersList); // writing back to user text file
+                                            //            writeBackToUserFile(bookCatalog.root);
             return;
         }
         case 2:
@@ -483,19 +485,19 @@ void librarianLoop(Librarian *user, BST<Book> *bookCatalog, BST<User *> *usersLi
         case 4:
         {
             // Search User
-            user->searchUser(usersList);
+            user->searchUser(*usersList);
             break;
         }
         case 5:
         {
             // Add User
-            user->addUser(usersList);
+            user->addUsers(*usersList);
             break;
         }
         case 6:
         {
             // Delete User
-            user->deleteUser(usersList);
+            user->deleteUser(*usersList);
             break;
         }
         case 7:
