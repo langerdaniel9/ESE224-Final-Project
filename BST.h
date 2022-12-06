@@ -23,7 +23,7 @@ public:
     BST<Type>();
     void nodeInsert(Type element);
     void deleteNode(Type element);
-    void binarySearch(Type element);
+    void binarySearch(string element);
     void search(TreeNode<Type> *root, string searchTerm, bool TitleOrCategory);
 };
 
@@ -112,7 +112,7 @@ TreeNode<Book> *deleteNode(TreeNode<Book> *root, Book element) // deleteNode for
             return aux;
         }
 
-        TreeNode<Book> *toGetDeleted = inOrderSuccessor(root->right); // The deleting here does not work!
+        TreeNode<Book> *toGetDeleted = inOrderSuccessor(root->right);
         root->val = toGetDeleted->val;
         root->right = deleteNode(root->right, toGetDeleted->val);
     }
@@ -150,7 +150,7 @@ TreeNode<User *> *deleteNode(TreeNode<User *> *root, User *element) // deleteNod
             return aux;
         }
 
-        TreeNode<User *> *toGetDeleted = inOrderSuccessor(root->right); // The deleting here does not work!
+        TreeNode<User *> *toGetDeleted = inOrderSuccessor(root->right);
         root->val = toGetDeleted->val;
         root->right = deleteNode(root->right, toGetDeleted->val);
     }
@@ -201,7 +201,7 @@ void binarySearch(TreeNode<Book> *root, string isbn)
 }
 
 template <typename Type>
-void BST<Type>::binarySearch(Type element)
+void BST<Type>::binarySearch(string element)
 {
     root = binarySearch(root, element); // Assuming this works?? (Going to either Book or User types)
 }

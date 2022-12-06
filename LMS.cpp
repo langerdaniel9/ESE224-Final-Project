@@ -40,6 +40,7 @@ int main()
 
     // Read in data from student.txt and book.txt
     int idCount = 0;                // TODO - needs to be changed since we are given id's (Ethan)
+    int copycout = 0;
     getUsers(usersList);            // TODO - verify, but should not need any changed
     getBooks(bookCatalog, idCount); // TODO - needs to be changed since we are given id's (Ethan)
     getCopies(copyList);            // TODO
