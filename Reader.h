@@ -42,6 +42,7 @@ public:
     void reserveBook(BST<Book> *&bookCatalog);
     void cancelBook(BST<Book> *&bookCatalog);
     void feelingLucky(BST<Book> *&bookCatalog);
+    void myInformation(BST<Book> *&bookCatalog);
 };
 
 // Leave functions in the .h file for now, will move them to their respective .cpp files when project is finished
@@ -98,29 +99,6 @@ void quickSort(vector<BookCopy> lib, int low, int high) // FIXME - this one too
     }
 }
 
-Book bookIdInOrderTraversal(TreeNode<Book> *node, int inputID)
-{
-    if (node == nullptr)
-    {
-        Book defaultBook(-1);
-        return defaultBook;
-    }
-
-    // visit left child
-    IDInOrderTraversal(node->left, inputID);
-
-    // What to do at current node
-    for (int i = 0; i < node->val.copiesVector.size(); i++)
-    {
-        if (node->val.copiesVector.at(i).getID() == inputID)
-        {
-            return node->val;
-        }
-    }
-    // visit right child
-    IDInOrderTraversal(node->right, inputID);
-}
-
 // TODO - when fixed move to Book.h
 BookCopy IDInOrderTraversal(TreeNode<Book> *node, int inputID)
 {
@@ -145,74 +123,107 @@ BookCopy IDInOrderTraversal(TreeNode<Book> *node, int inputID)
     IDInOrderTraversal(node->right, inputID);
 }
 
-void IDInOrderTraversal2(TreeNode<Book> *inputBST, int inputID, int start, int end, string reader)
-{ // not working either???
-    if (inputBST == NULL)
+// TODO - move to Book.h
+Book returnBookGivenID(TreeNode<Book> *node, int inputID)
+{
+    if (node == nullptr)
     {
-        return;
+        return; // FIXME
     }
 
-    IDInOrderTraversal2(inputBST->left, inputID, start, end, reader); // visit left child
-    //    inputBST->val->binarySearch(inputID);
-    //    forLoopforBook(inputBST, inputID);            // visit current child
-    for (int i = 0; i < inputBST->val.copiesVector.size(); i++)
+    // visit left child
+    return returnBookGivenID(node->left, inputID);
+
+    // What to do at current node
+    // Check through bookCopies vector for an id that matches inputID
+    for (int i = 0; i < node->val.copiesVector.size(); i++)
     {
-        if (inputBST->val.copiesVector.at(i).getID() == inputID)
+        if (node->val.copiesVector.at(i).getID() == inputID)
         {
-            inputBST->val.copiesVector.at(i).setStartDate(start);
-            inputBST->val.copiesVector.at(i).setExpirationDate(end);
-            inputBST->val.copiesVector.at(i).setReaderName(reader);
+            return node->val;
         }
     }
 
-    IDInOrderTraversal2(inputBST->right, inputID, start, end, reader); // visit right child
+    // visit right child
+    return returnBookGivenID(node->right, inputID);
 }
 
-void IDInOrderTraversal3(TreeNode<Book> *inputBST, int inputID, int maxLoanTime)
-{ // not working either???
+// TODO - Move to Book.h
+void checkOutBookInCatalog(TreeNode<Book> *inputBST, int bookID, int startLoanTime, int endLoanTime, string readerUsername)
+{
+    if (inputBST == nullptr)
+    {
+        return;
+    }
+
+    // visit left child
+    checkOutBookInCatalog(inputBST->left, bookID, startLoanTime, endLoanTime, readerUsername);
+
+    /**************************/
+    for (int i = 0; i < inputBST->val.copiesVector.size(); i++)
+    {
+        if (inputBST->val.copiesVector.at(i).getID() == bookID)
+        {
+            inputBST->val.copiesVector.at(i).setStartDate(startLoanTime);
+            inputBST->val.copiesVector.at(i).setExpirationDate(endLoanTime);
+            inputBST->val.copiesVector.at(i).setReaderName(readerUsername);
+            return;
+        }
+    }
+    /**************************/
+
+    // visit right child
+    checkOutBookInCatalog(inputBST->right, bookID, startLoanTime, endLoanTime, readerUsername);
+}
+
+void renewBookInCatalog(TreeNode<Book> *inputBST, int inputID, int maxLoanTime)
+{
     if (inputBST == NULL)
     {
         return;
     }
 
-    IDInOrderTraversal3(inputBST->left, inputID, maxLoanTime); // visit left child
-    //    inputBST->val->binarySearch(inputID);
-    //    forLoopforBook(inputBST, inputID);            // visit current child
+    // visit left child
+    renewBookInCatalog(inputBST->left, inputID, maxLoanTime);
+
+    /**************************/
     for (int i = 0; i < inputBST->val.copiesVector.size(); i++)
     {
         if (inputBST->val.copiesVector.at(i).getID() == inputID)
         {
             inputBST->val.copiesVector.at(i).setExpirationDate(inputBST->val.copiesVector.at(i).getExpirationDate() + maxLoanTime);
+            return;
         }
     }
+    /**************************/
 
-    IDInOrderTraversal3(inputBST->right, inputID, maxLoanTime); // visit right child
+    // visit right child
+    renewBookInCatalog(inputBST->right, inputID, maxLoanTime); // visit right child
 }
 
 string copiesInOrderTraversal(TreeNode<copystruct> *inputBST, int inputID)
 {
     if (inputBST == NULL)
     {
-        return;
+        return "";
     }
 
-    copiesInOrderTraversal(inputBST->left, inputID); // visit left child
+    // visit left child
+    copiesInOrderTraversal(inputBST->left, inputID);
 
-    //    forLoopforBook(inputBST, inputID);
-    // visit current child
-    //    checkForIDfromCopyList(inputBST, inputID);
-
+    /**************************/
     if (inputBST->val.idfile == inputID)
     {
         return inputBST->val.isbnfile;
     }
+    /**************************/
 
-    copiesInOrderTraversal(inputBST->right, inputID); // visit right child
+    // visit right child
+    copiesInOrderTraversal(inputBST->right, inputID);
 }
 
 void Reader::searchBook(BST<Book> *bookCatalog, BST<copystruct> *copyList)
 {
-    // FIXME - (Daniel)
     int searchChoice;
     cout << "What category do you want to search by:" << endl;
     cout << "(1) - ISBN" << endl;
@@ -221,17 +232,15 @@ void Reader::searchBook(BST<Book> *bookCatalog, BST<copystruct> *copyList)
     cout << "(4) - ID" << endl;
     cin >> searchChoice;
 
-    // Book *searchMatches = NULL;
-
     switch (searchChoice)
     {
-    case 1: // DONE...maybe
+    case 1:
     {
         string inputISBN;
         cout << "What's your book's ISBN value?: ";
         cin >> inputISBN;
 
-        // Search for matching
+        // Search for matching isbn and print if found
         bookCatalog->binarySearch(inputISBN);
 
         break;
@@ -242,7 +251,8 @@ void Reader::searchBook(BST<Book> *bookCatalog, BST<copystruct> *copyList)
         cout << "What's your book's title?: ";
         cin >> inputTitle;
 
-        bookCatalog->inOrderSearch(bookCatalog->root, inputTitle, true);
+        // Search for matching titles and print them
+        bookCatalog->search(bookCatalog->root, inputTitle, true);
 
         break;
     }
@@ -252,8 +262,8 @@ void Reader::searchBook(BST<Book> *bookCatalog, BST<copystruct> *copyList)
         cout << "What's your book's category?: ";
         cin >> inputCategory;
 
-        bookCatalog->inOrderSearch(bookCatalog->root, inputCategory, false);
-
+        // Search for matching category and print them
+        bookCatalog->search(bookCatalog->root, inputCategory, false);
         break;
     }
     case 4:
@@ -262,13 +272,11 @@ void Reader::searchBook(BST<Book> *bookCatalog, BST<copystruct> *copyList)
         cout << "What's your book's ID?: ";
         cin >> inputID;
 
-        // NEEDS TO BE FIXED?!?!?!?!
+        // Get corresponding ISBN
         string correspondingISBN = copiesInOrderTraversal(copyList->root, inputID); // gets the corresponding ISBN
 
-        bookCatalog->binarySearch(correspondingISBN); // Should print out info about Book
-
-        //        IDInOrderTraversal(bookCatalog, inputID);
-
+        // Print details about the book using ISBN
+        bookCatalog->binarySearch(correspondingISBN);
         break;
     }
     default:
@@ -277,92 +285,10 @@ void Reader::searchBook(BST<Book> *bookCatalog, BST<copystruct> *copyList)
         break;
     }
     }
-
-    // Is this even needed anymore?
-    // Separate searchMatches into two separate vectors, one for available books and one for unavailable
-    // vector<Book> availableMatches;
-    // vector<Book> unavailableMatches;
-    // availableMatches.clear();
-    // unavailableMatches.clear();
-
-    // for (int i = 0; i < searchMatches.size(); i++)
-    // {
-    //     if (searchMatches.at(i).getReaderName() == "")
-    //     {
-    //         // If nobody has checked out this book -> it is available
-    //         availableMatches.push_back(searchMatches.at(i));
-    //     }
-    //     else
-    //     {
-    //         unavailableMatches.push_back(searchMatches.at(i));
-    //     }
-    // }
-
-    // // Sort availableMatches
-    // // sorting by title
-    // if (availableMatches.size() >= 2)
-    // {
-    //     for (int i = 0; i < availableMatches.size() - 1; i++)
-    //     {
-    //         for (int j = 0; j < (availableMatches.size() - i - 1); j++)
-    //         {
-    //             int titleCompare = availableMatches.at(j).getTitle().compare(availableMatches.at(j + 1).getTitle());
-    //             if (titleCompare > 0)
-    //             {
-    //                 swap(availableMatches.at(j), availableMatches.at(j + 1));
-    //             }
-    //         }
-    //     }
-
-    //     // sorting by ID
-    //     quickSort(availableMatches, 0, availableMatches.size() - 1);
-    // }
-
-    // // Sort unavailableMatches
-    // for (int i = 0; i < unavailableMatches.size(); i++)
-    // {
-    //     for (int j = 0; j < unavailableMatches.size() - i; j++)
-    //     {
-    //         if (unavailableMatches.at(i).getExpDate() > unavailableMatches.at(j).getExpDate())
-    //         {
-    //             swap(unavailableMatches.at(i), unavailableMatches.at(j));
-    //         }
-    //     }
-    // }
-
-    // // Combine the two back together into one finished, sorted vector
-    // searchMatches.clear();
-    // for (int i = 0; i < availableMatches.size(); i++)
-    // {
-    //     searchMatches.push_back(availableMatches.at(i));
-    // }
-    // for (int i = 0; i < unavailableMatches.size(); i++)
-    // {
-    //     searchMatches.push_back(unavailableMatches.at(i));
-    // }
-
-    // // Print searchMatches
-    // if (searchMatches.size() > 0)
-    // {
-    //     cout << endl
-    //          << "Books that match your search critera:" << endl
-    //          << endl;
-    //     for (Book searchResult : searchMatches)
-    //     {
-    //         cout << searchResult;
-    //     }
-    // }
-    // else
-    // {
-    //     cout << endl
-    //          << "There were no books that match that search critera, try again with a different search." << endl
-    //          << endl;
-    // }
 }
 
 void Reader::borrowBook(BST<Book> *&bookCatalog, time_t &zeroTime)
 {
-    bookCatalog;
     // Check if there are overdue books
     int currentTime = date(zeroTime);
     vector<BookCopy> expiredBooks;
@@ -387,6 +313,7 @@ void Reader::borrowBook(BST<Book> *&bookCatalog, time_t &zeroTime)
         return;
     }
 
+    // Ask for the ID of the book copy to borrow
     int inputID;
     cout << "What is the ID of the book you wish to borrow: ";
     cin >> inputID;
@@ -403,18 +330,30 @@ void Reader::borrowBook(BST<Book> *&bookCatalog, time_t &zeroTime)
             available = true;
         }
     }
-    /*for (int i = 0; i < bookCatalog.size(); i++) {
-        if (bookCatalog.at(i).getId() == inputID)
-        {
-            exists = true;
-            // If book exists in bookCatalog, check if it is already being borrowed by someone else
-            if (bookCatalog.at(i).getReaderName() == "")
-            {
-                available = true;
-                toBeBorrowed = bookCatalog.at(i);
-            }
-        }
-    }*/
+
+    // Now check if someone else is on the reserved linked list
+    // Match the ID given to a Book
+    Book matchedBook = returnBookGivenID(bookCatalog->root, inputID);
+
+    bool goodToContinue;
+
+    // Check the first entry of the linked list to see if it exists
+    if (matchedBook.getReservers() == nullptr)
+    {
+        // If the linked list is empty then the user can borrow the book
+        goodToContinue = true;
+    }
+    else
+    {
+        goodToContinue = ((matchedBook.getReservers()->data == this->getUserName()) ? true : false);
+    }
+
+    if (!goodToContinue)
+    {
+        cout << "It seems someone has already reserved this book, please wait for the reservation to free up" << endl;
+        return;
+    }
+
     if (!exists)
     {
         cout << "That ID does not exist in the library, double check the ID and try again" << endl;
@@ -433,28 +372,19 @@ void Reader::borrowBook(BST<Book> *&bookCatalog, time_t &zeroTime)
         return;
     }
 
-    // If all of the conditions are met, add the book to copiesBorrowed and change the attributes of the book
+    // If all of the conditions are met, add the book to copiesBorrowed
     toBeBorrowed.setStartDate(currentTime);
     toBeBorrowed.setExpirationDate(currentTime + this->getMaxLoanTime());
     toBeBorrowed.setReaderName(this->getUserName());
     this->copiesBorrowed.push_back(toBeBorrowed);
 
-    IDInOrderTraversal2(bookCatalog->root, inputID, currentTime, currentTime + this->getMaxLoanTime(), this->getUserName());
-    /*for (int i = 0; i < bookCatalog.size(); i++)
-    {
-        if (bookCatalog.at(i).getId() == toBeBorrowed.getId())
-        {
-            int currentTime = date(zeroTime);
-            bookCatalog.at(i).setStartDate(currentTime);
-            bookCatalog.at(i).setExpirationDate(currentTime + this->getMaxLoanTime());
-            bookCatalog.at(i).setReaderName(this->getUserName());
-        }
-    }*/
+    // Change the attributes of the book
+    checkOutBookInCatalog(bookCatalog->root, inputID, currentTime, (currentTime + this->getMaxLoanTime()), this->getUserName());
+    return;
 }
 
-void Reader::returnBook(BST<Book> *&bookCatalog)
+void Reader::returnBook(BST<Book> *&bookCatalog) // FIXME
 {
-    // FIXME - (Daniel)
     if (this->getBooksBorrowed().size() == 0)
     {
         cout << "You are not currently borrowing any books." << endl
@@ -464,7 +394,8 @@ void Reader::returnBook(BST<Book> *&bookCatalog)
 
     cout << "Here are all the books you are currently borrowing:" << endl;
 
-    for (BookCopy book : this->getBooksBorrowed()) {
+    for (BookCopy book : this->getBooksBorrowed())
+    {
         cout << book;
     }
 
@@ -494,31 +425,15 @@ void Reader::returnBook(BST<Book> *&bookCatalog)
     }
 
     // Change the properties of the returned book to reflect that it is available
-    IDInOrderTraversal2(bookCatalog->root, id, -1, -1, "");
+    checkOutBookInCatalog(bookCatalog->root, id, -1, -1, "");
 
-    // Must check if there are reservers and start 5 day period in which only first reserver can check it out
-    /*Book book1 = bookIdInOrderTraversal(bookCatalog->root, id);
-    if (book1.getReservers() != NULL) {
-
-    }*/
+    // TODO - start 5 day timer here somehow
 
     return;
-
-    // for (int i = 0; i < bookCatalog.size(); i++)
-    //{
-    //     if (bookCatalog.at(i).getId() == id)
-    //     {
-    //         bookCatalog.at(i).setStartDate(-1);
-    //         bookCatalog.at(i).setExpDate(-1);
-    //         bookCatalog.at(i).setReaderName("");
-    //     }
-    // }
-    // cout << endl;
 }
 
-void Reader::renewBook(BST<Book> *&bookCatalog)
+void Reader::renewBook(BST<Book> *&bookCatalog) // FIXME
 {
-    // FIXME - (Daniel)
     if (this->getBooksBorrowed().size() == 0)
     {
         cout << "You are not currently borrowing any books." << endl
@@ -553,15 +468,7 @@ void Reader::renewBook(BST<Book> *&bookCatalog)
 
     if (renewed)
     {
-        IDInOrderTraversal3(bookCatalog->root, id, this->getMaxLoanTime());
-        /*// Needs to be changed
-        for (int i = 0; i < bookCatalog.size(); i++)
-        {
-            if (bookCatalog.at(i).getId() == id)
-            {
-                bookCatalog.at(i).setExpDate(bookCatalog.at(i).getExpDate() + this->getMaxLoanTime());
-            }
-        }*/
+        renewBookInCatalog(bookCatalog->root, id, this->getMaxLoanTime());
     }
 
     if (!renewed)
@@ -573,7 +480,7 @@ void Reader::renewBook(BST<Book> *&bookCatalog)
     }
 }
 
-void Reader::reserveBook(BST<Book> *&bookCatalog)
+void Reader::reserveBook(BST<Book> *&bookCatalog) // FIXME
 {
     int inputID;
     cout << "What is an ID of the book you wish to reserve? ";
@@ -599,7 +506,7 @@ void Reader::reserveBook(BST<Book> *&bookCatalog)
     }
     if (!available)
     {
-        Book book = bookIdInOrderTraversal(book->catalog->root, inputID);
+        Book book = returnBookGivenID(bookCatalog->root, inputID);
         book.insertReader(this->getUserName());
         BooksReserved.push_back(book);
         return;
@@ -611,23 +518,24 @@ void Reader::reserveBook(BST<Book> *&bookCatalog)
     }
 }
 
-void Reader::cancelBook(BST<Book> *&bookCatalog)
+void Reader::cancelBook(BST<Book> *&bookCatalog) // FIXME
 {
     // Check that reader currently is reserving book
-    string inputID;
+    int inputID;
     cout << "What is an ID of the book you wish to cancel? ";
     cin >> inputID;
 
     bool reserved = false;
-    Book *book = bookIdInOrderTraversal(book->catalog->root, inputID);
+
+    Book book = returnBookGivenID(bookCatalog->root, inputID);
     for (int i = 0; i < BooksReserved.size(); i++)
     {
-        if (BooksReserved.at(i) == book)
+        if (BooksReserved.at(i).getIsbn() == book.getIsbn())
         {
             book.deleteReader(this->getUserName());
             BooksReserved.erase(BooksReserved.begin() + i);
             reserved = true;
-            return
+            return;
         }
     }
     if (!reserved)
@@ -639,10 +547,10 @@ void Reader::cancelBook(BST<Book> *&bookCatalog)
 
 void Reader::feelingLucky(BST<Book> *&bookCatalog)
 {
-    // TODO - maybe if we have time (Daniel)
+    // TODO - maybe if we have time
 }
 
-void Reader::myInformation()
+void Reader::myInformation(BST<Book> *&bookCatalog)
 {
     cout << "Username: " << this->getUserName() << endl;
     cout << "Password: " << this->getPassword() << endl
@@ -651,7 +559,7 @@ void Reader::myInformation()
     cout << "Books currently borrowed:" << endl;
     for (int i = 0; i < copiesBorrowed.size(); i++)
     {
-        Book *book = bookIdInOrderTraversal(book->catalog->root, copiesBorrowed.at(i).getID());
+        Book book = returnBookGivenID(bookCatalog->root, copiesBorrowed.at(i).getID());
         cout << "ID:\t" << copiesBorrowed.at(i).getID() << endl;
         cout << book << endl;
     }
