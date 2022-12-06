@@ -432,7 +432,7 @@ void readerLoop(Reader *user, BST<Book> *bookCatalog, time_t &zeroTime, BST<copy
 }
 
 // TODO - (Ethan)
-void librarianLoop(Librarian *user, BST<Book> bookCatalog, BST<User *> *usersList, time_t &zeroTime, int &idCount)
+void librarianLoop(Librarian *user, BST<Book> *bookCatalog, BST<User *> *usersList, time_t &zeroTime, int &idCount)
 {
     while (true)
     {
@@ -467,7 +467,7 @@ void librarianLoop(Librarian *user, BST<Book> bookCatalog, BST<User *> *usersLis
         case 0:
         {
             writeBackToUserFile(usersList); // writing back to user text file
-//            writeBackToUserFile(bookCatalog.root);
+                                            //            writeBackToUserFile(bookCatalog.root);
             return;
         }
         case 2:
