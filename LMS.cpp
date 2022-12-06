@@ -210,7 +210,7 @@ void traverse(TreeNode<copystruct> *node, BST<Book> &bookCatalog)
     traverse(node->right, bookCatalog);
 }
 
-void addCopiesToBook(BST<Book> *&bookCatalog, BST<copystruct> *&copyCatalog)
+void addCopiesToBook(BST<Book> *bookCatalog, BST<copystruct> *copyCatalog)
 {
     traverse(copyCatalog->root, *bookCatalog);
 }
@@ -473,19 +473,21 @@ void librarianLoop(Librarian *user, BST<Book> *bookCatalog, BST<User *> *usersLi
         case 2:
         {
             // Add Book
-            user->addBook(bookCatalog);
+            user->addBook(*bookCatalog);
+
+//            addBook()
             break;
         }
         case 3:
         {
             // Delete Book
-            user->deleteBook(bookCatalog);
+            user->deleteBook(*bookCatalog);
             break;
         }
         case 4:
         {
             // Search User
-            user->searchUser(*usersList);
+            user->searchUser(usersList->root);
             break;
         }
         case 5:
