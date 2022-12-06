@@ -23,10 +23,10 @@ using namespace std;
 // Function Declarations //
 void getUsers(BST<User *> *usersList);
 void getBooks(BST<Book> *&bookCatalog);
-void getCopies(BST<copystruct> *&copyCatalog);
-void addCopiesToBook(BST<Book> *&bookCatalog, BST<BookCopy> *&copyCatalog);
+void getCopies(BST<copystruct> *&copyCatalog, int idcount);
+void addCopiesToBook(BST<Book> *&bookCatalog, BST<copystruct> *&copyCatalog);
 User *login(BST<User *> *usersList);
-void librarianLoop(Librarian *user, BST<Book> bookCatalog, BST<User *> usersList, time_t &zeroTime);
+void librarianLoop(Librarian *user, BST<Book> *bookCatalog, BST<User *> *usersList, time_t &zeroTime, int &idCount);
 void readerLoop(Reader *user, BST<Book> *bookCatalog, time_t &zeroTime, BST<copystruct> *copyList);
 ///////////////////////////
 
@@ -37,11 +37,12 @@ int main()
     BST<Book> *bookCatalog;
     BST<User *> *usersList;
     BST<copystruct> *copyList;
+    int idCount = 0;
 
     // Read in data from student.txt and book.txt
     getUsers(usersList);
     getBooks(bookCatalog);
-    getCopies(copyList);
+    getCopies(copyList, idCount);
     addCopiesToBook(bookCatalog, copyList);
 
     // Login system, can log in and log out on the same run
@@ -53,7 +54,7 @@ int main()
 
         if (currentUser->type() == "Librarian")
         {
-            librarianLoop(userToLibrarian(currentUser), *bookCatalog, *usersList, zeroTime);
+            librarianLoop(userToLibrarian(currentUser), bookCatalog, usersList, zeroTime, idCount);
         }
         else if (currentUser->type() == "Student")
         {
@@ -147,7 +148,7 @@ void getBooks(BST<Book> *&bookCatalog)
     books.close();
 }
 
-void getCopies(BST<copystruct> *&copyList)
+void getCopies(BST<copystruct> *&copyList, int idcount)
 {
     fstream copyfin("copiesList.txt");
     if (copyfin.fail())
@@ -210,76 +211,88 @@ void traverse(TreeNode<copystruct> *node, BST<Book> &bookCatalog)
     traverse(node->right, bookCatalog);
 }
 
-void addCopiesToBook(BST<Book> *bookCatalog, BST<copystruct> *copyCatalog)
+void addCopiesToBook(BST<Book> *&bookCatalog, BST<copystruct> *&copyCatalog)
 {
     traverse(copyCatalog->root, *bookCatalog);
 }
 
-int verifytype(TreeNode<User *> *root, string user, string pass)
+void verifytype(TreeNode<User *> *root, string user, string pass, int type)
 {
 
     if ((root->val->getUserName() == user) && (root->val->getPassword() == pass))
     {
         if (root->val->type() == "Student")
         {
-            return 1;
+            type = 1;
         }
         if (root->val->type() == "Teacher")
         {
-            return 2;
+            type = 2;
         }
         if (root->val->type() == "Librarian")
         {
-            return 3;
+            type = 3;
         }
     }
     else
     {
-        return 4;
+        type = 4;
     }
     /* Traverse left*/
-    verifytype(root, user, pass);
+    verifytype(root->left, user, pass, type);
     /* Traverse right */
-    verifytype(root, user, pass);
+    verifytype(root->right, user, pass, type);
 }
 
-Student *verifypersonS(TreeNode<User *> *root, string user, string pass)
+void verifypersonS(TreeNode<User *> *root, string user, string pass, Student *&stud)
 {
+    if (root == nullptr)
+    {
+        return;
+    }
     /* Traverse left*/
-    verifypersonS(root, user, pass);
+    verifypersonS(root->left, user, pass, stud);
     if ((root->val->getUserName() == user) && (root->val->getPassword() == pass))
     {
-        return userToStudent(root->val);
+        stud = userToStudent(root->val);
     }
     /* Traverse right */
-    verifypersonS(root, user, pass);
+    verifypersonS(root->right, user, pass, stud);
 }
 
-Teacher *verifypersonT(TreeNode<User *> *root, string user, string pass)
+void verifypersonT(TreeNode<User *> *root, string user, string pass, Teacher *&teach)
 {
+    if (root == nullptr)
+    {
+        return;
+    }
     /* Traverse left*/
-    verifypersonT(root, user, pass);
+    verifypersonT(root->left, user, pass, teach);
     if ((root->val->getUserName() == user) && (root->val->getPassword() == pass))
     {
-        return userToTeacher(root->val);
+        teach = userToTeacher(root->val);
     }
     /* Traverse right */
-    verifypersonT(root, user, pass);
+    verifypersonT(root->right, user, pass, teach);
 }
 
-Librarian *verifypersonL(TreeNode<User *> *root, string user, string pass)
+void verifypersonL(TreeNode<User *> *root, string user, string pass, Librarian *&libb)
 {
+    if (root == nullptr)
+    {
+        return;
+    }
     /* Traverse left*/
-    verifypersonL(root, user, pass);
+    verifypersonL(root->left, user, pass, libb);
     if ((root->val->getUserName() == user) && (root->val->getPassword() == pass))
     {
-        return userToLibrarian(root->val);
+        libb = userToLibrarian(root->val);
     }
     /* Traverse right */
-    verifypersonL(root, user, pass);
+    verifypersonL(root->right, user, pass, libb);
 }
 
-User *login(BST<User *> usersList)
+User *login(BST<User *> *usersList)
 {
     while (true)
     {
@@ -303,20 +316,43 @@ User *login(BST<User *> usersList)
             cin >> passwordin;
             //
             //
-            int type = verifytype(usersList.root, userin, passwordin);
+            int testtype = -1;
+            verifytype(usersList->root, userin, passwordin, testtype);
+            int type = testtype;
             if (type == 1)
             {
-                return verifypersonS(usersList.root, userin, passwordin);
+                Student *temp;
+                temp->setUserName("-1");
+                verifypersonS(usersList->root, userin, passwordin, temp);
+                if (temp->getUserName() == "-1")
+                {
+                    exit(1);
+                }
+                return temp;
             }
             if (type == 2)
             {
-                return verifypersonT(usersList.root, userin, passwordin);
+                Teacher *temp;
+                temp->setUserName("-1");
+                verifypersonT(usersList->root, userin, passwordin, temp);
+                if (temp->getUserName() == "-1")
+                {
+                    exit(1);
+                }
+                return temp;
             }
             if (type == 3)
             {
-                return verifypersonL(usersList.root, userin, passwordin);
+                Librarian *temp;
+                temp->setUserName("-1");
+                verifypersonL(usersList->root, userin, passwordin, temp);
+                if (temp->getUserName() == "-1")
+                {
+                    exit(1);
+                }
+                return temp;
             }
-            if (type == 4)
+            if (type == -1)
             {
                 // If not, print an error and say try again
                 cout << "Account with those credentials was not found. Please try again" << endl
@@ -473,21 +509,22 @@ void librarianLoop(Librarian *user, BST<Book> *bookCatalog, BST<User *> *usersLi
         case 2:
         {
             // Add Book
-            user->addBook(*bookCatalog);
-
-//            addBook()
+            user->addBook(bookCatalog, idCount);
             break;
         }
         case 3:
         {
             // Delete Book
-            user->deleteBook(*bookCatalog);
+            user->deleteBook(bookCatalog);
             break;
         }
         case 4:
         {
             // Search User
-            user->searchUser(usersList->root);
+            string toSearch;
+            cout << "What username to search for? ";
+            cin >> toSearch;
+            user->searchUser(usersList->root, toSearch);
             break;
         }
         case 5:

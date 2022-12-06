@@ -24,7 +24,6 @@ protected:
     vector<BookCopy> copiesBorrowed;
     vector<Book> BooksReserved;
     int penalties;
-    string type();
 
 public:
     // Getters //
@@ -100,25 +99,25 @@ void quickSort(vector<BookCopy> lib, int low, int high) // FIXME - this one too
     }
 }
 
-string copiesInOrderTraversal(TreeNode<copystruct> *inputBST, int inputID)
+void copiesInOrderTraversal(TreeNode<copystruct> *inputBST, int inputID, string &isbnres)
 {
     if (inputBST == NULL)
     {
-        return "";
+        return;
     }
 
     // visit left child
-    copiesInOrderTraversal(inputBST->left, inputID);
+    copiesInOrderTraversal(inputBST->left, inputID, isbnres);
 
     /**************************/
     if (inputBST->val.idfile == inputID)
     {
-        return inputBST->val.isbnfile;
+        isbnres = inputBST->val.isbnfile;
     }
     /**************************/
 
     // visit right child
-    copiesInOrderTraversal(inputBST->right, inputID);
+    copiesInOrderTraversal(inputBST->right, inputID, isbnres);
 }
 
 void Reader::searchBook(BST<Book> *bookCatalog, BST<copystruct> *copyList)
@@ -172,7 +171,15 @@ void Reader::searchBook(BST<Book> *bookCatalog, BST<copystruct> *copyList)
         cin >> inputID;
 
         // Get corresponding ISBN
-        string correspondingISBN = copiesInOrderTraversal(copyList->root, inputID); // gets the corresponding ISBN
+        string correspondingISBN = "";
+
+        copiesInOrderTraversal(copyList->root, inputID, correspondingISBN); // gets the corresponding ISBN
+
+        if (correspondingISBN == "")
+        {
+            cerr << "shit broke";
+            exit(1);
+        }
 
         // Print details about the book using ISBN
         bookCatalog->binarySearch(correspondingISBN);
@@ -220,7 +227,9 @@ void Reader::borrowBook(BST<Book> *&bookCatalog, time_t &zeroTime)
     // Check if that ID exists in bookCatalog and that there are available copies
     bool exists = false;
     bool available = false;
-    BookCopy toBeBorrowed = returnBookCopyGivenID(bookCatalog->root, inputID);
+    BookCopy toBeBorrowed;
+    toBeBorrowed.setID(-1);
+    returnBookCopyGivenID(bookCatalog->root, inputID, toBeBorrowed);
     if (toBeBorrowed.getID() != -1)
     {
         exists = true;
@@ -232,7 +241,14 @@ void Reader::borrowBook(BST<Book> *&bookCatalog, time_t &zeroTime)
 
     // Now check if someone else is on the reserved linked list
     // Match the ID given to a Book
-    Book matchedBook = returnBookGivenID(bookCatalog->root, inputID);
+    Book matchedBook;
+    matchedBook.setIsbn("-1");
+    returnBookGivenID(bookCatalog->root, inputID, matchedBook);
+    if (matchedBook.getIsbn() == "-1")
+    {
+        cerr << "Couldnt find match";
+        exit(1);
+    }
 
     bool goodToContinue;
 
@@ -388,7 +404,9 @@ void Reader::reserveBook(BST<Book> *&bookCatalog) // FIXME
     // Check if that ID exists in bookCatalog and that there are available copies
     bool exists = false;
     bool available = false;
-    BookCopy toBeBorrowed = returnBookCopyGivenID(bookCatalog->root, inputID);
+    BookCopy toBeBorrowed;
+    toBeBorrowed.setID(-1);
+    returnBookCopyGivenID(bookCatalog->root, inputID, toBeBorrowed);
     if (toBeBorrowed.getID() != -1)
     {
         exists = true;
@@ -405,7 +423,14 @@ void Reader::reserveBook(BST<Book> *&bookCatalog) // FIXME
     }
     if (!available)
     {
-        Book book = returnBookGivenID(bookCatalog->root, inputID);
+        Book book;
+        book.setIsbn("-1");
+        returnBookGivenID(bookCatalog->root, inputID, book);
+        if (book.getIsbn() == "-1")
+        {
+            cerr << "Couldnt find match";
+            exit(1);
+        }
         book.insertReader(this->getUserName());
         BooksReserved.push_back(book);
         return;
@@ -434,7 +459,15 @@ void Reader::cancelBook(BST<Book> *&bookCatalog) // FIXME
 
     bool reserved = false;
 
-    Book book = returnBookGivenID(bookCatalog->root, inputID);
+    Book book;
+    book.setIsbn("-1");
+    returnBookGivenID(bookCatalog->root, inputID, book);
+    if (book.getIsbn() == "-1")
+    {
+        cerr << "Couldnt find match";
+        exit(1);
+    }
+
     for (int i = 0; i < BooksReserved.size(); i++)
     {
         if (BooksReserved.at(i).getIsbn() == book.getIsbn())
@@ -466,7 +499,15 @@ void Reader::myInformation(BST<Book> *&bookCatalog)
     cout << "Books currently borrowed:" << endl;
     for (int i = 0; i < copiesBorrowed.size(); i++)
     {
-        Book book = returnBookGivenID(bookCatalog->root, copiesBorrowed.at(i).getID());
+
+        Book book;
+        book.setIsbn("-1");
+        returnBookGivenID(bookCatalog->root, copiesBorrowed.at(i).getID(), book);
+        if (book.getIsbn() == "-1")
+        {
+            cerr << "Couldnt find match";
+            exit(1);
+        }
         cout << "ID:\t" << copiesBorrowed.at(i).getID() << endl;
         cout << book << endl;
     }

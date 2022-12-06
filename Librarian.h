@@ -17,9 +17,9 @@ public:
     Librarian(string initUserName, string initPassword);
 
     // ********** FUNCTIONS **********
-    void addBook(BST<Book> &bookCatalog,int &copycount);
-    void deleteBook(BST<Book> &bookCatalog);
-    User *searchUser(TreeNode<User *>*& usersList,string user);
+    void addBook(BST<Book> *&bookCatalog, int &copycount);
+    void deleteBook(BST<Book> *&bookCatalog);
+    void searchUser(TreeNode<User *> *&usersList, string user);
     void addUsers(BST<User *> usersList);
     void deleteUser(BST<User *> usersList);
     string type();
@@ -37,125 +37,137 @@ Librarian::Librarian(string initUserName, string initPassword)
     password = initPassword;
 }
 
-
-
-void Librarian::addBook(BST<Book> &bookCatalog,int &copycount)
+void Librarian::addBook(BST<Book> *&bookCatalog, int &copycount)
 {
     // TODO - (Ethan)
     string input;
-    Book *temp;
+    Book temp;
     BookCopy tempcopy(copycount++);
     copycount++;
     cout << "Adding new book..." << endl;
     cout << "Please type the isbn of the new book: ";
     cin >> input;
-    temp->setIsbn(input);
+    temp.setIsbn(input);
     cout << "Please type the title of the new book: ";
     cin >> input;
-    temp->setTitle(input);
+    temp.setTitle(input);
     cout << "Please type the Author of the new book: ";
-    temp->setAuthor(input);
+    temp.setAuthor(input);
     cout << "Please type the catagory of the new book: ";
     cin >> input;
-    temp->setCategory(input);
-    temp->copiesVector.push_back(tempcopy);
+    temp.setCategory(input);
+    temp.copiesVector.push_back(tempcopy);
     // bookCatalog.nodeInsert(temp);
-    bookCatalog.nodeInsert(*temp);
+    bookCatalog->nodeInsert(temp);
     //
     // may need further modification for copies data struct
     //
 }
 
-Book bookremoveInOrderTraversal(TreeNode<Book>* node, int inputID)
+void bookremoveInOrderTraversal(TreeNode<Book> *node, int inputID, Book &bookResult)
 {
     if (node == nullptr)
     {
-        Book defaultBook;
-        defaultBook.setIsbn("-1");
-        return defaultBook;
+        return;
     }
 
     // visit left child
-    IDInOrderTraversal(node->left, inputID);
+    bookremoveInOrderTraversal(node->left, inputID, bookResult);
 
     // What to do at current node
     for (int i = 0; i < node->val.copiesVector.size(); i++)
     {
         if (node->val.copiesVector.at(i).getID() == inputID)
         {
-            return node->val;
+            bookResult = node->val;
         }
     }
     // visit right child
-    IDInOrderTraversal(node->right, inputID);
+    bookremoveInOrderTraversal(node->right, inputID, bookResult);
 }
 
-BookCopy IDCHECKInOrderTraversal(TreeNode<Book>* node, int inputID)
-{
-    if (node == nullptr)
-    {
-        BookCopy defaultBook(-1);
-        return defaultBook;
-    }
-
-    // visit left child
-    IDInOrderTraversal(node->left, inputID);
-
-    // What to do at current node
-    for (int i = 0; i < node->val.copiesVector.size(); i++)
-    {
-        if (node->val.copiesVector.at(i).getID() == inputID)
-        {
-            return node->val.copiesVector.at(i);
-        }
-    }
-    // visit right child
-    IDInOrderTraversal(node->right, inputID);
-}
-
-void Librarian::deleteBook(BST<Book> &bookCatalog)
+void Librarian::deleteBook(BST<Book> *&bookCatalog)
 {
     // TODO - (Ethan)
     cout << "Please input the book id to be removed: ";
     int idin;
     cin >> idin;
-    if (IDCHECKInOrderTraversal(bookCatalog.root, idin).getID() == -1) {
+
+    BookCopy randomnameidgaf;
+    randomnameidgaf.setID(-1);
+    returnBookCopyGivenID(bookCatalog->root, idin, randomnameidgaf);
+
+    if (randomnameidgaf.getID() == -1)
+    {
         cout << "Id specified has not been found...";
         return;
     }
-    else {
-        //returnbook, then check if it has any copies
-        string toremovetitle = bookremoveInOrderTraversal(bookCatalog.root, idin).getTitle();
-        vector<BookCopy> b1 = bookremoveInOrderTraversal(bookCatalog.root, idin).getCopiesVector();
-        for (int i = 0; i < b1.size(); i++) {
-            if (b1.at(i).getID() == idin) {
-                b1.erase(b1.begin() + 0);//check if work
+    else
+    {
+        // returnbook, then check if it has any copies
+        Book bookTest;
+        bookTest.setIsbn("-1");
+        bookremoveInOrderTraversal(bookCatalog->root, idin, bookTest);
+        string toremovetitle = bookTest.getTitle();
+        vector<BookCopy> b1 = bookTest.getCopiesVector();
+        for (int i = 0; i < b1.size(); i++)
+        {
+            if (b1.at(i).getID() == idin)
+            {
+                b1.erase(b1.begin() + 0); // check if work
             }
         }
-        if (b1.empty()) {
-            //if array is now empty remove book
-            //TODO create deletenode for book title
-            bookCatalog.deleteNode(toremovetitle);
+        if (b1.empty())
+        {
+            // if array is now empty remove book
+            // TODO create deletenode for book title
+            bookCatalog->deleteNode(bookTest);
         }
-        bookremoveInOrderTraversal(bookCatalog.root, idin).getCopiesVector() = b1;
+        bookTest.getCopiesVector() = b1;
     }
 }
 
-User *Librarian::searchUser(TreeNode<User*> *&usersList, string user)
+void Librarian::searchUser(TreeNode<User *> *&usersList, string user)
 {
     if ((usersList->val->getUserName() == user))
-    {   
- 
-        return usersList->val;
+    {
+        if (usersList->val->type() == "Librarian")
+        {
+            cout << "User's username is " << usersList->val->getUserName() << endl
+                 << "User's password is " << usersList->val->getPassword() << endl;
+        }
+        else
+        {
+            cout << "The User is a " << usersList->val->type() << endl;
+            cout << "User's username is " << usersList->val->getUserName() << endl
+                 << "User's password is " << usersList->val->getPassword() << endl;
+            // cout << "The user has "<< userToReader(usersList->val).copiesBorrowed()
+        }
     }
     else
     {
-        return ;
+        return;
     }
     /* Traverse left*/
     searchUser(usersList->left, user);
     /* Traverse right */
-    searchUser(usersList->right, user );
+    searchUser(usersList->right, user);
+}
+
+void returnUserGivenUsername(TreeNode<User *> *&usersList, string user, User *&result)
+{
+    if ((usersList->val->getUserName() == user))
+    {
+        result = usersList->val;
+    }
+    else
+    {
+        return;
+    }
+    /* Traverse left*/
+    returnUserGivenUsername(usersList->left, user, result);
+    /* Traverse right */
+    returnUserGivenUsername(usersList->right, user, result);
 }
 
 void Librarian::addUsers(BST<User *> usersList)
@@ -171,7 +183,7 @@ void Librarian::addUsers(BST<User *> usersList)
         cin >> userin;
         cout << "Please input the desired password of the new user: ";
         cin >> passwordin;
-        Student *temp;
+        User *temp;
         temp->setUserName(userin);
         temp->setPassword(passwordin);
         usersList.nodeInsert(temp);
@@ -182,7 +194,7 @@ void Librarian::addUsers(BST<User *> usersList)
         cin >> userin;
         cout << "Please input the desired password of the new user: ";
         cin >> passwordin;
-        Teacher* temp;
+        User *temp;
         temp->setUserName(userin);
         temp->setPassword(passwordin);
         usersList.nodeInsert(temp);
@@ -193,7 +205,7 @@ void Librarian::addUsers(BST<User *> usersList)
         cin >> userin;
         cout << "Please input the desired password of the new user: ";
         cin >> passwordin;
-        Librarian* temp;
+        User *temp;
         temp->setUserName(userin);
         temp->setPassword(passwordin);
         usersList.nodeInsert(temp);
@@ -205,75 +217,16 @@ void Librarian::deleteUser(BST<User *> usersList)
     cout << "please enter the username of the user you wish to delete: ";
     string userin;
     cin >> userin;
-    usersList.deleteNode(userin);
 
+    // Search user using string username
+    User *toSearch;
+    toSearch->setUserName("-1");
+
+    returnUserGivenUsername(usersList.root, userin, toSearch);
+
+    usersList.deleteNode(toSearch);
 }
 
-
-
-
-void BST<Book>::search(TreeNode<Book>* root)
-{
-    //// Make array for result of search
-    vector<Book> matches;
-    matches.clear();
-
-    //// Search for matches and add them to the array
-    searchRecursive(root, searchTerm, matches, TitleOrCategory);
-
-    if (matches.size() == 0)
-    {
-        cout << endl
-            << "There were no books that match that search critera, try again with a different search." << endl
-            << endl;
-        return;
-    }
-
-    // Sort matches by title
-    quickSortForMatches(matches, 0, matches.size() - 1);
-
-    //// Compiling the results
-    for (int i = 0; i < matches.size(); i++)
-    {
-        vector<BookCopy> unavailable;
-        vector<int> available;
-        unavailable.clear();
-        available.clear();
-        for (int j = 0; j < matches.at(i).copiesVector.size(); j++)
-        {
-            if (matches.at(i).copiesVector.at(j).getReaderName() == "")
-            {
-                available.push_back(matches.at(i).copiesVector.at(j).getID());
-            }
-            else
-            {
-                unavailable.push_back(matches.at(i).copiesVector.at(j));
-            }
-        }
-
-        // Print the Book
-        cout << matches.at(i);
-
-        // Print available ID's
-        cout << "Available ID's: ";
-
-        for (int avail : available)
-        {
-            cout << avail << " ";
-        }
-        cout << endl;
-
-        // Sort unavailable BookCopies
-        quickSortForUnavailableCopies(unavailable, 0, unavailable.size() - 1);
-
-        // Print unavailable ID's
-        for (int j = 0; j < unavailable.size(); j++)
-        {
-            cout << unavailable.at(j).getID() << " ";
-        }
-        cout << endl;
-    }
-}
 ////////////////////////////////////
 
 string Librarian::type()
