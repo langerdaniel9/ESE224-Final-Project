@@ -42,7 +42,7 @@ int main()
     getUsers(usersList);
     getBooks(bookCatalog);
     getCopies(copyList);
-    addCopiesToBook(bookCatalog, copyList);
+    addCopiesToBook(*bookCatalog, *copyList);
 
     // Login system, can log in and log out on the same run
 
@@ -53,7 +53,7 @@ int main()
 
         if (currentUser->type() == "Librarian")
         {
-            librarianLoop(userToLibrarian(currentUser), bookCatalog, usersList, zeroTime);
+            librarianLoop(userToLibrarian(currentUser), *bookCatalog, *usersList, zeroTime);
         }
         else if (currentUser->type() == "Student")
         {
