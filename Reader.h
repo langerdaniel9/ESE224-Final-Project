@@ -444,6 +444,14 @@ void Reader::reserveBook(BST<Book> *&bookCatalog) // FIXME
 
 void Reader::cancelBook(BST<Book> *&bookCatalog) // FIXME
 {
+
+    cout << "Books currently reserved:" << endl;
+    for (int i = 0; i < BooksReserved.size(); i++)
+    {
+        cout << BooksReserved.at(i) << endl;
+    }
+    cout << endl;
+
     // Check that reader currently is reserving book
     int inputID;
     cout << "What is an ID of the book you wish to cancel? ";
