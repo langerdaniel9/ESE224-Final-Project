@@ -112,7 +112,7 @@ TreeNode<Book> *deleteNode(TreeNode<Book> *root, Book element) // deleteNode for
             return aux;
         }
 
-        TreeNode<Book> *toGetDeleted = inOrderSuccessor(root->right); // The deleting here does not work!
+        TreeNode<Book> *toGetDeleted = inOrderSuccessor(root->right);
         root->val = toGetDeleted->val;
         root->right = deleteNode(root->right, toGetDeleted->val);
     }
@@ -150,7 +150,7 @@ TreeNode<User *> *deleteNode(TreeNode<User *> *root, User *element) // deleteNod
             return aux;
         }
 
-        TreeNode<User *> *toGetDeleted = inOrderSuccessor(root->right); // The deleting here does not work!
+        TreeNode<User *> *toGetDeleted = inOrderSuccessor(root->right);
         root->val = toGetDeleted->val;
         root->right = deleteNode(root->right, toGetDeleted->val);
     }
