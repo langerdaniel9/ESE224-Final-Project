@@ -8,3 +8,4 @@ slnx.sqlite
 test.cpp
 /Report
 *.json
+*.zip

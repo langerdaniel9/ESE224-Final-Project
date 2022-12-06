@@ -59,7 +59,8 @@ void User::changePassword()
     password = newPass;
 }
 
-void User::myInformation() {
+void User::myInformation()
+{
     cout << "Username: " << userName << endl;
     cout << "Password: " << password << endl;
 }

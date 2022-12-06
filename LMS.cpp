@@ -362,7 +362,6 @@ User *login(BST<User *> *usersList)
     }
 }
 
-// TODO - (Daniel)
 void readerLoop(Reader *user, BST<Book> *bookCatalog, time_t &zeroTime, BST<copystruct> *copyList)
 {
     while (true)
@@ -467,7 +466,6 @@ void readerLoop(Reader *user, BST<Book> *bookCatalog, time_t &zeroTime, BST<copy
     }
 }
 
-// TODO - (Ethan)
 void librarianLoop(Librarian *user, BST<Book> *bookCatalog, BST<User *> *usersList, time_t &zeroTime, int &idCount)
 {
     while (true)
