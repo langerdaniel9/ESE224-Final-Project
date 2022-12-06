@@ -53,7 +53,7 @@ int Reader::getMaxCopies()
 
 int Reader::getMaxLoanTime()
 {
-    return maxLoanTime;
+    return this->maxLoanTime;
 }
 
 vector<BookCopy> Reader::getBooksBorrowed()
