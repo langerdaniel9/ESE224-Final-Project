@@ -17,11 +17,11 @@ public:
     Librarian(string initUserName, string initPassword);
 
     // ********** FUNCTIONS **********
-    void addBook(BST<Book> &bookCatalog);
-    void deleteBook(BST<Book> &bookCatalog);
-    User *searchUser(BST<User *> usersList);
-    void addUsers(BST<User *> usersList);
-    void deleteUser(BST<User *> usersList);
+    void addBook(TreeNode<Book> &bookCatalog, int &copycount);
+    void deleteBook(TreeNode<Book> &bookCatalog);
+    User *searchUser(TreeNode<User *> usersList);
+    void addUsers(TreeNode<User *> usersList);
+    void deleteUser(TreeNode<User *> usersList);
     string type();
 };
 
@@ -39,12 +39,12 @@ Librarian::Librarian(string initUserName, string initPassword)
 
 
 
-void Librarian::addBook(BST<Book> &bookCatalog,int &copycout)
+void Librarian::addBook(TreeNode<Book> &bookCatalog,int &copycount)
 {
     // TODO - (Ethan)
     string input;
     Book *temp;
-    BookCopy tempcopy(copycout++);
+    BookCopy tempcopy(copycount++);
     copycount++;
     cout << "Adding new book..." << endl;
     cout << "Please type the isbn of the new book: ";
