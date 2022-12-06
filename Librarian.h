@@ -54,10 +54,9 @@ void Librarian::addBook(BST<Book> &bookCatalog,int &copycout)
     cout << "Please type the catagory of the new book: ";
     cin >> input;
     temp->setCategory(input);
-    
-    temp->copiesVector.push_back()
+    temp->copiesVector.push_back(tempcopy);
     // bookCatalog.nodeInsert(temp);
-
+    bookCatalog.nodeInsert(temp);
     //
     // may need further modification for copies data struct
     //
@@ -155,61 +154,6 @@ User *Librarian::searchUser(BST<User *> usersList)
     /* Traverse right */
     verifytype(root, user, pass);
 }
-
-//TODO - Fix up searhcing for users
-//void binarySearch(TreeNode<User*>* root, User* element)                                   // maybe specifiy this??
-//{
-//    // Used for users (by username), books (by ISBN), and book copies (by ID)
-//    if (root == NULL)
-//    {
-//        return;                                         // I think this works??
-//    }
-//
-//    if (root->val->getUserName() == element->getUserName()) {
-//        string type = root->val->type();
-//
-//        if (type == "Student" || type == "Teacher") {
-//            type = "Reader";
-//        }
-//
-//        switch (type)
-//        {
-//        case "Reader": {
-//
-//            cout << "Username: " << root->val->getUserName() << endl
-//                << "Password: " << root->val->getPassword() << endl
-//                << "Reader Type: " << root->val->type() << endl;
-//
-//            Reader* tempForPrint = userToReader(root->val);
-//
-//            cout << "Copies: " << endl;
-//            tempForPrint.printCopies();
-//
-//            //            cout << root->val << endl;
-//
-//            break;
-//        }
-//        case "Librarian": {
-//
-//            cout << "Username: " << root->val->getUserName() << endl
-//                << "Password: " << root->val->getPassword() << endl;
-//
-//            break;
-//        }
-//        }
-//
-//    }
-//
-//
-//    if (element < root->val)
-//    {
-//        root->left = binarySearch(root->left, element);
-//    }
-//    else if (element > root->val)
-//    {
-//        root->right = binarySearch(root->right, element);
-//    }
-//}
 
 void Librarian::addUsers(BST<User *> usersList)
 {
