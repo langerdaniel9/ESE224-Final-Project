@@ -37,6 +37,8 @@ Librarian::Librarian(string initUserName, string initPassword)
     password = initPassword;
 }
 
+
+
 void Librarian::addBook(BST<Book> &bookCatalog,int &copycout)
 {
     // TODO - (Ethan)
@@ -51,6 +53,8 @@ void Librarian::addBook(BST<Book> &bookCatalog,int &copycout)
     cout << "Please type the title of the new book: ";
     cin >> input;
     temp->setTitle(input);
+    cout << "Please type the Author of the new book: ";
+    temp->setAuthor(input);
     cout << "Please type the catagory of the new book: ";
     cin >> input;
     temp->setCategory(input);
@@ -135,14 +139,15 @@ void Librarian::deleteBook(BST<Book> &bookCatalog)
     }
 }
 
-User *Librarian::searchUser(BST<User *> usersList)
+void *Librarian::searchUser(BST<User *> usersList)
 {
     usersList.root->val->getUserName();
 
    
 
-    if ((root->val.getUserName() == user) && (root->val.getPassword() == pass))
-    {
+    if ((root->val.getUserName() == user))
+    {   
+
         return root->val;
     }
     else
@@ -150,9 +155,9 @@ User *Librarian::searchUser(BST<User *> usersList)
         false;
     }
     /* Traverse left*/
-    verifytype(root, user, pass);
+    searchUser(root, user, pass);
     /* Traverse right */
-    verifytype(root, user, pass);
+    SearchUser(root, user, pass);
 }
 
 void Librarian::addUsers(BST<User *> usersList)
