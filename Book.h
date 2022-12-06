@@ -248,3 +248,104 @@ void Book::deleteReader(string readerName)
     prev->next = head->next;
     delete head;
 }
+
+// ******************** OTHER BOOK FUNCTIONS ********************
+
+BookCopy returnBookCopyGivenID(TreeNode<Book> *node, int inputID)
+{
+    if (node == nullptr)
+    {
+        BookCopy defaultBook(-1);
+        return defaultBook;
+    }
+
+    // visit left child
+    returnBookCopyGivenID(node->left, inputID);
+
+    // What to do at current node
+    for (int i = 0; i < node->val.copiesVector.size(); i++)
+    {
+        if (node->val.copiesVector.at(i).getID() == inputID)
+        {
+            return node->val.copiesVector.at(i);
+        }
+    }
+    // visit right child
+    returnBookCopyGivenID(node->right, inputID);
+}
+
+Book returnBookGivenID(TreeNode<Book> *node, int inputID)
+{
+    if (node == nullptr)
+    {
+        return; // FIXME
+    }
+
+    // visit left child
+    return returnBookGivenID(node->left, inputID);
+
+    // What to do at current node
+    // Check through bookCopies vector for an id that matches inputID
+    for (int i = 0; i < node->val.copiesVector.size(); i++)
+    {
+        if (node->val.copiesVector.at(i).getID() == inputID)
+        {
+            return node->val;
+        }
+    }
+
+    // visit right child
+    return returnBookGivenID(node->right, inputID);
+}
+
+void checkOutBookInCatalog(TreeNode<Book> *inputBST, int bookID, int startLoanTime, int endLoanTime, string readerUsername)
+{
+    if (inputBST == nullptr)
+    {
+        return;
+    }
+
+    // visit left child
+    checkOutBookInCatalog(inputBST->left, bookID, startLoanTime, endLoanTime, readerUsername);
+
+    /**************************/
+    for (int i = 0; i < inputBST->val.copiesVector.size(); i++)
+    {
+        if (inputBST->val.copiesVector.at(i).getID() == bookID)
+        {
+            inputBST->val.copiesVector.at(i).setStartDate(startLoanTime);
+            inputBST->val.copiesVector.at(i).setExpirationDate(endLoanTime);
+            inputBST->val.copiesVector.at(i).setReaderName(readerUsername);
+            return;
+        }
+    }
+    /**************************/
+
+    // visit right child
+    checkOutBookInCatalog(inputBST->right, bookID, startLoanTime, endLoanTime, readerUsername);
+}
+
+void renewBookInCatalog(TreeNode<Book> *inputBST, int inputID, int maxLoanTime)
+{
+    if (inputBST == NULL)
+    {
+        return;
+    }
+
+    // visit left child
+    renewBookInCatalog(inputBST->left, inputID, maxLoanTime);
+
+    /**************************/
+    for (int i = 0; i < inputBST->val.copiesVector.size(); i++)
+    {
+        if (inputBST->val.copiesVector.at(i).getID() == inputID)
+        {
+            inputBST->val.copiesVector.at(i).setExpirationDate(inputBST->val.copiesVector.at(i).getExpirationDate() + maxLoanTime);
+            return;
+        }
+    }
+    /**************************/
+
+    // visit right child
+    renewBookInCatalog(inputBST->right, inputID, maxLoanTime); // visit right child
+}
