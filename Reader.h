@@ -43,6 +43,7 @@ public:
     void cancelBook(BST<Book> *&bookCatalog);
     void feelingLucky(BST<Book> *&bookCatalog);
     void myInformation(BST<Book> *&bookCatalog);
+    string type();
 };
 
 // Leave functions in the .h file for now, will move them to their respective .cpp files when project is finished
