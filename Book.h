@@ -251,38 +251,37 @@ void Book::deleteReader(string readerName)
 
 // ******************** OTHER BOOK FUNCTIONS ********************
 
-BookCopy returnBookCopyGivenID(TreeNode<Book> *node, int inputID)
+void returnBookCopyGivenID(TreeNode<Book> *node, int inputID, BookCopy &bc)
 {
     if (node == nullptr)
     {
-        BookCopy defaultBook(-1);
-        return defaultBook;
+        return;
     }
 
     // visit left child
-    returnBookCopyGivenID(node->left, inputID);
+    returnBookCopyGivenID(node->left, inputID, bc);
 
     // What to do at current node
     for (int i = 0; i < node->val.copiesVector.size(); i++)
     {
         if (node->val.copiesVector.at(i).getID() == inputID)
         {
-            return node->val.copiesVector.at(i);
+            bc = node->val.copiesVector.at(i);
         }
     }
     // visit right child
-    returnBookCopyGivenID(node->right, inputID);
+    returnBookCopyGivenID(node->right, inputID, bc);
 }
 
-Book returnBookGivenID(TreeNode<Book> *node, int inputID)
+void returnBookGivenID(TreeNode<Book> *node, int inputID, Book &result)
 {
     if (node == nullptr)
     {
-        return; // FIXME
+        return;
     }
 
     // visit left child
-    return returnBookGivenID(node->left, inputID);
+    return returnBookGivenID(node->left, inputID, result);
 
     // What to do at current node
     // Check through bookCopies vector for an id that matches inputID
@@ -290,12 +289,12 @@ Book returnBookGivenID(TreeNode<Book> *node, int inputID)
     {
         if (node->val.copiesVector.at(i).getID() == inputID)
         {
-            return node->val;
+            result = node->val;
         }
     }
 
     // visit right child
-    return returnBookGivenID(node->right, inputID);
+    return returnBookGivenID(node->right, inputID, result);
 }
 
 void checkOutBookInCatalog(TreeNode<Book> *inputBST, int bookID, int startLoanTime, int endLoanTime, string readerUsername)

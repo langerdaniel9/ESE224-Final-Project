@@ -8,6 +8,7 @@
 #include <vector>
 #include <iostream>
 #include <string>
+#include <algorithm>
 
 using namespace std;
 
@@ -23,6 +24,7 @@ public:
     BST<Type>();
     void nodeInsert(Type element);
     void deleteNode(Type element);
+    void deleteBookNodeUsingTitle(string element);
     void binarySearch(string element);
     void search(TreeNode<Type> *root, string searchTerm, bool TitleOrCategory);
 };
@@ -74,12 +76,51 @@ template <typename Type>
 TreeNode<Type> *inOrderSuccessor(TreeNode<Type> *root)
 {
     TreeNode<Type> *successor = root;
-    while ((successor && successor->left) != NULL)
+    while ((successor != NULL && successor->left != NULL))
     {
         successor = successor->left;
     }
 
     return successor;
+}
+
+TreeNode<Book> *deleteNode(TreeNode<Book> *root, string element) // deleteNode for Book using title
+{
+    if (root == NULL)
+    { // Base case => deleting the root
+        return root;
+    }
+
+    if (element < root->val.getTitle()) // FIXME - might need to be string.compare
+    {
+        // Finding which node to delete
+        root->left = deleteNode(root->left, element);
+    }
+    else if (element > root->val.getTitle())
+    {
+        root->right = deleteNode(root->right, element);
+    }
+    else
+    {
+        if (root->left == NULL)
+        {
+            TreeNode<Book> *aux = root->right;
+            delete (root);
+            return aux;
+        }
+        else if (root->right == NULL)
+        {
+            TreeNode<Book> *aux = root->left;
+            delete (root);
+            return aux;
+        }
+
+        TreeNode<Book> *toGetDeleted = inOrderSuccessor(root->right);
+        root->val = toGetDeleted->val;
+        root->right = deleteNode(root->right, toGetDeleted->val.getTitle());
+    }
+
+    return root;
 }
 
 TreeNode<Book> *deleteNode(TreeNode<Book> *root, Book element) // deleteNode for Books BST
@@ -160,6 +201,12 @@ TreeNode<User *> *deleteNode(TreeNode<User *> *root, User *element) // deleteNod
 
 template <typename Type>
 void BST<Type>::deleteNode(Type element)
+{
+    root = deleteNode(root, element); // Assuming this works?? (Going to either Book or User types)
+}
+
+template <typename Type>
+void BST<Type>::deleteBookNodeUsingTitle(string element)
 {
     root = deleteNode(root, element); // Assuming this works?? (Going to either Book or User types)
 }
@@ -318,6 +365,7 @@ void quickSortForMatches(vector<Book> lib, int low, int high)
     }
 }
 
+template <>
 void BST<Book>::search(TreeNode<Book> *root, string searchTerm, bool TitleOrCategory)
 {
     //// Make array for result of search
