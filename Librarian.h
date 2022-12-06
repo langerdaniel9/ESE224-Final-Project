@@ -39,7 +39,7 @@ Librarian::Librarian(string initUserName, string initPassword)
 
 
 
-void Librarian::addBook(BST<Book> &bookCatalog,int &copycout)
+void Librarian::addBook(BST<Book> *&bookCatalog,int &copycout)
 {
     // TODO - (Ethan)
     string input;
