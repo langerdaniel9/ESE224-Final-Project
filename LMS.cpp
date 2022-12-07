@@ -142,7 +142,7 @@ void getBooks(BST<Book> *&bookCatalog)
         books >> isbnin >> titlein >> authorin >> catagoryin;
         string temp;
         getline(books, temp);
-        Book toinsert(isbnin, titlein, authorin, catagoryin); // FIXME - does this need a new?
+        Book toinsert(isbnin, titlein, authorin, catagoryin);
         bookCatalog->nodeInsert(toinsert);
     }
     books.close();
@@ -180,7 +180,7 @@ void traverseToInsert(copystruct toInsert, TreeNode<Book> *bookNode)
 
     if (bookNode->val.getIsbn() == toInsert.isbnfile)
     {
-        BookCopy newBookCopy(toInsert.idfile); // FIXME - might not work since its not a pointer
+        BookCopy newBookCopy(toInsert.idfile);
         bookNode->val.copiesVector.push_back(newBookCopy);
         return;
     }

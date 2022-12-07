@@ -39,7 +39,6 @@ Librarian::Librarian(string initUserName, string initPassword)
 
 void Librarian::addBook(BST<Book> *&bookCatalog, int &copycount)
 {
-    // TODO - (Ethan)
     string input;
     Book temp;
     BookCopy tempcopy(copycount++);
@@ -88,7 +87,6 @@ void bookremoveInOrderTraversal(TreeNode<Book> *node, int inputID, Book &bookRes
 
 void Librarian::deleteBook(BST<Book> *&bookCatalog)
 {
-    // TODO - (Ethan)
     cout << "Please input the book id to be removed: ";
     int idin;
     cin >> idin;
@@ -120,7 +118,6 @@ void Librarian::deleteBook(BST<Book> *&bookCatalog)
         if (b1.empty())
         {
             // if array is now empty remove book
-            // TODO create deletenode for book title
             bookCatalog->deleteNode(bookTest);
         }
         bookTest.getCopiesVector() = b1;

@@ -62,7 +62,7 @@ vector<BookCopy> Reader::getBooksBorrowed()
     return this->copiesBorrowed;
 }
 
-int partition(vector<BookCopy> lib, int low, int high) // FIXME - might not be needed
+int partition(vector<BookCopy> lib, int low, int high)
 {
     // partition starting from first element;
     // then comparing each element by the last element in the array
@@ -85,7 +85,7 @@ int partition(vector<BookCopy> lib, int low, int high) // FIXME - might not be n
     return i + 1;
 }
 
-void quickSort(vector<BookCopy> lib, int low, int high) // FIXME - this one too
+void quickSort(vector<BookCopy> lib, int low, int high)
 {
     if (low < high)
     {
@@ -298,7 +298,7 @@ void Reader::borrowBook(BST<Book> *&bookCatalog, time_t &zeroTime)
     return;
 }
 
-void Reader::returnBook(BST<Book> *&bookCatalog) // FIXME
+void Reader::returnBook(BST<Book> *&bookCatalog)
 {
     if (this->getBooksBorrowed().size() == 0)
     {
@@ -347,7 +347,7 @@ void Reader::returnBook(BST<Book> *&bookCatalog) // FIXME
     return;
 }
 
-void Reader::renewBook(BST<Book> *&bookCatalog) // FIXME
+void Reader::renewBook(BST<Book> *&bookCatalog)
 {
     if (this->getBooksBorrowed().size() == 0)
     {
@@ -395,7 +395,7 @@ void Reader::renewBook(BST<Book> *&bookCatalog) // FIXME
     }
 }
 
-void Reader::reserveBook(BST<Book> *&bookCatalog) // FIXME
+void Reader::reserveBook(BST<Book> *&bookCatalog)
 {
     int inputID;
     cout << "What is an ID of the book you wish to reserve? ";
@@ -442,7 +442,7 @@ void Reader::reserveBook(BST<Book> *&bookCatalog) // FIXME
     }
 }
 
-void Reader::cancelBook(BST<Book> *&bookCatalog) // FIXME
+void Reader::cancelBook(BST<Book> *&bookCatalog)
 {
 
     cout << "Books currently reserved:" << endl;
@@ -487,7 +487,6 @@ void Reader::cancelBook(BST<Book> *&bookCatalog) // FIXME
 
 void Reader::feelingLucky(BST<Book> *&bookCatalog)
 {
-    // TODO - maybe if we have time
 }
 
 void Reader::myInformation(BST<Book> *&bookCatalog)

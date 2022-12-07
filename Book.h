@@ -146,7 +146,6 @@ void Book::favorite()
 
 ostream &operator<<(ostream &output, Book &book)
 {
-    // FIXME
     output << "ISBN:\t" << book.getIsbn() << endl
            << "Title:\t" << book.getTitle() << endl
            << "Author:\t" << book.getAuthor() << endl

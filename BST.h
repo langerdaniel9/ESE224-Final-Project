@@ -3,7 +3,6 @@
 #include "Structs.h"
 #include "User.h"
 #include "Book.h"
-// #include "Reader.h"
 
 #include <vector>
 #include <iostream>
@@ -91,7 +90,7 @@ TreeNode<Book> *deleteNode(TreeNode<Book> *root, string element) // deleteNode f
         return root;
     }
 
-    if (element < root->val.getTitle()) // FIXME - might need to be string.compare
+    if (element < root->val.getTitle()) 
     {
         // Finding which node to delete
         root->left = deleteNode(root->left, element);
