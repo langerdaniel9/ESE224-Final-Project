@@ -151,7 +151,7 @@ ostream &operator<<(ostream &output, Book &book)
            << "Author:\t" << book.getAuthor() << endl
            << "Category:\t" << book.getCategory() << endl
            << "Copies:\t" << endl;
-    // TODO - Print the id of each copy within copy binary tree
+    // Print the id of each copy within copy binary tree
 
     // Print linked list
     /*output << "Reservers: " << endl;
