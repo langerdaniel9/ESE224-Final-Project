@@ -325,7 +325,7 @@ void Reader::borrowBook(vector<Book> &bookCatalog, time_t &zeroTime)
     }
     else
     {
-        goodToContinue = ((matchedBook.getReservers() == this->getUsername()) ? true : false);
+        goodToContinue = ((matchedBook.getReservers()->username == this->getUsername()) ? true : false);
     }
 
     if (!goodToContinue)
@@ -355,11 +355,21 @@ void Reader::borrowBook(vector<Book> &bookCatalog, time_t &zeroTime)
     // If all of the conditions are met, add the book to copiesBorrowed
     toBeBorrowed.setStartDate(currentTime);
     toBeBorrowed.setExpirationDate(currentTime + this->getMaxLoanTime());
-    toBeBorrowed.setReaderName(this->getUserName());
+    toBeBorrowed.setReaderName(this->getUsername());
     this->copiesBorrowed.push_back(toBeBorrowed);
 
     // Change the attributes of the book
-    checkOutBookInCatalog(bookCatalog->root, inputID, currentTime, (currentTime + this->getMaxLoanTime()), this->getUserName());
+    for (int i = 0; i < bookCatalog.size(); i++) {
+        copies = bookCatalog.at(i).getCopies();
+        for (int j = 0; j < copies.size(); j++) {
+            if (copies.at(j).getID() == inputID) {
+                copies.at(j).setReaderName(this->getUsername());
+                copies.at(j).setStartDate(currentTime);
+                copies.at(j).setExpirationDate(currentTime + this->getMaxLoanTime());
+                break;
+            }
+        }
+    }
     return;
 }
 
