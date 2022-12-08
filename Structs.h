@@ -11,6 +11,8 @@ using namespace std;
 struct LLNode // TODO maybe use a template here??
 {
     string username;
+    string isbnReserved;
+    int borrowBy;
     LLNode *next;
     LLNode() : next(nullptr) {}
     LLNode(string x) : username(x), next(nullptr) {}
