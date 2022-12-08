@@ -36,17 +36,22 @@ public:
     void sortExpiration(vector<BookCopy> &copyList, int low, int high);
     void getBookInfo(Book book);
     void searchBook(vector<Book> bookCatalog);
-    void borrowBook(vector<Book> &bookCatalog, time_t& zeroTime);
+    void borrowBook(vector<Book> &bookCatalog, time_t &zeroTime);
     void returnBook(vector<Book> &bookCatalog);
     void renewBook(vector<Book> &bookCatalog);
     void reserveBook(vector<Book> &bookCatalog);
     void cancelBook(vector<Book> &bookCatalog);
     void feelingLucky(vector<Book> &bookCatalog);
     void printMyInfo();
-    string type();
 };
 
 // Leave functions in the .h file for now, will move them to their respective .cpp files when project is finished
+
+// Casting //
+Reader *userToReader(User *toCast)
+{
+    return dynamic_cast<Reader *>(toCast);
+}
 
 // Getters //
 int Reader::getMaxCopies()
@@ -101,10 +106,12 @@ void quickSort(vector<BookCopy> lib, int low, int high)
     }
 }
 
-int expPartition(vector<BookCopy> &copyList, int low, int high) {
+int expPartition(vector<BookCopy> &copyList, int low, int high)
+{
     int i = low - 1;
 
-    for (int j = low; j < high; j++) {
+    for (int j = low; j < high; j++)
+    {
         if (copyList.at(j).getExpirationDate() <= copyList.at(high).getExpirationDate())
         {
             i++;
@@ -117,7 +124,8 @@ int expPartition(vector<BookCopy> &copyList, int low, int high) {
     return i + 1;
 }
 
-void Reader::sortExpiration(vector<BookCopy> &copyList, int low, int high) {
+void Reader::sortExpiration(vector<BookCopy> &copyList, int low, int high)
+{
     if (low < high)
     {
         int pi = expPartition(copyList, low, high);
@@ -130,25 +138,31 @@ void Reader::sortExpiration(vector<BookCopy> &copyList, int low, int high) {
     }
 }
 
-void Reader::getBookInfo(Book book) {
+void Reader::getBookInfo(Book book)
+{
     cout << "ISBN: " << book.getIsbn() << endl
-        << "Title: " << book.getTitle() << endl
-        << "Author: " << book.getAuthor() << endl
-        << "Category: " << book.getCategory() << endl
-        << "Copy IDs: " << endl;
+         << "Title: " << book.getTitle() << endl
+         << "Author: " << book.getAuthor() << endl
+         << "Category: " << book.getCategory() << endl
+         << "Copy IDs: " << endl;
     vector<BookCopy> copies = book.getCopies();
     sortExpiration(copies, 0, copies.size());
-    for (int i = 0; i < copies.size(); i++) {
+    for (int i = 0; i < copies.size(); i++)
+    {
         cout << "ID: " << copies.at(i).getID() << ", ";
-        if (copies.at(i).getExpirationDate() == -1) {
+        if (copies.at(i).getExpirationDate() == -1)
+        {
             cout << "AVAILABLE" << endl;
-        } else {
+        }
+        else
+        {
             cout << "Expires " << copies.at(i).getExpirationDate() << endl;
         }
     }
 }
 
-void Reader::searchBook(vector<Book> bookCatalog) {
+void Reader::searchBook(vector<Book> bookCatalog)
+{
     int searchChoice;
     cout << "What category do you want to search by:" << endl;
     cout << "(1) - ISBN" << endl;
@@ -166,8 +180,10 @@ void Reader::searchBook(vector<Book> bookCatalog) {
         cin >> inputISBN;
 
         // Search for matching isbn and print if found
-        for (int i = 0; i < bookCatalog.size(); i++) {
-            if (bookCatalog.at(i).getIsbn() == inputISBN) {
+        for (int i = 0; i < bookCatalog.size(); i++)
+        {
+            if (bookCatalog.at(i).getIsbn() == inputISBN)
+            {
                 getBookInfo(bookCatalog.at(i));
                 cout << endl;
             }
@@ -182,8 +198,10 @@ void Reader::searchBook(vector<Book> bookCatalog) {
         cin >> inputTitle;
 
         // Search for matching titles and print them
-        for (int i = 0; i < bookCatalog.size(); i++) {
-            if (bookCatalog.at(i).getTitle() == inputTitle) {
+        for (int i = 0; i < bookCatalog.size(); i++)
+        {
+            if (bookCatalog.at(i).getTitle() == inputTitle)
+            {
                 getBookInfo(bookCatalog.at(i));
                 cout << endl;
             }
@@ -198,8 +216,10 @@ void Reader::searchBook(vector<Book> bookCatalog) {
         cin >> inputCategory;
 
         // Search for matching category and print them
-        for (int i = 0; i < bookCatalog.size(); i++) {
-            if (bookCatalog.at(i).getCategory() == inputCategory) {
+        for (int i = 0; i < bookCatalog.size(); i++)
+        {
+            if (bookCatalog.at(i).getCategory() == inputCategory)
+            {
                 getBookInfo(bookCatalog.at(i));
                 cout << endl;
             }
@@ -213,10 +233,13 @@ void Reader::searchBook(vector<Book> bookCatalog) {
         cin >> inputID;
         vector<BookCopy> copies;
 
-        for (int i = 0; i < bookCatalog.size(); i++) {
+        for (int i = 0; i < bookCatalog.size(); i++)
+        {
             copies = bookCatalog.at(i).getCopies();
-            for (int j = 0; j < copies.size(); j++) {
-                if (copies.at(j).getID() == inputID) {
+            for (int j = 0; j < copies.size(); j++)
+            {
+                if (copies.at(j).getID() == inputID)
+                {
                     getBookInfo(bookCatalog.at(i));
                     cout << endl;
                     break;
@@ -233,7 +256,8 @@ void Reader::searchBook(vector<Book> bookCatalog) {
     }
 }
 
-void Reader::borrowBook(vector<Book>& bookCatalog, time_t &zeroTime) {
+void Reader::borrowBook(vector<Book> &bookCatalog, time_t &zeroTime)
+{
     // Check if there are overdue books
     int currentTime = date(zeroTime);
     vector<BookCopy> expiredBooks;
@@ -339,38 +363,27 @@ void Reader::borrowBook(vector<Book>& bookCatalog, time_t &zeroTime) {
     return;
 }
 
-void Reader::returnBook(vector<Book>& bookCatalog) {
-
+void Reader::returnBook(vector<Book> &bookCatalog)
+{
 }
 
-void Reader::renewBook(vector<Book>& bookCatalog) {
-
+void Reader::renewBook(vector<Book> &bookCatalog)
+{
 }
 
-void Reader::reserveBook(vector<Book>& bookCatalog) {
-
+void Reader::reserveBook(vector<Book> &bookCatalog)
+{
 }
 
-void Reader::cancelBook(vector<Book>& bookCatalog) {
-
+void Reader::cancelBook(vector<Book> &bookCatalog)
+{
 }
 
-void Reader::feelingLucky(vector<Book>& bookCatalog) {
-    
+void Reader::feelingLucky(vector<Book> &bookCatalog)
+{
 }
-
 
 void Reader::printMyInfo()
 {
-    // TODO print reader info: username, password, books borrowed
-}
-
-string Reader::type() {
-    return "Reader";
-}
-
-// Casting //
-Reader *userToReader(User *toCast)
-{
-    return dynamic_cast<Reader *>(toCast);
+    cout << (*this);
 }

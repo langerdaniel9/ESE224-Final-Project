@@ -147,6 +147,29 @@ ostream &operator<<(ostream &output, Book &book)
     return output;
 }
 
+// ostream &operator<<(ostream &output, Book &book)
+// {
+//     output << "ISBN: " << book.getIsbn() << endl
+//          << "Title: " << book.getTitle() << endl
+//          << "Author: " << book.getAuthor() << endl
+//          << "Category: " << book.getCategory() << endl
+//          << "Copy IDs: " << endl;
+//     vector<BookCopy> copies = book.getCopies();
+//     sortExpiration(copies, 0, copies.size());
+//     for (int i = 0; i < copies.size(); i++)
+//     {
+//         output << "ID: " << copies.at(i).getID() << ", ";
+//         if (copies.at(i).getExpirationDate() == -1)
+//         {
+//             output << "AVAILABLE" << endl;
+//         }
+//         else
+//         {
+//             output << "Expires " << copies.at(i).getExpirationDate() << endl;
+//         }
+//     }
+// }
+
 istream &operator>>(istream &input, Book &book)
 {
     int id;

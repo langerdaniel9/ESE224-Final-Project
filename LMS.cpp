@@ -277,44 +277,44 @@ void readerLoop(Reader *user, vector<Book> &catalog, UserBST users, time_t &zero
         }
         case 1:
         {
-            // TODO Search Book
-            cout << "Entered search book function" << endl;
+            // Search Book
+            user->searchBook(catalog);
             break;
         }
         case 2:
         {
-            // TODO Borrow Book
-            cout << "Entered borrow book function" << endl;
+            // Borrow Book
+            user->borrowBook(catalog, zeroTime);
             break;
         }
         case 3:
         {
-            // TODO Return Book
-            cout << "Entered return book function" << endl;
+            // Return Book
+            user->returnBook(catalog);
             break;
         }
         case 4:
         {
-            // TODO Renew Book
-            cout << "Entered renew book function" << endl;
+            // Renew Book
+            user->renewBook(catalog);
             break;
         }
         case 5:
         {
-            // TODO Reserve Book
-            cout << "Entered reserve book function" << endl;
+            // Reserve Book
+            user->reserveBook(catalog);
             break;
         }
         case 6:
         {
-            // TODO Cancel Book
-            cout << "Entered cancel book function" << endl;
+            // Cancel Book
+            user->cancelBook(catalog);
             break;
         }
         case 7:
         {
-            // TODO Printout Information
-            cout << "Entered printout info function" << endl;
+            // Printout Information
+            user->printMyInfo();
             break;
         }
         case 8:
@@ -325,8 +325,8 @@ void readerLoop(Reader *user, vector<Book> &catalog, UserBST users, time_t &zero
         }
         case 9:
         {
-            // TODO I'm Feeling Lucky
-            cout << "Entered feeling lucky function" << endl;
+            // I'm Feeling Lucky
+            user->feelingLucky(catalog);
             break;
         }
         default:
