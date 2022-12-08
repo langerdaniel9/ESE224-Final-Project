@@ -11,8 +11,8 @@ class Teacher : public Reader
 {
 public:
     Teacher();
-    Teacher(string initUsername, string initPassword);
-    string getType();
+    Teacher(string initUserName, string initPassword);
+    string type();
 };
 
 // Leave functions in the .h file for now, will move them to their respective .cpp files when project is finished
@@ -21,19 +21,17 @@ Teacher::Teacher()
 {
     maxCopies = 10;
     maxLoanTime = 50;
-    type = "Teacher";
 }
 
-Teacher::Teacher(string initUsername, string initPassword)
+Teacher::Teacher(string initUserName, string initPassword)
 {
-    username = initUsername;
+    userName = initUserName;
     password = initPassword;
-    type = "Teacher";
     maxCopies = 10;
     maxLoanTime = 50;
 }
 
-string Teacher::getType()
+string Teacher::type()
 {
     return "Teacher";
 }

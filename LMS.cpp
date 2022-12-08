@@ -1,15 +1,15 @@
 // Local Files //
-#include "DateFunction.h"
-#include "Structs.h"
-#include "BookCopy.h"
-#include "Book.h"
 #include "User.h"
-#include "BST.h"
-#include "Librarian.h"
+#include "DateFunction.h"
+#include "BookCopy.h"
+#include "Structs.h"
+#include "Book.h"
 #include "Reader.h"
+#include "UserBST.h"
 #include "Student.h"
 #include "Teacher.h"
 #include "FileManagement.h"
+#include "Librarian.h"
 
 // Standard Files //
 #include <iostream>
@@ -18,51 +18,51 @@
 #include <vector>
 #include <fstream>
 
+/**
+ * IMPORTANT
+ * - None of the text files can have an empty line at the end, as that will cause an extra element to be created
+ */
+
 using namespace std;
 
-// Function Declarations //
-void getUsers(BST<User *> *usersList);
-void getBooks(BST<Book> *&bookCatalog);
-void getCopies(BST<copystruct> *&copyCatalog, int idcount);
-void addCopiesToBook(BST<Book> *&bookCatalog, BST<copystruct> *&copyCatalog);
-User *login(BST<User *> *usersList);
-void librarianLoop(Librarian *user, BST<Book> *bookCatalog, BST<User *> *usersList, time_t &zeroTime, int &idCount);
-void readerLoop(Reader *user, BST<Book> *bookCatalog, time_t &zeroTime, BST<copystruct> *copyList);
-///////////////////////////
+void getUsers(UserBST &users);
+void getBooks(vector<Book> &catalog);
+void getCopies(vector<Book> &catalog);
 
-// Main Function //
+User *login(UserBST &users);
+
+void readerLoop(Reader *user, vector<Book> &catalog, UserBST users, time_t &zeroTime);
+void librarianLoop(Librarian *user, vector<Book> &catalog, UserBST users, time_t &zeroTime, int idCount);
+
 int main()
 {
     // Data to be read in from text files
-    BST<Book> *bookCatalog;
-    BST<User *> *usersList;
-    BST<copystruct> *copyList;
-    int idCount = 0;
+    vector<Book> catalog;
+    UserBST users;
+    int idCount;
 
-    // Read in data from student.txt and book.txt
-    getUsers(usersList);
-    getBooks(bookCatalog);
-    getCopies(copyList, idCount);
-    addCopiesToBook(bookCatalog, copyList);
+    // Read in data from text files
+    getUsers(users);
+    getBooks(catalog);
+    getCopies(catalog);
 
-    // Login system, can log in and log out on the same run
-
+    // Login system, multiple users can login in and out on the same execution of the program
     while (true)
     {
-        User *currentUser = login(usersList);
+        User *currentUser = login(users);
         time_t zeroTime = time(NULL);
 
-        if (currentUser->type() == "Librarian")
+        if (currentUser->getType() == "Librarian")
         {
-            librarianLoop(userToLibrarian(currentUser), bookCatalog, usersList, zeroTime, idCount);
+            librarianLoop(userToLibrarian(currentUser), catalog, users, zeroTime, idCount);
         }
-        else if (currentUser->type() == "Student")
+        else if (currentUser->getType() == "Student")
         {
-            readerLoop(userToReader(currentUser), bookCatalog, zeroTime, copyList);
+            readerLoop(userToReader(currentUser), catalog, users, zeroTime);
         }
-        else if (currentUser->type() == "Teacher")
+        else if (currentUser->getType() == "Teacher")
         {
-            readerLoop(userToReader(currentUser), bookCatalog, zeroTime, copyList);
+            readerLoop(userToReader(currentUser), catalog, users, zeroTime);
         }
         else
         {
@@ -70,15 +70,17 @@ int main()
             exit(5);
         }
     }
+
+    return 0;
 }
 
-void getUsers(BST<User *> *usersList)
+void getUsers(UserBST &users)
 {
-    // Do file I/O, filename is usersList.txt
-    fstream fin("usersList.txt");
-    if (fin.fail())
+    // File I/O using the users file (usersList.txt)
+    fstream userFile("usersList.txt");
+    if (userFile.fail())
     {
-        cerr << "error opening userList" << endl;
+        cerr << "Error opening usersList.txt" << endl;
         exit(1);
     }
 
@@ -87,223 +89,117 @@ void getUsers(BST<User *> *usersList)
      * The format will be
      * Role(0=student, 1=teacher, 2=librarian)  user_name   password
      */
-    // Check what type of user it is (student, teacher, librarian) and push to the vector
 
+    // Check what type of user it is (student, teacher, librarian) and push to the BST
     int rolein;
     string userin;
     string passwordin;
-    while (!(fin.eof()))
+    while (!(userFile.eof()))
     {
-        fin >> rolein >> userin >> passwordin;
+        // Get important fields
+        userFile >> rolein >> userin >> passwordin;
+        // Clear the rest of the line
         string temp;
-        getline(fin, temp);
+        getline(userFile, temp);
+
         if (rolein == 0) // for student
         {
             // assign values and attributes to temp student
             Student *temp = new Student(userin, passwordin);
-            // push to vector
-            usersList->nodeInsert(temp);
+            // push to BST
+            users.addUser(temp);
         }
         if (rolein == 1) // for teacher
         {
             // assign values and attributes to temp teacher
             Teacher *temp = new Teacher(userin, passwordin);
-            // push to vector
-            usersList->nodeInsert(temp);
+            // push to BST
+            users.addUser(temp);
         }
         if (rolein == 2) // for librarian
         {
             // assign values and attributes to temp teacher
             Librarian *temp = new Librarian(userin, passwordin);
-            // push to vector
-            usersList->nodeInsert(temp);
+            // push to BST
+            users.addUser(temp);
         }
     }
     // When finished reading in from file, close it
-    fin.close();
+    userFile.close();
 }
 
-void getBooks(BST<Book> *&bookCatalog)
+void getBooks(vector<Book> &catalog)
 {
-    // Do file I/O, filename is booksList.txt
-    fstream books("booksList.txt");
-    if (books.fail())
+    // File I/O using the users file (booksList.txt)
+    fstream bookFile("booksList.txt");
+    if (bookFile.fail())
     {
-        cerr << "error opening file" << endl;
+        cerr << "Error opening booksList.txt" << endl;
         exit(1);
     }
-    string isbnin;
-    string titlein;
-    string authorin;
-    string catagoryin;
-    while (!books.eof())
+
+    string isbn;
+    string title;
+    string author;
+    string catagory;
+    while (!bookFile.eof())
     {
-        // For each line push a new Book object to the vector with the correct attributes
-        books >> isbnin >> titlein >> authorin >> catagoryin;
+        // For each line push a new Book object to the vector
+        bookFile >> isbn >> title >> author >> catagory;
         string temp;
-        getline(books, temp);
-        Book toinsert(isbnin, titlein, authorin, catagoryin);
-        bookCatalog->nodeInsert(toinsert);
+        getline(bookFile, temp);
+        Book toInsert(isbn, title, author, catagory);
+        catalog.push_back(toInsert);
     }
-    books.close();
+
+    // Sort catalog
+    sortCatalog(catalog);
+
+    bookFile.close();
 }
 
-void getCopies(BST<copystruct> *&copyList, int idcount)
+void getCopies(vector<Book> &catalog)
 {
-    fstream copyfin("copiesList.txt");
-    if (copyfin.fail())
+    fstream copyFile("copiesList.txt");
+    if (copyFile.fail())
     {
-        cerr << "error opening file" << endl;
+        cerr << "Error opening copiesList.txt" << endl;
         exit(1);
     }
+
     string isbn;
     int id;
-    while (!copyfin.eof())
+    while (!copyFile.eof())
     {
-        copyfin >> isbn;
-        copyfin >> id;
-        copystruct temp;
-        temp.isbnfile = isbn;
-        temp.idfile = id;
-        copyList->nodeInsert(temp);
-    }
-    copyfin.close();
-}
+        // Get data from a single line
+        copyFile >> isbn >> id;
+        // Search through the vector to find the matching Book
+        int indexResult = getIndexOfBook(catalog, isbn);
+        // Make new BookCopy
+        BookCopy *temp = new BookCopy(id);
 
-void traverseToInsert(copystruct toInsert, TreeNode<Book> *bookNode)
-{
-    bookNode;
-    if (bookNode == nullptr)
-    {
-        return;
-    }
-
-    if (bookNode->val.getIsbn() == toInsert.isbnfile)
-    {
-        BookCopy newBookCopy(toInsert.idfile);
-        bookNode->val.copiesVector.push_back(newBookCopy);
-        return;
-    }
-
-    /* Traverse left*/
-    traverseToInsert(toInsert, bookNode->left);
-
-    /* Traverse right */
-    traverseToInsert(toInsert, bookNode->right);
-}
-
-void traverse(TreeNode<copystruct> *node, BST<Book> &bookCatalog)
-{
-    node;
-    bookCatalog;
-    if (node == nullptr)
-    {
-        return;
-    }
-
-    /* Traverse left*/
-    traverse(node->left, bookCatalog);
-
-    /* Thing to do */
-    traverseToInsert(node->val, bookCatalog.root);
-
-    /* Traverse right */
-    traverse(node->right, bookCatalog);
-}
-
-void addCopiesToBook(BST<Book> *&bookCatalog, BST<copystruct> *&copyCatalog)
-{
-    traverse(copyCatalog->root, *bookCatalog);
-}
-
-void verifytype(TreeNode<User *> *root, string user, string pass, int type)
-{
-
-    if ((root->val->getUserName() == user) && (root->val->getPassword() == pass))
-    {
-        if (root->val->type() == "Student")
+        // Insert the copy
+        if (indexResult != -1)
         {
-            type = 1;
-        }
-        if (root->val->type() == "Teacher")
-        {
-            type = 2;
-        }
-        if (root->val->type() == "Librarian")
-        {
-            type = 3;
+            catalog.at(indexResult).copies.push_back(*temp);
         }
     }
-    else
-    {
-        type = 4;
-    }
-    /* Traverse left*/
-    verifytype(root->left, user, pass, type);
-    /* Traverse right */
-    verifytype(root->right, user, pass, type);
+
+    copyFile.close();
 }
 
-void verifypersonS(TreeNode<User *> *root, string user, string pass, Student *&stud)
-{
-    if (root == nullptr)
-    {
-        return;
-    }
-    /* Traverse left*/
-    verifypersonS(root->left, user, pass, stud);
-    if ((root->val->getUserName() == user) && (root->val->getPassword() == pass))
-    {
-        stud = userToStudent(root->val);
-    }
-    /* Traverse right */
-    verifypersonS(root->right, user, pass, stud);
-}
-
-void verifypersonT(TreeNode<User *> *root, string user, string pass, Teacher *&teach)
-{
-    if (root == nullptr)
-    {
-        return;
-    }
-    /* Traverse left*/
-    verifypersonT(root->left, user, pass, teach);
-    if ((root->val->getUserName() == user) && (root->val->getPassword() == pass))
-    {
-        teach = userToTeacher(root->val);
-    }
-    /* Traverse right */
-    verifypersonT(root->right, user, pass, teach);
-}
-
-void verifypersonL(TreeNode<User *> *root, string user, string pass, Librarian *&libb)
-{
-    if (root == nullptr)
-    {
-        return;
-    }
-    /* Traverse left*/
-    verifypersonL(root->left, user, pass, libb);
-    if ((root->val->getUserName() == user) && (root->val->getPassword() == pass))
-    {
-        libb = userToLibrarian(root->val);
-    }
-    /* Traverse right */
-    verifypersonL(root->right, user, pass, libb);
-}
-
-User *login(BST<User *> *usersList)
+User *login(UserBST &users)
 {
     while (true)
     {
+        string usernameIn;
+        string passwordIn;
         // Prompt for username/ ask if they want to shutdown system
         cout << "Please enter a user name or type 'shutdown' to shut down LMS:" << endl;
-        string userin;
-        string passwordin;
-        cin >> userin;
+        cin >> usernameIn;
 
         // If shutdown system, exit
-        if (userin == "shutdown")
+        if (usernameIn == "shutdown")
         {
             cout << "Shutting Down..." << endl
                  << endl;
@@ -313,48 +209,18 @@ User *login(BST<User *> *usersList)
         {
             // Else prompt for password
             cout << "Please enter a password:" << endl;
-            cin >> passwordin;
-            //
-            //
-            int testtype = -1;
-            verifytype(usersList->root, userin, passwordin, testtype);
-            int type = testtype;
-            if (type == 1)
+            cin >> passwordIn;
+
+            // Search for a user with the entered username and password
+            string userType = "nonexistant";
+            users.findUserType(usernameIn, passwordIn, userType);
+
+            if (userType == "Student" || userType == "Teacher" || userType == "Librarian")
             {
-                Student *temp;
-                temp->setUserName("-1");
-                verifypersonS(usersList->root, userin, passwordin, temp);
-                if (temp->getUserName() == "-1")
-                {
-                    exit(1);
-                }
-                return temp;
+                return users.returnUser(usernameIn, passwordIn);
             }
-            if (type == 2)
+            else
             {
-                Teacher *temp;
-                temp->setUserName("-1");
-                verifypersonT(usersList->root, userin, passwordin, temp);
-                if (temp->getUserName() == "-1")
-                {
-                    exit(1);
-                }
-                return temp;
-            }
-            if (type == 3)
-            {
-                Librarian *temp;
-                temp->setUserName("-1");
-                verifypersonL(usersList->root, userin, passwordin, temp);
-                if (temp->getUserName() == "-1")
-                {
-                    exit(1);
-                }
-                return temp;
-            }
-            if (type == -1)
-            {
-                // If not, print an error and say try again
                 cout << "Account with those credentials was not found. Please try again" << endl
                      << endl;
             }
@@ -362,7 +228,7 @@ User *login(BST<User *> *usersList)
     }
 }
 
-void readerLoop(Reader *user, BST<Book> *bookCatalog, time_t &zeroTime, BST<copystruct> *copyList)
+void readerLoop(Reader *user, vector<Book> &catalog, UserBST users, time_t &zeroTime)
 {
     while (true)
     {
@@ -398,50 +264,52 @@ void readerLoop(Reader *user, BST<Book> *bookCatalog, time_t &zeroTime, BST<copy
         {
         case 0:
         {
-            writeBackToBookFile(bookCatalog); // writing back to book text file
-            writeBackToBCFile(bookCatalog);   // writing back to book copy text file
+            // writing back to text files
+            writeOutUsersFile(users);
+            writeOutBooksFile(catalog);
+            writeOutCopiesFile(catalog);
             return;
         }
         case 1:
         {
-            // Search Book
-            user->searchBook(bookCatalog, copyList);
+            // TODO Search Book
+            cout << "Entered search book function" << endl;
             break;
         }
         case 2:
         {
-            // Borrow Book
-            user->borrowBook(bookCatalog, zeroTime);
+            // TODO Borrow Book
+            cout << "Entered borrow book function" << endl;
             break;
         }
         case 3:
         {
-            // Return Book
-            user->returnBook(bookCatalog);
+            // TODO Return Book
+            cout << "Entered return book function" << endl;
             break;
         }
         case 4:
         {
-            // Renew Book
-            user->renewBook(bookCatalog);
+            // TODO Renew Book
+            cout << "Entered renew book function" << endl;
             break;
         }
         case 5:
         {
-            // Reserve Book
-            user->reserveBook(bookCatalog);
+            // TODO Reserve Book
+            cout << "Entered reserve book function" << endl;
             break;
         }
         case 6:
         {
-            // Cancel Book
-            user->cancelBook(bookCatalog);
+            // TODO Cancel Book
+            cout << "Entered cancel book function" << endl;
             break;
         }
         case 7:
         {
-            // Printout Information
-            cout << user;
+            // TODO Printout Information
+            cout << "Entered printout info function" << endl;
             break;
         }
         case 8:
@@ -452,11 +320,10 @@ void readerLoop(Reader *user, BST<Book> *bookCatalog, time_t &zeroTime, BST<copy
         }
         case 9:
         {
-            // I'm Feeling Lucky
-            user->feelingLucky(bookCatalog);
+            // TODO I'm Feeling Lucky
+            cout << "Entered feeling lucky function" << endl;
             break;
         }
-
         default:
         {
             cout << "Something went wrong, please try again" << endl;
@@ -466,12 +333,12 @@ void readerLoop(Reader *user, BST<Book> *bookCatalog, time_t &zeroTime, BST<copy
     }
 }
 
-void librarianLoop(Librarian *user, BST<Book> *bookCatalog, BST<User *> *usersList, time_t &zeroTime, int &idCount)
+void librarianLoop(Librarian *user, vector<Book> &catalog, UserBST users, time_t &zeroTime, int idCount)
 {
     while (true)
     {
         int currentDate = date(zeroTime);
-        cout << "Welcome back, " << user->type() << "\n"
+        cout << "Welcome back,\n"
              << "It is currently day " << currentDate << "\n\n"
              << "Please choose:\n"
              << "2 -- Add Book\n"
@@ -500,47 +367,50 @@ void librarianLoop(Librarian *user, BST<Book> *bookCatalog, BST<User *> *usersLi
         {
         case 0:
         {
-            writeBackToUserFile(usersList); // writing back to user text file
-                                            //            writeBackToUserFile(bookCatalog.root);
+            // writing back to text files
+            writeOutUsersFile(users);
+            writeOutBooksFile(catalog);
+            writeOutCopiesFile(catalog);
             return;
         }
         case 2:
         {
-            // Add Book
-            user->addBook(bookCatalog, idCount);
+            // TODO Add Book
+            cout << "Entered add book function" << endl;
             break;
         }
         case 3:
         {
-            // Delete Book
-            user->deleteBook(bookCatalog);
+            // TODO Delete Book
+            cout << "Entered delete book function" << endl;
             break;
         }
         case 4:
         {
-            // Search User
-            string toSearch;
-            cout << "What username to search for? ";
-            cin >> toSearch;
-            user->searchUser(usersList->root, toSearch);
+            // TODO Search User
+            cout << "Entered search user function" << endl;
+            // string toSearch;
+            // cout << "What username to search for? ";
+            // cin >> toSearch;
+            // user->searchUser(usersList->root, toSearch);
             break;
         }
         case 5:
         {
-            // Add User
-            user->addUsers(*usersList);
+            // TODO Add User
+            cout << "Entered add user function" << endl;
             break;
         }
         case 6:
         {
-            // Delete User
-            user->deleteUser(*usersList);
+            // TODO Delete User
+            cout << "Entered delete user function" << endl;
             break;
         }
         case 7:
         {
-            // My Information
-            cout << user;
+            // TODO My Information
+            cout << "Entered my info function" << endl;
             break;
         }
         case 8:
@@ -549,7 +419,6 @@ void librarianLoop(Librarian *user, BST<Book> *bookCatalog, BST<User *> *usersLi
             user->changePassword();
             break;
         }
-
         default:
         {
             cout << "Something went wrong, please try again" << endl;

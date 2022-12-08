@@ -1,100 +1,84 @@
 #pragma once
 
-#include "BST.h" // These includes needs to be checked again!
+#include "UserBST.h"
 #include "Book.h"
+#include "BookCopy.h"
 #include "User.h"
+#include "Structs.h"
 
-#include <iostream>
 #include <fstream>
+#include <iostream>
+#include <vector>
 
-using namespace std;
-
-void BookInOrderTraversal(TreeNode<Book> *inputBST, ofstream &output)
+void traverseBSTandWriteToFile(ofstream &output, node *node)
 {
-    if (inputBST == NULL)
+    if (node == nullptr)
     {
         return;
     }
-
-    BookInOrderTraversal(inputBST->left, output); // visit left child
-
-    output << inputBST->val.getIsbn() << " " << inputBST->val.getTitle() << " " << inputBST->val.getAuthor() << " " << inputBST->val.getCategory() << endl;
-
-    BookInOrderTraversal(inputBST->right, output); // visit right child
-}
-
-void getRelevantBCInfo(TreeNode<Book> *inputBST, ofstream &output)
-{
-    for (int i = 0; i < inputBST->val.copiesVector.size(); i++)
-    {
-        cout << inputBST->val.getIsbn() << " " << inputBST->val.copiesVector.at(i).getID();
-    }
-}
-
-void BCInOrderTraversal(TreeNode<Book> *inputBST, ofstream &output)
-{
-    if (inputBST == NULL)
-    {
-        return;
-    }
-
-    BCInOrderTraversal(inputBST->left, output); // visit left child
-
-    getRelevantBCInfo(inputBST, output);
-
-    BCInOrderTraversal(inputBST->right, output); // visit right child
-}
-
-void UserInOrderTraversal(TreeNode<User *> *inputBST, ofstream &output)
-{
-    if (inputBST == NULL)
-    {
-        return;
-    }
-
-    UserInOrderTraversal(inputBST->left, output); // visit left child
-
+    traverseBSTandWriteToFile(output, node->left);
+    /************************/
     int type;
-    string actualType = inputBST->val->type();
-    if (actualType == "Student")
+    if (node->value->getType() == "Student")
     {
         type = 0;
     }
-    else if (actualType == "Teacher")
+    else if (node->value->getType() == "Teacher")
     {
         type = 1;
     }
-    else if (actualType == "Librarian")
+    else if (node->value->getType() == "Librarian")
     {
         type = 2;
     }
-
-    output << type << "\t" << inputBST->val->getUserName() << "\t" << inputBST->val->getPassword() << endl;
-
-    UserInOrderTraversal(inputBST->right, output); // visit right child
+    output << type << "\t"
+           << node->value->getUsername() << "\t"
+           << node->value->getPassword() << endl;
+    /************************/
+    traverseBSTandWriteToFile(output, node->right);
 }
 
-void writeBackToBookFile(BST<Book> *bookCatalog)
+void writeOutUsersFile(UserBST users)
 {
-    ofstream outputBooks;
-    outputBooks.open("outputBooks.txt");
-
-    BookInOrderTraversal(bookCatalog->root, outputBooks); // Writes into another outputBooks.txt file
-    outputBooks.close();
+    ofstream userOutput;
+    userOutput.open("outputUsers.txt");
+    traverseBSTandWriteToFile(userOutput, users.root);
+    userOutput.close();
 }
 
-void writeBackToBCFile(BST<Book> *bookCatalog)
+void writeOutBooksFile(vector<Book> catalog)
 {
-    ofstream outputBookCopy;
-    outputBookCopy.open("outputBookCopy.txt");
+    ofstream bookOutput;
+    bookOutput.open("outputBooks.txt");
 
-    BCInOrderTraversal(bookCatalog->root, outputBookCopy); // Writes into another outputBookCopy.txt file
+    // Traverse and print
+    for (Book bk : catalog)
+    {
+        bookOutput << bk.getIsbn() << "\t"
+                   << bk.getTitle() << "\t"
+                   << bk.getAuthor() << "\t"
+                   << bk.getCategory()
+                   << endl;
+    }
+
+    bookOutput.close();
 }
 
-void writeBackToUserFile(BST<User *> *usersList)
+void writeOutCopiesFile(vector<Book> catalog)
 {
-    ofstream outputUsers;
-    outputUsers.open("outputUsers.txt");
+    ofstream copiesOutput;
+    copiesOutput.open("outputCopies.txt");
 
-    UserInOrderTraversal(usersList->root, outputUsers); // Writes into another outputUsers.txt file
+    // Traverse and print
+    for (Book bk : catalog)
+    {
+        copiesOutput << bk.getIsbn() << "\t";
+        for (BookCopy bkcpy : bk.copies)
+        {
+            copiesOutput << bkcpy.getID();
+        }
+        copiesOutput << endl;
+    }
+
+    copiesOutput.close();
 }

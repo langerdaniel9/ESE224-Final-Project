@@ -9,34 +9,31 @@ using namespace std;
 class User
 {
 protected:
-    string username;
+    string userName;
     string password;
-
-    string type;
 
 public:
     // ********** ACCESSORS **********
-    string getUsername();
+    string getUserName();
     string getPassword();
-    string getType();
 
     // ********** MUTATORS **********
-    void setUsername(string newUsername);
+    void setUserName(string newUserName);
     void setPassword(string newPassword);
 
     // ********** FUNCTIONS **********
+    virtual string type() = 0;
     void changePassword();
-    void printLoginInfo();
-    virtual void printMyInfo() = 0;
+    virtual void myInformation();
 
     // ********** OPERATOR OVERLOADING **********
     friend ostream &operator<<(ostream &output, User &user);
     friend istream &operator>>(istream &input, User &user);
 };
 
-string User::getUsername()
+string User::getUserName()
 {
-    return username;
+    return userName;
 }
 
 string User::getPassword()
@@ -44,14 +41,9 @@ string User::getPassword()
     return password;
 }
 
-string User::getType()
+void User::setUserName(string newUserName)
 {
-    return type;
-}
-
-void User::setUsername(string newUsername)
-{
-    username = newUsername;
+    userName = newUserName;
 }
 
 void User::setPassword(string newPassword)
@@ -67,15 +59,15 @@ void User::changePassword()
     password = newPass;
 }
 
-void User::printLoginInfo()
+void User::myInformation()
 {
-    cout << "Username: " << username << endl
-         << "Password: " << password << endl;
+    cout << "Username: " << userName << endl;
+    cout << "Password: " << password << endl;
 }
 
 ostream &operator<<(ostream &output, User &user)
 {
-    output << "Username:\t" << user.getUsername() << endl
+    output << "Username:\t" << user.getUserName() << endl
            << "Password:\t" << user.getPassword() << endl
            << endl;
 
@@ -86,7 +78,7 @@ istream &operator>>(istream &input, User &user)
 {
     string newUsername, newPassword;
     input >> newUsername, newPassword;
-    user.setUsername(newUsername);
+    user.setUserName(newUsername);
     user.setPassword(newPassword);
 
     return input;
@@ -94,12 +86,12 @@ istream &operator>>(istream &input, User &user)
 
 bool operator<(User &u1, User &u2)
 {
-    int val = u1.getUsername().compare(u2.getUsername());
+    int val = u1.getUserName().compare(u2.getUserName());
     return (val == -1) ? true : false;
 }
 
 bool operator>(User &u1, User &u2)
 {
-    int val = u1.getUsername().compare(u2.getUsername());
+    int val = u1.getUserName().compare(u2.getUserName());
     return (val == 1) ? true : false;
 }

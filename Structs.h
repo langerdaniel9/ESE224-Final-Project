@@ -1,44 +1,25 @@
 #pragma once
 
+#include "User.h"
+
 #include <string>
 
 using namespace std;
 
-/*
- * Things that we use in a few files but dont fit in any other .h files
- */
-
 ///////////////////////////////////////////////////
 
-struct copystruct
-{
-    int idfile;
-    string isbnfile;
-};
+// TODO - Check if this is actually necessary, since string already has overloading
+// bool operator<(string &s1, string s2)
+// {
+//     int val = s1.compare(s2);
+//     return (val == -1) ? true : false;
+// }
 
-bool operator<(copystruct &cs1, copystruct cs2)
-{
-    return cs1.idfile < cs2.idfile;
-}
-
-bool operator>(copystruct &cs1, copystruct &cs2)
-{
-    return cs1.idfile > cs2.idfile;
-}
-
-///////////////////////////////////////////////////
-
-bool operator<(string &s1, string s2)
-{
-    int val = s1.compare(s2);
-    return (val == -1) ? true : false;
-}
-
-bool operator>(string &s1, string &s2)
-{
-    int val = s1.compare(s2);
-    return (val == 1) ? true : false;
-}
+// bool operator>(string &s1, string &s2)
+// {
+//     int val = s1.compare(s2);
+//     return (val == 1) ? true : false;
+// }
 
 ///////////////////////////////////////////////////
 
@@ -57,11 +38,22 @@ struct TreeNode
 
 struct LLNode
 {
-    string data;
+    string username;
     LLNode *next;
     LLNode() : next(nullptr) {}
-    LLNode(string x) : data(x), next(nullptr) {}
-    LLNode(string x, LLNode *next) : data(x), next(next) {}
+    LLNode(string x) : username(x), next(nullptr) {}
+    LLNode(string x, LLNode *next) : username(x), next(next) {}
+};
+
+///////////////////////////////////////////////////
+
+struct node
+{
+    User *value;
+    struct node *left;
+    struct node *right;
+
+    node() {}
 };
 
 ///////////////////////////////////////////////////

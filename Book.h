@@ -12,6 +12,7 @@ using namespace std;
 class Book
 {
 private:
+    // Properties //
     string isbn;
     string title;
     string author;
@@ -20,7 +21,8 @@ private:
     int timesFavorited;
 
 public:
-    vector<BookCopy> copiesVector;
+    // Properties //
+    vector<BookCopy> copies;
 
     // ********** CONSTRUCTORS **********
     Book();
@@ -31,15 +33,9 @@ public:
     string getTitle();
     string getAuthor();
     string getCategory();
-    vector<BookCopy> getCopiesVector();
+    vector<BookCopy> getCopies();
     LLNode *getReservers();
     int getTimesFavorited();
-
-    // ********** MUTATORS **********
-    void setIsbn(string isbn);
-    void setTitle(string title);
-    void setAuthor(string author);
-    void setCategory(string category);
 
     // ********** FUNCTIONS **********
     void favorite();
@@ -60,8 +56,8 @@ public:
 
 Book::Book()
 {
-    this->rrHead = new LLNode("-1");
-    this->getCopiesVector().clear();
+    this->rrHead = nullptr;
+    this->copies.clear();
     this->timesFavorited = 0;
 }
 
@@ -71,8 +67,8 @@ Book::Book(string isbn, string title, string author, string category)
     this->title = title;
     this->author = author;
     this->category = category;
-    this->rrHead = new LLNode("-1");
-    this->getCopiesVector().clear();
+    this->rrHead = nullptr;
+    this->copies.clear();
     this->timesFavorited = 0;
 }
 
@@ -98,9 +94,9 @@ string Book::getCategory()
     return category;
 }
 
-vector<BookCopy> Book::getCopiesVector()
+vector<BookCopy> Book::getCopies()
 {
-    return copiesVector;
+    return copies;
 }
 
 LLNode *Book::getReservers()
@@ -111,28 +107,6 @@ LLNode *Book::getReservers()
 int Book::getTimesFavorited()
 {
     return timesFavorited;
-}
-
-// ******************** MUTATORS ********************
-
-void Book::setIsbn(string isbn)
-{
-    this->isbn = isbn;
-}
-
-void Book::setTitle(string title)
-{
-    this->title = title;
-}
-
-void Book::setAuthor(string author)
-{
-    this->author = author;
-}
-
-void Book::setCategory(string category)
-{
-    this->category = category;
 }
 
 // ******************** FUNCTIONS ********************
@@ -146,37 +120,42 @@ void Book::favorite()
 
 ostream &operator<<(ostream &output, Book &book)
 {
-    output << "ISBN:\t" << book.getIsbn() << endl
-           << "Title:\t" << book.getTitle() << endl
-           << "Author:\t" << book.getAuthor() << endl
-           << "Category:\t" << book.getCategory() << endl
-           << "Copies:\t" << endl;
-    // TODO - Print the id of each copy within copy binary tree
 
-    // Print linked list
-    /*output << "Reservers: " << endl;
+    output << "Title: " << book.getTitle() << endl
+           << "Author: " << book.getAuthor() << endl
+           << "ISBN: " << book.getIsbn() << endl
+           << "Category: " << book.getCategory() << endl;
+    output << "Copies: ";
+    for (BookCopy copy : book.copies)
+    {
+        output << copy.getID() << " ";
+    }
+    output << endl;
+
+    output << "Reservers: ";
     LLNode *head = book.getReservers();
     while (head != NULL)
     {
-        output << head->data << " ";
+        output << head->username << " ";
         head = head->next;
     }
     output << endl;
-    //
-    output << "Number of Favorites: " << book.getTimesFavorited() << endl;*/
+
+    output << "Number of Favorites: " << book.getTimesFavorited() << endl
+           << endl;
 
     return output;
 }
 
 istream &operator>>(istream &input, Book &book)
 {
-    int id, startDate, expDate;
-    string isbn, title, author, category, readerName;
-    input >> isbn >> title >> author >> category;
-    book.setIsbn(isbn);
-    book.setTitle(title);
-    book.setAuthor(author);
-    book.setCategory(category);
+    int id;
+    string newIsbn, newTitle, newAuthor, newCategory;
+    input >> newIsbn >> newTitle >> newAuthor >> newCategory;
+    book.isbn = newIsbn;
+    book.title = newTitle;
+    book.author = newAuthor;
+    book.category = newCategory;
 
     return input;
 }
@@ -226,14 +205,14 @@ void Book::deleteReader(string readerName)
     LLNode *head = rrHead;
     LLNode *prev = nullptr;
 
-    if (head != nullptr && head->data == readerName)
+    if (head != nullptr && head->username == readerName)
     {
         rrHead = head->next;
         delete head;
         return;
     }
 
-    while (head != nullptr && head->data != readerName)
+    while (head != nullptr && head->username != readerName)
     {
         prev = head;
         head = head->next;
@@ -250,100 +229,77 @@ void Book::deleteReader(string readerName)
 
 // ******************** OTHER BOOK FUNCTIONS ********************
 
-void returnBookCopyGivenID(TreeNode<Book> *node, int inputID, BookCopy &bc)
+int partitionCatalog(vector<Book> &catalog, int low, int high)
 {
-    if (node == nullptr)
+    int i = low - 1;
+    for (int j = low; j < high; j++)
     {
-        return;
-    }
-
-    // visit left child
-    returnBookCopyGivenID(node->left, inputID, bc);
-
-    // What to do at current node
-    for (int i = 0; i < node->val.copiesVector.size(); i++)
-    {
-        if (node->val.copiesVector.at(i).getID() == inputID)
+        int result = catalog.at(j).getIsbn().compare(catalog.at(high).getIsbn());
+        if (result <= 0)
         {
-            bc = node->val.copiesVector.at(i);
+            i++;
+            swap(catalog.at(i), catalog.at(j));
         }
     }
-    // visit right child
-    returnBookCopyGivenID(node->right, inputID, bc);
+    swap(catalog.at(high), catalog.at(i + 1));
+    return i + 1;
 }
 
-void returnBookGivenID(TreeNode<Book> *node, int inputID, Book &result)
+void sortCatalog(vector<Book> &catalog, int low, int high)
 {
-    if (node == nullptr)
+    if (low < high)
     {
-        return;
+        int pi = partitionCatalog(catalog, low, high);
+        sortCatalog(catalog, low, pi - 1);
+        sortCatalog(catalog, pi + 1, high);
     }
-
-    // visit left child
-    return returnBookGivenID(node->left, inputID, result);
-
-    // What to do at current node
-    // Check through bookCopies vector for an id that matches inputID
-    for (int i = 0; i < node->val.copiesVector.size(); i++)
-    {
-        if (node->val.copiesVector.at(i).getID() == inputID)
-        {
-            result = node->val;
-        }
-    }
-
-    // visit right child
-    return returnBookGivenID(node->right, inputID, result);
 }
 
-void checkOutBookInCatalog(TreeNode<Book> *inputBST, int bookID, int startLoanTime, int endLoanTime, string readerUsername)
+/**
+ * @brief Quicksorts the catalog by isbn so that binary search functions can be called on it
+ *
+ * @param catalog Catalog to sort
+ */
+void sortCatalog(vector<Book> &catalog)
 {
-    if (inputBST == nullptr)
-    {
-        return;
-    }
-
-    // visit left child
-    checkOutBookInCatalog(inputBST->left, bookID, startLoanTime, endLoanTime, readerUsername);
-
-    /**************************/
-    for (int i = 0; i < inputBST->val.copiesVector.size(); i++)
-    {
-        if (inputBST->val.copiesVector.at(i).getID() == bookID)
-        {
-            inputBST->val.copiesVector.at(i).setStartDate(startLoanTime);
-            inputBST->val.copiesVector.at(i).setExpirationDate(endLoanTime);
-            inputBST->val.copiesVector.at(i).setReaderName(readerUsername);
-            return;
-        }
-    }
-    /**************************/
-
-    // visit right child
-    checkOutBookInCatalog(inputBST->right, bookID, startLoanTime, endLoanTime, readerUsername);
+    sortCatalog(catalog, 0, catalog.size() - 1);
 }
 
-void renewBookInCatalog(TreeNode<Book> *inputBST, int inputID, int maxLoanTime)
+/**
+ * @brief Get the index of a book within the catalog using its isbn and binary search
+ *
+ * @param catalog vector of books
+ * @param isbn isbn of the book to search for
+ * @return int index of the book with matching isbn
+ */
+int getIndexOfBook(vector<Book> &catalog, string isbn)
 {
-    if (inputBST == NULL)
-    {
-        return;
-    }
+    int lo = 0, hi = catalog.size() - 1;
+    int mid;
 
-    // visit left child
-    renewBookInCatalog(inputBST->left, inputID, maxLoanTime);
-
-    /**************************/
-    for (int i = 0; i < inputBST->val.copiesVector.size(); i++)
+    while (hi - lo > 1)
     {
-        if (inputBST->val.copiesVector.at(i).getID() == inputID)
+        int mid = (hi + lo) / 2;
+        if (catalog[mid].getIsbn() < isbn)
         {
-            inputBST->val.copiesVector.at(i).setExpirationDate(inputBST->val.copiesVector.at(i).getExpirationDate() + maxLoanTime);
-            return;
+            lo = mid + 1;
+        }
+        else
+        {
+            hi = mid;
         }
     }
-    /**************************/
-
-    // visit right child
-    renewBookInCatalog(inputBST->right, inputID, maxLoanTime); // visit right child
+    if (catalog[lo].getIsbn() == isbn)
+    {
+        return lo;
+    }
+    else if (catalog[hi].getIsbn() == isbn)
+    {
+        return hi;
+    }
+    else
+    {
+        cerr << "Could not find index of book" << endl;
+        return -1;
+    }
 }

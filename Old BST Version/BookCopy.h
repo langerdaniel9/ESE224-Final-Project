@@ -10,6 +10,8 @@ class BookCopy
 private:
     int ID;
     string readerName;
+    string reserverName;
+    int reserveDate;
     int startDate;
     int expirationDate;
 
@@ -21,14 +23,18 @@ public:
     // ********** ACCESSORS **********
     int getID();
     string getReaderName();
+    string getReserverName();
+    int getReserveDate();
     int getStartDate();
     int getExpirationDate();
 
     // ********** MUTATORS **********
     void setID(int id);
     void setReaderName(string newReadName);
+    void setReserverName(string newReserveName);
+    void setReserveDate(int newReserveD);
     void setStartDate(int newStartD);
-    void setExpirationDate(int newExpirationDate);
+    void setExpirationDate(int newExpirationD);
 
     // ********** OPERATION OVERLOADING **********
     friend ostream &operator<<(ostream &output, BookCopy &bc);
@@ -59,6 +65,16 @@ string BookCopy::getReaderName()
     return readerName;
 };
 
+string BookCopy::getReserverName()
+{
+    return reserverName;
+};
+
+int BookCopy::getReserveDate()
+{
+    return reserveDate;
+};
+
 int BookCopy::getStartDate()
 {
     return startDate;
@@ -81,14 +97,24 @@ void BookCopy::setReaderName(string newReadName)
     this->readerName = newReadName;
 };
 
+void BookCopy::setReserverName(string newReserveName)
+{
+    this->reserverName = newReserveName;
+};
+
+void BookCopy::setReserveDate(int newReserveD)
+{
+    this->reserveDate = newReserveD;
+};
+
 void BookCopy::setStartDate(int newStartD)
 {
     this->startDate = newStartD;
 };
 
-void BookCopy::setExpirationDate(int newExpirationDate)
+void BookCopy::setExpirationDate(int newExpirationD)
 {
-    this->expirationDate = newExpirationDate;
+    this->expirationDate = newExpirationD;
 };
 
 // ******************** OPERATION OVERLOADING ********************
@@ -103,6 +129,8 @@ ostream &operator<<(ostream &output, BookCopy &book_copy)
 
     output << "ID:\t" << book_copy.getID() << endl
            << "Reader Name:\t" << book_copy.getReaderName() << endl
+           << "Reserver Name:\t" << book_copy.getReserverName() << endl
+           << "Reservation Date:\t" << book_copy.getReserveDate() << endl
            << "Start Date:\t" << book_copy.getStartDate() << endl
            << "Expiration Date:\t" << book_copy.getExpirationDate() << endl
            << endl;
@@ -112,13 +140,15 @@ ostream &operator<<(ostream &output, BookCopy &book_copy)
 
 istream &operator>>(istream &input, BookCopy &book_copy)
 {
-    int ID, startDate, expirationDate;
-    string readerName;
+    int ID, reserveDate, startDate, expirationDate;
+    string readerName, reserverName;
 
-    input >> ID >> readerName >> startDate >> expirationDate;
+    input >> ID >> readerName >> reserverName >> reserveDate >> startDate >> expirationDate;
 
     book_copy.setID(ID);
     book_copy.setReaderName(readerName);
+    book_copy.setReserverName(reserverName);
+    book_copy.setReserveDate(reserveDate);
     book_copy.setStartDate(startDate);
     book_copy.setExpirationDate(expirationDate);
 

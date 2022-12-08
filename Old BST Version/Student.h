@@ -11,29 +11,27 @@ class Student : public Reader
 {
 public:
     Student();
-    Student(string initUsername, string initPassword);
-    string getType();
+    Student(string initUserName, string initPassword);
+    string type();
 };
 
 // Leave functions in the .h file for now, will move them to their respective .cpp files when project is finished
 
 Student::Student()
 {
-    type = "Student";
     maxCopies = 5;
     maxLoanTime = 30;
 }
 
-Student::Student(string initUsername, string initPassword)
+Student::Student(string initUserName, string initPassword)
 {
-    username = initUsername;
+    userName = initUserName;
     password = initPassword;
-    type = "Student";
     maxCopies = 5;
     maxLoanTime = 30;
 }
 
-string Student::getType()
+string Student::type()
 {
     return "Student";
 }
