@@ -267,9 +267,19 @@ void Reader::borrowBook(vector<Book>& bookCatalog, time_t &zeroTime) {
     bool exists = false;
     bool available = false;
     BookCopy toBeBorrowed;
+    Book matchedBook;
     vector<BookCopy> copies;
     toBeBorrowed.setID(-1);
-    
+    for (int i = 0; i < bookCatalog.size(); i++) {
+        copies = bookCatalog.at(i).getCopies();
+        for (int j = 0; j < copies.size(); j++) {
+            if (copies.at(j).getID() == inputID) {
+                matchedBook = bookCatalog.at(i);
+                toBeBorrowed = copies.at(j);
+                break;
+            }
+        }
+    }
 
     if (toBeBorrowed.getID() != -1)
     {
@@ -279,6 +289,54 @@ void Reader::borrowBook(vector<Book>& bookCatalog, time_t &zeroTime) {
             available = true;
         }
     }
+
+    // Now check if someone else is on the reserved linked list
+    bool goodToContinue;
+
+    // Check the first entry of the linked list to see if it exists
+    if (matchedBook.getReservers() == nullptr)
+    {
+        // If the linked list is empty then the user can borrow the book
+        goodToContinue = true;
+    }
+    else
+    {
+        goodToContinue = ((matchedBook.getReservers() == this->getUsername()) ? true : false);
+    }
+
+    if (!goodToContinue)
+    {
+        cout << "It seems someone has already reserved this book, please wait for the reservation to free up" << endl;
+        return;
+    }
+
+    if (!exists)
+    {
+        cout << "That ID does not exist in the library, double check the ID and try again" << endl;
+        return;
+    }
+    if (!available)
+    {
+        cout << "There are no more copies of this book left, try reserving this book.";
+        return;
+    }
+
+    // Next check if the user is over their maxCopies limit
+    if (this->getBooksBorrowed().size() > this->getMaxCopies())
+    {
+        cout << "You cannot borrow any more books, since you are already at your limit" << endl;
+        return;
+    }
+
+    // If all of the conditions are met, add the book to copiesBorrowed
+    toBeBorrowed.setStartDate(currentTime);
+    toBeBorrowed.setExpirationDate(currentTime + this->getMaxLoanTime());
+    toBeBorrowed.setReaderName(this->getUserName());
+    this->copiesBorrowed.push_back(toBeBorrowed);
+
+    // Change the attributes of the book
+    checkOutBookInCatalog(bookCatalog->root, inputID, currentTime, (currentTime + this->getMaxLoanTime()), this->getUserName());
+    return;
 }
 
 void Reader::returnBook(vector<Book>& bookCatalog) {
