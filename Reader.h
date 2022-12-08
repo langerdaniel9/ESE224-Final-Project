@@ -33,7 +33,17 @@ public:
     friend ostream &operator<<(ostream &output, Book &book);
     friend istream &operator>>(istream &input, Book &book);
     // Main functions //
+    void sortExpiration(vector<BookCopy> &copyList, int low, int high);
+    void getBookInfo(Book book);
+    void searchBook(vector<Book> bookCatalog);
+    void borrowBook(vector<Book> &bookCatalog, time_t& zeroTime);
+    void returnBook(vector<Book> &bookCatalog);
+    void renewBook(vector<Book> &bookCatalog);
+    void reserveBook(vector<Book> &bookCatalog);
+    void cancelBook(vector<Book> &bookCatalog);
+    void feelingLucky(vector<Book> &bookCatalog);
     void printMyInfo();
+    string type();
 };
 
 // Leave functions in the .h file for now, will move them to their respective .cpp files when project is finished
@@ -54,9 +64,251 @@ vector<BookCopy> Reader::getBooksBorrowed()
     return this->copiesBorrowed;
 }
 
+int partition(vector<BookCopy> lib, int low, int high)
+{
+    // partition starting from first element;
+    // then comparing each element by the last element in the array
+
+    int i = low - 1; // i => index of first array (array lower than "high" value)
+
+    for (int j = low; j < high; j++)
+    { // j => index of second array (array greater than "high" value)
+        if (lib.at(j).getID() <= lib.at(high).getID())
+        {
+            i++;
+            swap(lib.at(i), lib.at(j));
+        }
+    }
+
+    // Swapping the "high" value to where it needs to be
+    swap(lib.at(high), lib.at(i + 1));
+
+    // returns the index of where the "high" value is
+    return i + 1;
+}
+
+void quickSort(vector<BookCopy> lib, int low, int high)
+{
+    if (low < high)
+    {
+        int pi = partition(lib, low, high);
+
+        // recursive call on the left of pivot
+        quickSort(lib, low, pi - 1);
+
+        // recursive call on the right of pivot
+        quickSort(lib, pi + 1, high);
+    }
+}
+
+int expPartition(vector<BookCopy> &copyList, int low, int high) {
+    int i = low - 1;
+
+    for (int j = low; j < high; j++) {
+        if (copyList.at(j).getExpirationDate() <= copyList.at(high).getExpirationDate())
+        {
+            i++;
+            swap(copyList.at(i), copyList.at(j));
+        }
+    }
+
+    swap(copyList.at(high), copyList.at(i + 1));
+
+    return i + 1;
+}
+
+void Reader::sortExpiration(vector<BookCopy> &copyList, int low, int high) {
+    if (low < high)
+    {
+        int pi = expPartition(copyList, low, high);
+
+        // recursive call on the left of pivot
+        sortExpiration(copyList, low, pi - 1);
+
+        // recursive call on the right of pivot
+        sortExpiration(copyList, pi + 1, high);
+    }
+}
+
+void Reader::getBookInfo(Book book) {
+    cout << "ISBN: " << book.getIsbn() << endl
+        << "Title: " << book.getTitle() << endl
+        << "Author: " << book.getAuthor() << endl
+        << "Category: " << book.getCategory() << endl
+        << "Copy IDs: " << endl;
+    vector<BookCopy> copies = book.getCopies();
+    sortExpiration(copies, 0, copies.size());
+    for (int i = 0; i < copies.size(); i++) {
+        cout << "ID: " << copies.at(i).getID() << ", ";
+        if (copies.at(i).getExpirationDate() == -1) {
+            cout << "AVAILABLE" << endl;
+        } else {
+            cout << "Expires " << copies.at(i).getExpirationDate() << endl;
+        }
+    }
+}
+
+void Reader::searchBook(vector<Book> bookCatalog) {
+    int searchChoice;
+    cout << "What category do you want to search by:" << endl;
+    cout << "(1) - ISBN" << endl;
+    cout << "(2) - Title" << endl;
+    cout << "(3) - Category" << endl;
+    cout << "(4) - ID" << endl;
+    cin >> searchChoice;
+
+    switch (searchChoice)
+    {
+    case 1:
+    {
+        string inputISBN;
+        cout << "What's your book's ISBN value?: ";
+        cin >> inputISBN;
+
+        // Search for matching isbn and print if found
+        for (int i = 0; i < bookCatalog.size(); i++) {
+            if (bookCatalog.at(i).getIsbn() == inputISBN) {
+                getBookInfo(bookCatalog.at(i));
+                cout << endl;
+            }
+        }
+
+        break;
+    }
+    case 2:
+    {
+        string inputTitle;
+        cout << "What's your book's title?: ";
+        cin >> inputTitle;
+
+        // Search for matching titles and print them
+        for (int i = 0; i < bookCatalog.size(); i++) {
+            if (bookCatalog.at(i).getTitle() == inputTitle) {
+                getBookInfo(bookCatalog.at(i));
+                cout << endl;
+            }
+        }
+
+        break;
+    }
+    case 3:
+    {
+        string inputCategory;
+        cout << "What's your book's category?: ";
+        cin >> inputCategory;
+
+        // Search for matching category and print them
+        for (int i = 0; i < bookCatalog.size(); i++) {
+            if (bookCatalog.at(i).getCategory() == inputCategory) {
+                getBookInfo(bookCatalog.at(i));
+                cout << endl;
+            }
+        }
+        break;
+    }
+    case 4:
+    {
+        int inputID;
+        cout << "What's your book's ID?: ";
+        cin >> inputID;
+        vector<BookCopy> copies;
+
+        for (int i = 0; i < bookCatalog.size(); i++) {
+            copies = bookCatalog.at(i).getCopies();
+            for (int j = 0; j < copies.size(); j++) {
+                if (copies.at(j).getID() == inputID) {
+                    getBookInfo(bookCatalog.at(i));
+                    cout << endl;
+                    break;
+                }
+            }
+        }
+        break;
+    }
+    default:
+    {
+        cout << "That's not a valid option! Try again!" << endl;
+        break;
+    }
+    }
+}
+
+void Reader::borrowBook(vector<Book>& bookCatalog, time_t &zeroTime) {
+    // Check if there are overdue books
+    int currentTime = date(zeroTime);
+    vector<BookCopy> expiredBooks;
+    vector<Book> temp = bookCatalog;
+    bool expired = false;
+
+    for (int i = 0; i < this->getBooksBorrowed().size(); i++)
+    {
+        if (this->getBooksBorrowed().at(i).getExpirationDate() < currentTime)
+        {
+            expired = true;
+            expiredBooks.push_back(this->getBooksBorrowed().at(i));
+        }
+    }
+    if (expired)
+    {
+        cout << "You have books that are already past due, return those before borrowing more. Your expired books are:" << endl;
+        for (BookCopy book : expiredBooks)
+        {
+            cout << book;
+        }
+        return;
+    }
+
+    // Ask for the ID of the book copy to borrow
+    int inputID;
+    cout << "What is the ID of the book you wish to borrow: ";
+    cin >> inputID;
+
+    // Check if that ID exists in bookCatalog and that there are available copies
+    bool exists = false;
+    bool available = false;
+    BookCopy toBeBorrowed;
+    vector<BookCopy> copies;
+    toBeBorrowed.setID(-1);
+    
+
+    if (toBeBorrowed.getID() != -1)
+    {
+        exists = true;
+        if (toBeBorrowed.getReaderName() == "")
+        {
+            available = true;
+        }
+    }
+}
+
+void Reader::returnBook(vector<Book>& bookCatalog) {
+
+}
+
+void Reader::renewBook(vector<Book>& bookCatalog) {
+
+}
+
+void Reader::reserveBook(vector<Book>& bookCatalog) {
+
+}
+
+void Reader::cancelBook(vector<Book>& bookCatalog) {
+
+}
+
+void Reader::feelingLucky(vector<Book>& bookCatalog) {
+    
+}
+
+
 void Reader::printMyInfo()
 {
     // TODO print reader info: username, password, books borrowed
+}
+
+string Reader::type() {
+    return "Reader";
 }
 
 // Casting //
