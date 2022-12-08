@@ -116,59 +116,66 @@ void Book::favorite()
     timesFavorited++;
 }
 
-// ******************** OPERATION OVERLOADING ********************
-
-ostream &operator<<(ostream &output, Book &book)
+int expPartition(vector<BookCopy>& copyList, int low, int high)
 {
+    int i = low - 1;
 
-    output << "Title: " << book.getTitle() << endl
-           << "Author: " << book.getAuthor() << endl
-           << "ISBN: " << book.getIsbn() << endl
-           << "Category: " << book.getCategory() << endl;
-    output << "Copies: ";
-    for (BookCopy copy : book.copies)
+    for (int j = low; j < high; j++)
     {
-        output << copy.getID() << " ";
+        if (copyList.at(j).getExpirationDate() <= copyList.at(high).getExpirationDate())
+        {
+            i++;
+            swap(copyList.at(i), copyList.at(j));
+        }
     }
-    output << endl;
 
-    output << "Reservers: ";
-    LLNode *head = book.getReservers();
-    while (head != NULL)
-    {
-        output << head->username << " ";
-        head = head->next;
-    }
-    output << endl;
+    swap(copyList.at(high), copyList.at(i + 1));
 
-    output << "Number of Favorites: " << book.getTimesFavorited() << endl
-           << endl;
-
-    return output;
+    return i + 1;
 }
 
-// ostream &operator<<(ostream &output, Book &book)
-// {
-//     output << "ISBN: " << book.getIsbn() << endl
-//          << "Title: " << book.getTitle() << endl
-//          << "Author: " << book.getAuthor() << endl
-//          << "Category: " << book.getCategory() << endl
-//          << "Copy IDs: " << endl;
-//     vector<BookCopy> copies = book.getCopies();
-//     sortExpiration(copies, 0, copies.size());
-//     for (int i = 0; i < copies.size(); i++)
-//     {
-//         output << "ID: " << copies.at(i).getID() << ", ";
-//         if (copies.at(i).getExpirationDate() == -1)
-//         {
-//             output << "AVAILABLE" << endl;
-//         }
-//         else
-//         {
-//             output << "Expires " << copies.at(i).getExpirationDate() << endl;
-//         }
-//     }
-// }
+void sortExpiration(vector<BookCopy>& copyList, int low, int high)
+{
+    if (low < high)
+    {
+        int pi = expPartition(copyList, low, high);
+
+        // recursive call on the left of pivot
+        sortExpiration(copyList, low, pi - 1);
+
+        // recursive call on the right of pivot
+        sortExpiration(copyList, pi + 1, high);
+    }
+}
+
+// ******************** OPERATION OVERLOADING ********************
+
+
+ ostream &operator<<(ostream &output, Book &book)
+ {
+     output << "ISBN: " << book.getIsbn() << endl
+          << "Title: " << book.getTitle() << endl
+          << "Author: " << book.getAuthor() << endl
+          << "Category: " << book.getCategory() << endl
+         << "Number of Favorites: " << book.getTimesFavorited() << endl
+          << "Copy IDs: " << endl;
+     vector<BookCopy> copies = book.getCopies();
+     sortExpiration(copies, 0, copies.size());
+     for (int i = 0; i < copies.size(); i++)
+     {
+         output << "id: " << copies.at(i).getID() << ", ";
+         if (copies.at(i).getExpirationDate() == -1)
+         {
+             output << "AVAILABLE" << endl;
+         }
+         else
+         {
+             output << "UNAVAILABLE " << endl;
+         }
+     }
+
+     return output;
+ }
 
 istream &operator>>(istream &input, Book &book)
 {
