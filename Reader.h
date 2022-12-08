@@ -146,7 +146,7 @@ void Reader::getBookInfo(Book book)
          << "Category: " << book.getCategory() << endl
          << "Copy IDs: " << endl;
     vector<BookCopy> copies = book.getCopies();
-    sortExpiration(copies, 0, copies.size());
+    sortExpiration(copies, 0, copies.size() - 1);
     for (int i = 0; i < copies.size(); i++)
     {
         cout << "ID: " << copies.at(i).getID() << ", ";
@@ -362,10 +362,13 @@ void Reader::borrowBook(vector<Book> &bookCatalog, time_t &zeroTime)
     this->copiesBorrowed.push_back(toBeBorrowed);
 
     // Change the attributes of the book
-    for (int i = 0; i < bookCatalog.size(); i++) {
+    for (int i = 0; i < bookCatalog.size(); i++)
+    {
         copies = bookCatalog.at(i).getCopies();
-        for (int j = 0; j < copies.size(); j++) {
-            if (copies.at(j).getID() == inputID) {
+        for (int j = 0; j < copies.size(); j++)
+        {
+            if (copies.at(j).getID() == inputID)
+            {
                 copies.at(j).setReaderName(this->getUsername());
                 copies.at(j).setStartDate(currentTime);
                 copies.at(j).setExpirationDate(currentTime + this->getMaxLoanTime());
@@ -390,10 +393,28 @@ void Reader::reserveBook(vector<Book> &bookCatalog)
 
 void Reader::cancelBook(vector<Book> &bookCatalog)
 {
+    // Print the books that the current user has reserved
+
+    // Ask for the isbn of the book that the user wants to cancel the reservation of
 }
 
 void Reader::feelingLucky(vector<Book> &bookCatalog)
 {
+    vector<Book> mostFavorited;
+    // Go through the catalog and add books that have a number of favorites > 0 to the vector
+
+    if (mostFavorited.size() == 0)
+    {
+        cout << "It seems like there are no favorited books so far, go and favorite some of them first." << endl
+             << endl;
+        return;
+    }
+
+    // Sort mostFavorited vector by number of favorites
+
+    cout << "The top 10 most liked books are:" << endl;
+
+    // Print out the vector
 }
 
 void Reader::printMyInfo()
