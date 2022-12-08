@@ -164,7 +164,7 @@ void Reader::getBookInfo(Book book)
 void Reader::searchBook(vector<Book> bookCatalog)
 {
     int searchChoice;
-    cout << "What category do you want to search by:" << endl;
+    cout << "What do you want to search:" << endl;
     cout << "(1) - ISBN" << endl;
     cout << "(2) - Title" << endl;
     cout << "(3) - Category" << endl;
@@ -294,10 +294,13 @@ void Reader::borrowBook(vector<Book> &bookCatalog, time_t &zeroTime)
     Book matchedBook;
     vector<BookCopy> copies;
     toBeBorrowed.setID(-1);
-    for (int i = 0; i < bookCatalog.size(); i++) {
+    for (int i = 0; i < bookCatalog.size(); i++)
+    {
         copies = bookCatalog.at(i).getCopies();
-        for (int j = 0; j < copies.size(); j++) {
-            if (copies.at(j).getID() == inputID) {
+        for (int j = 0; j < copies.size(); j++)
+        {
+            if (copies.at(j).getID() == inputID)
+            {
                 matchedBook = bookCatalog.at(i);
                 toBeBorrowed = copies.at(j);
                 break;
