@@ -21,12 +21,13 @@ private:
     // Functions //
     void addUser(struct node **node, User *val);
     void deleteUser(struct node **node, User *val);
-    void findUser(struct node *node, string testUsername, string testPassword, User *result);
-    void findUserType(struct node *node, string testUsername, string testPassword, string &userType);
     User *returnUser(struct node *node, string testUsername, string testPassword);
-    bool userExists(struct node *node, string testUsername, string testPassword);
+    User *returnUser(struct node *node, string testUsername);
     void printInOrder(struct node *node);
-    void printDetailsAboutUser(struct node *node, User *val);
+
+    // Helper Functions //
+    node *getSuccessor(node *curr);
+    void findParent(node **current, User *toDelete, node **parent);
 
 public:
     // Parameters //
@@ -35,28 +36,18 @@ public:
     // Functions //
     // Constructor
     UserBST();
-    // Getter
-    int size();
     // Binary Search Tree
     void addUser(User *toInsert);
     void deleteUser(User *toDelete);
-    void findUser(string testUsername, string testPassword, User *result);
-    void findUserType(string testUsername, string testPassword, string &userType);
+    User *returnUser(string testUsername);
     User *returnUser(string testUsername, string testPassword);
     void printInOrder();
-    bool userExists(string testUsername, string testPassword);
-    void printDetailsAboutUser(User *val);
 };
 
 UserBST::UserBST()
 {
     this->root = NULL;
     this->treeSize = 0;
-}
-
-int UserBST::size()
-{
-    return this->treeSize;
 }
 
 void UserBST::addUser(User *toInsert)
@@ -95,7 +86,7 @@ void UserBST::deleteUser(User *toDelete)
     deleteUser(&(this->root), toDelete);
 }
 
-node *getSuccessor(node *curr)
+node *UserBST::getSuccessor(node *curr)
 {
     while (curr->left != nullptr)
     {
@@ -104,7 +95,7 @@ node *getSuccessor(node *curr)
     return curr;
 }
 
-void findParent(node **current, User *toDelete, node **parent)
+void UserBST::findParent(node **current, User *toDelete, node **parent)
 {
     // traverse the tree and search for the key
     while ((*current) != nullptr && (*current)->value->getUsername() != toDelete->getUsername())
@@ -231,35 +222,6 @@ void UserBST::printInOrder(struct node *node)
     }
 }
 
-void UserBST::findUser(string testUsername, string testPassword, User *result)
-{
-    findUser(this->root, testUsername, testPassword, result);
-}
-
-void UserBST::findUser(struct node *node, string testUsername, string testPassword, User *result)
-{
-    if (node == NULL)
-    {
-        return;
-    }
-    else
-    {
-        if (testUsername == node->value->getUsername() && testPassword == node->value->getPassword())
-        {
-            result = node->value;
-        }
-
-        if (testUsername > node->value->getUsername())
-        {
-            findUser(node->right, testUsername, testPassword, result);
-        }
-        else
-        {
-            findUser(node->left, testUsername, testPassword, result);
-        }
-    }
-}
-
 User *UserBST::returnUser(string testUsername, string testPassword)
 {
     return returnUser(this->root, testUsername, testPassword);
@@ -268,13 +230,12 @@ User *UserBST::returnUser(string testUsername, string testPassword)
 User *UserBST::returnUser(struct node *node, string testUsername, string testPassword)
 {
     struct node *current = node;
+    if (current == nullptr)
+    {
+        return nullptr;
+    }
     while (testUsername != current->value->getUsername() && testPassword != current->value->getPassword())
     {
-        if (current == nullptr)
-        {
-            return nullptr;
-        }
-
         if (testUsername > current->value->getUsername())
         {
             current = current->right;
@@ -283,103 +244,42 @@ User *UserBST::returnUser(struct node *node, string testUsername, string testPas
         {
             current = current->left;
         }
+
+        if (current == nullptr)
+        {
+            return nullptr;
+        }
     }
     return current->value;
 }
 
-void UserBST::findUserType(string testUsername, string testPassword, string &userType)
+User *UserBST::returnUser(string testUsername)
 {
-    findUserType(this->root, testUsername, testPassword, userType);
+    return returnUser(this->root, testUsername);
 }
 
-void UserBST::findUserType(struct node *node, string testUsername, string testPassword, string &userType)
+User *UserBST::returnUser(struct node *node, string testUsername)
 {
-    if (node == NULL)
+    struct node *current = node;
+    if (current == nullptr)
     {
-        return;
+        return nullptr;
     }
-    else
+    while (testUsername != current->value->getUsername())
     {
-        if (testUsername == node->value->getUsername() && testPassword == node->value->getPassword())
+        if (testUsername > current->value->getUsername())
         {
-            userType = node->value->getType();
-        }
-
-        if (testUsername > node->value->getUsername())
-        {
-            findUserType(node->right, testUsername, testPassword, userType);
+            current = current->right;
         }
         else
         {
-            findUserType(node->left, testUsername, testPassword, userType);
+            current = current->left;
+        }
+
+        if (current == nullptr)
+        {
+            return nullptr;
         }
     }
-}
-
-void UserBST::printDetailsAboutUser(User *userToPrint) // Main Call
-{
-    /*
-     * A librarian can search users by their usernames. Requirements:
-     * If the target is a librarian, show his username and password only.
-     * If the target is a reader, show his/her name, password, reader type (student or teacher) as well as the copies he/she is keeping currently.
-     */
-
-    printDetailsAboutUser(this->root, userToPrint);
-}
-
-void UserBST::printDetailsAboutUser(struct node *node, User *userToPrint) // Recursive
-{
-    if (node == NULL)
-    {
-        return;
-    }
-    else
-    {
-        if (userToPrint->getUsername() == node->value->getUsername())
-        {
-            // TODO - If target is a librarian, print the username and password
-
-            // TODO - If target is a reader, print username, password, type, and copiesList
-        }
-
-        if (userToPrint->getUsername() > node->value->getPassword())
-        {
-            printDetailsAboutUser(node->right, userToPrint);
-        }
-        else
-        {
-            printDetailsAboutUser(node->left, userToPrint);
-        }
-    }
-}
-
-// Unnecessary
-
-bool UserBST::userExists(string testUsername, string testPassword)
-{
-    return userExists(this->root, testUsername, testPassword);
-}
-
-bool UserBST::userExists(struct node *node, string testUsername, string testPassword)
-{
-    if (node == NULL)
-    {
-        return false;
-    }
-    else
-    {
-        if (testUsername == node->value->getUsername() && testPassword == node->value->getPassword())
-        {
-            return true;
-        }
-
-        if (testUsername > node->value->getUsername())
-        {
-            return userExists(node->right, testUsername, testPassword);
-        }
-        else
-        {
-            return userExists(node->left, testUsername, testPassword);
-        }
-    }
+    return current->value;
 }

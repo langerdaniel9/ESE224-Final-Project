@@ -72,12 +72,12 @@ void writeOutCopiesFile(vector<Book> catalog)
     // Traverse and print
     for (Book bk : catalog)
     {
-        copiesOutput << bk.getIsbn() << "\t";
+
         for (BookCopy bkcpy : bk.copies)
         {
-            copiesOutput << bkcpy.getID();
+            copiesOutput << bk.getIsbn() << "\t"
+                         << bkcpy.getID() << endl;
         }
-        copiesOutput << endl;
     }
 
     copiesOutput.close();

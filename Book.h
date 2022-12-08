@@ -299,7 +299,6 @@ int getIndexOfBook(vector<Book> &catalog, string isbn)
     }
     else
     {
-        cerr << "Could not find index of book" << endl;
         return -1;
     }
 }

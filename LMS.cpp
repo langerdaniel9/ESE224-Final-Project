@@ -32,19 +32,24 @@ void getCopies(vector<Book> &catalog);
 User *login(UserBST &users);
 
 void readerLoop(Reader *user, vector<Book> &catalog, UserBST users, time_t &zeroTime);
-void librarianLoop(Librarian *user, vector<Book> &catalog, UserBST users, time_t &zeroTime, int idCount);
+void librarianLoop(Librarian *user, vector<Book> &catalog, UserBST users, time_t &zeroTime);
 
 int main()
 {
     // Data to be read in from text files
     vector<Book> catalog;
     UserBST users;
-    int idCount;
 
     // Read in data from text files
     getUsers(users);
     getBooks(catalog);
     getCopies(catalog);
+
+    // Print Welcome message
+    cout << "-----------------------------------" << endl
+         << "-      Welcome to My Library      -" << endl
+         << "-----------------------------------" << endl
+         << endl;
 
     // Login system, multiple users can login in and out on the same execution of the program
     while (true)
@@ -54,7 +59,7 @@ int main()
 
         if (currentUser->getType() == "Librarian")
         {
-            librarianLoop(userToLibrarian(currentUser), catalog, users, zeroTime, idCount);
+            librarianLoop(userToLibrarian(currentUser), catalog, users, zeroTime);
         }
         else if (currentUser->getType() == "Student")
         {
@@ -212,12 +217,11 @@ User *login(UserBST &users)
             cin >> passwordIn;
 
             // Search for a user with the entered username and password
-            string userType = "nonexistant";
-            users.findUserType(usernameIn, passwordIn, userType);
+            User *resultUser = users.returnUser(usernameIn, passwordIn);
 
-            if (userType == "Student" || userType == "Teacher" || userType == "Librarian")
+            if (resultUser != nullptr)
             {
-                return users.returnUser(usernameIn, passwordIn);
+                return resultUser;
             }
             else
             {
@@ -233,7 +237,8 @@ void readerLoop(Reader *user, vector<Book> &catalog, UserBST users, time_t &zero
     while (true)
     {
         int currentDate = date(zeroTime);
-        cout << "Welcome back,\n"
+        cout << endl
+             << "Welcome back, " << user->getType() << "\n"
              << "It is currently day " << currentDate << "\n\n"
              << "Please choose:\n"
              << "1 -- Search Book\n"
@@ -333,12 +338,13 @@ void readerLoop(Reader *user, vector<Book> &catalog, UserBST users, time_t &zero
     }
 }
 
-void librarianLoop(Librarian *user, vector<Book> &catalog, UserBST users, time_t &zeroTime, int idCount)
+void librarianLoop(Librarian *user, vector<Book> &catalog, UserBST users, time_t &zeroTime)
 {
     while (true)
     {
         int currentDate = date(zeroTime);
-        cout << "Welcome back,\n"
+        cout << endl
+             << "Welcome back, " << user->getType() << "\n"
              << "It is currently day " << currentDate << "\n\n"
              << "Please choose:\n"
              << "2 -- Add Book\n"
@@ -375,42 +381,38 @@ void librarianLoop(Librarian *user, vector<Book> &catalog, UserBST users, time_t
         }
         case 2:
         {
-            // TODO Add Book
-            cout << "Entered add book function" << endl;
+            // Add Book
+            user->addBook(catalog);
             break;
         }
         case 3:
         {
-            // TODO Delete Book
-            cout << "Entered delete book function" << endl;
+            // Delete Book
+            user->deleteBook(catalog);
             break;
         }
         case 4:
         {
-            // TODO Search User
-            cout << "Entered search user function" << endl;
-            // string toSearch;
-            // cout << "What username to search for? ";
-            // cin >> toSearch;
-            // user->searchUser(usersList->root, toSearch);
+            // Search User
+            user->searchUser(users);
             break;
         }
         case 5:
         {
-            // TODO Add User
-            cout << "Entered add user function" << endl;
+            // Add User
+            user->addUser(users);
             break;
         }
         case 6:
         {
-            // TODO Delete User
-            cout << "Entered delete user function" << endl;
+            // Delete User
+            user->deleteUser(users);
             break;
         }
         case 7:
         {
-            // TODO My Information
-            cout << "Entered my info function" << endl;
+            // My Information
+            user->printMyInfo();
             break;
         }
         case 8:
