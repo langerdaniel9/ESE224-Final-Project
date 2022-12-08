@@ -67,12 +67,6 @@ void User::changePassword()
     password = newPass;
 }
 
-void User::printLoginInfo()
-{
-    cout << "Username: " << username << endl
-         << "Password: " << password << endl;
-}
-
 ostream &operator<<(ostream &output, User &user)
 {
     output << "Username:\t" << user.getUsername() << endl
