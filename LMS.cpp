@@ -34,8 +34,6 @@ User *login(UserBST &users);
 void readerLoop(Reader *user, vector<Book> &catalog, UserBST users, time_t &zeroTime);
 void librarianLoop(Librarian *user, vector<Book> &catalog, UserBST users, time_t &zeroTime, int &copycount);
 
-
-
 int main()
 {
     // Data to be read in from text files
@@ -45,7 +43,7 @@ int main()
     // Read in data from text files
     getUsers(users);
     getBooks(catalog);
-    getCopies(catalog,copycount);
+    getCopies(catalog, copycount);
 
     // Print Welcome message
     cout << "-----------------------------------" << endl
@@ -61,7 +59,7 @@ int main()
 
         if (currentUser->getType() == "Librarian")
         {
-            librarianLoop(userToLibrarian(currentUser), catalog, users, zeroTime);
+            librarianLoop(userToLibrarian(currentUser), catalog, users, zeroTime, copycount);
         }
         else if (currentUser->getType() == "Student")
         {
@@ -165,7 +163,7 @@ void getBooks(vector<Book> &catalog)
     bookFile.close();
 }
 
-void getCopies(vector<Book> &catalog, int& copyin)
+void getCopies(vector<Book> &catalog, int &copyin)
 {
     fstream copyFile("copiesList.txt");
     if (copyFile.fail())
@@ -341,7 +339,7 @@ void readerLoop(Reader *user, vector<Book> &catalog, UserBST users, time_t &zero
     }
 }
 
-void librarianLoop(Librarian *user, vector<Book> &catalog, UserBST users, time_t &zeroTime,int &copycount)
+void librarianLoop(Librarian *user, vector<Book> &catalog, UserBST users, time_t &zeroTime, int &copycount)
 {
     while (true)
     {
@@ -385,7 +383,7 @@ void librarianLoop(Librarian *user, vector<Book> &catalog, UserBST users, time_t
         case 2:
         {
             // Add Book
-            user->addBook(catalog);
+            user->addBook(catalog, copycount);
             break;
         }
         case 3:
