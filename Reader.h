@@ -427,9 +427,11 @@ void Reader::returnBook(vector<Book> &bookCatalog, time_t zerotime)
                 int borrowbycount=1;
                 int currdate = date(zerotime);
 
-                while (bookCatalog.at(i).getReservers()->next != NULL) {
+                LLNode* temp = bookCatalog.at(i).getReservers();
+                while (temp != NULL) {
                     bookCatalog.at(i).getReservers()->borrowBy = (5 * borrowbycount)+currdate;
                     borrowbycount++;
+                    temp = temp->next;
                 }
             }
         }
