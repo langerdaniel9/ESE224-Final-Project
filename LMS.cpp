@@ -52,10 +52,11 @@ int main()
          << endl;
 
     // Login system, multiple users can login in and out on the same execution of the program
+    time_t zeroTime = time(NULL);
+
     while (true)
     {
         User *currentUser = login(users);
-        time_t zeroTime = time(NULL);
 
         if (currentUser->getType() == "Librarian")
         {

@@ -342,8 +342,6 @@ void Reader::returnBook(BST<Book> *&bookCatalog)
     // Change the properties of the returned book to reflect that it is available
     checkOutBookInCatalog(bookCatalog->root, id, -1, -1, "");
 
-    // TODO - start 5 day timer here somehow
-
     return;
 }
 

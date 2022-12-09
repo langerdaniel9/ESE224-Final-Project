@@ -159,7 +159,7 @@ ostream &operator<<(ostream &output, Book &book)
            << "Number of Favorites: " << book.getTimesFavorited() << endl
            << "Copy IDs: " << endl;
     vector<BookCopy> copies = book.getCopies();
-    sortExpiration(copies, 0, copies.size());
+    sortExpiration(copies, 0, copies.size() - 1);
     for (int i = 0; i < copies.size(); i++)
     {
         output << "id: " << copies.at(i).getID() << ", ";

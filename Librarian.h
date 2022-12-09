@@ -61,7 +61,7 @@ void Librarian::addBook(vector<Book> &catalog, int &copycount)
 
     if (foundIndex != -1)
     {
-       
+
         BookCopy newBookCopy(copycount);
         copycount++;
         catalog.at(foundIndex).copies.push_back(newBookCopy);
@@ -77,8 +77,6 @@ void Librarian::addBook(vector<Book> &catalog, int &copycount)
         cin >> newAuthor;
         cout << "What is the category of this book? ";
         cin >> newCategory;
-        cout << "At least one copy of this book must be added, what is the ID of this copy? ";
-        
 
         Book newBook(newISBN, newTitle, newAuthor, newCategory);
         BookCopy newBookCopy(copycount);
@@ -160,17 +158,17 @@ void Librarian::searchUser(UserBST &users)
     if (foundUser->getType() == "Librarian")
     {
         // Uses << overload from User.h
-        cout << userToLibrarian(foundUser);
+        cout << (*userToLibrarian(foundUser));
     }
     else if (foundUser->getType() == "Student")
     {
-        // TODO Uses << overload from Reader.h
-        cout << userToStudent(foundUser);
+        // Uses << overload from Reader.h
+        cout << (*userToReader(foundUser));
     }
     else if (foundUser->getType() == "Teacher")
     {
-        // TODO Uses << overload from Reader.h
-        cout << userToTeacher(foundUser);
+        // Uses << overload from Reader.h
+        cout << (*userToReader(foundUser));
     }
 }
 
@@ -182,6 +180,15 @@ void Librarian::addUser(UserBST &users)
     cout << "What is the username of the user you want to add? ";
     string newUsername;
     cin >> newUsername;
+
+    // Check if user with that username already exists
+    if (users.returnUser(newUsername) != nullptr)
+    {
+        cout << "User with that username already exists, cannot create a new user." << endl
+             << endl;
+        return;
+    }
+
     cout << "What is the password of the user you want to add? ";
     string newPassword;
     cin >> newPassword;
@@ -210,9 +217,11 @@ void Librarian::addUser(UserBST &users)
     {
         cout << "Something went wrong. User was not created." << endl
              << endl;
-        break;
+        return;
     }
     }
+    cout << "User has been added" << endl
+         << endl;
 }
 
 void Librarian::deleteUser(UserBST &users)
@@ -226,6 +235,13 @@ void Librarian::deleteUser(UserBST &users)
     if (foundUser == nullptr)
     {
         cout << "User was not found, try again" << endl
+             << endl;
+        return;
+    }
+
+    if (foundUser == this)
+    {
+        cout << "Cannot delete yourself." << endl
              << endl;
         return;
     }

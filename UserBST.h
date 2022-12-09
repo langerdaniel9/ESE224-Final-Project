@@ -234,7 +234,7 @@ User *UserBST::returnUser(struct node *node, string testUsername, string testPas
     {
         return nullptr;
     }
-    while (testUsername != current->value->getUsername() && testPassword != current->value->getPassword())
+    while (testUsername != current->value->getUsername() || testPassword != current->value->getPassword())
     {
         if (testUsername > current->value->getUsername())
         {
