@@ -35,7 +35,7 @@ public:
     // Main functions //
     void searchBook(vector<Book> bookCatalog);
     void borrowBook(vector<Book> &bookCatalog, time_t &zeroTime);
-    void returnBook(vector<Book> &bookCatalog);
+    void returnBook(vector<Book> &bookCatalog,time_t zer);
     void renewBook(vector<Book> &bookCatalog);
     void reserveBook(vector<Book> &bookCatalog);
     void cancelBook(vector<Book> &bookCatalog);
@@ -376,7 +376,7 @@ void Reader::borrowBook(vector<Book> &bookCatalog, time_t &zeroTime)
     return;
 }
 
-void Reader::returnBook(vector<Book> &bookCatalog)
+void Reader::returnBook(vector<Book> &bookCatalog, time_t zerotime)
 {
     if (this->getBooksBorrowed().size() == 0)
     {
@@ -423,6 +423,13 @@ void Reader::returnBook(vector<Book> &bookCatalog)
                 {
                     bookCatalog.at(i).favorite();
                     cout << "Thank you for your response!" << endl;
+                }
+                int borrowbycount=1;
+                int currdate = date(zerotime);
+
+                while (bookCatalog.at(i).getReservers()->next != NULL) {
+                    bookCatalog.at(i).getReservers()->borrowBy = (5 * borrowbycount)+currdate;
+                    borrowbycount++;
                 }
             }
         }
