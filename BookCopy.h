@@ -40,11 +40,17 @@ public:
 BookCopy::BookCopy()
 {
     this->ID = -1;
+    this->readerName = "";
+    this->startDate = -1;
+    this->expirationDate = -1;
 }
 
 BookCopy::BookCopy(int newId)
 {
     this->ID = newId;
+    this->readerName = "";
+    this->startDate = -1;
+    this->expirationDate = -1;
 }
 
 // ******************** ACCESSORS ********************
