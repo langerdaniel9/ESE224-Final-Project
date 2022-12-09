@@ -114,6 +114,9 @@ void Reader::searchBook(vector<Book> bookCatalog)
     cout << "(4) - ID" << endl;
     cin >> searchChoice;
 
+    vector<Book> searchMatches;
+    searchMatches.clear();
+
     switch (searchChoice)
     {
     case 1:
@@ -123,12 +126,17 @@ void Reader::searchBook(vector<Book> bookCatalog)
         cin >> inputISBN;
 
         // Search for matching isbn and print if found
+
         for (int i = 0; i < bookCatalog.size(); i++)
         {
-            if (bookCatalog.at(i).getIsbn() == inputISBN)
+            // At least a partial match on isbn
+            string s = bookCatalog.at(i).getIsbn();
+            transform(s.begin(), s.end(), s.begin(), ::tolower);
+            transform(inputISBN.begin(), inputISBN.end(), inputISBN.begin(), ::tolower);
+            if (s.find(inputISBN) != string::npos)
             {
-                getBookInfo(bookCatalog.at(i));
-                cout << endl;
+                // Books with matching criteria get pushed to search results vector
+                searchMatches.push_back(bookCatalog.at(i));
             }
         }
 
@@ -143,10 +151,14 @@ void Reader::searchBook(vector<Book> bookCatalog)
         // Search for matching titles and print them
         for (int i = 0; i < bookCatalog.size(); i++)
         {
-            if (bookCatalog.at(i).getTitle() == inputTitle)
+            // At least a partial match on title
+            string s = bookCatalog.at(i).getTitle();
+            transform(s.begin(), s.end(), s.begin(), ::tolower);
+            transform(inputTitle.begin(), inputTitle.end(), inputTitle.begin(), ::tolower);
+            if (s.find(inputTitle) != string::npos)
             {
-                getBookInfo(bookCatalog.at(i));
-                cout << endl;
+                // Books with matching criteria get pushed to search results vector
+                searchMatches.push_back(bookCatalog.at(i));
             }
         }
 
@@ -161,10 +173,14 @@ void Reader::searchBook(vector<Book> bookCatalog)
         // Search for matching category and print them
         for (int i = 0; i < bookCatalog.size(); i++)
         {
-            if (bookCatalog.at(i).getCategory() == inputCategory)
+            // At least a partial match on category
+            string s = bookCatalog.at(i).getCategory();
+            transform(s.begin(), s.end(), s.begin(), ::tolower);
+            transform(inputCategory.begin(), inputCategory.end(), inputCategory.begin(), ::tolower);
+            if (s.find(inputCategory) != string::npos)
             {
-                getBookInfo(bookCatalog.at(i));
-                cout << endl;
+                // Books with matching criteria get pushed to search results vector
+                searchMatches.push_back(bookCatalog.at(i));
             }
         }
         break;
@@ -183,7 +199,7 @@ void Reader::searchBook(vector<Book> bookCatalog)
             {
                 if (copies.at(j).getID() == inputID)
                 {
-                    getBookInfo(bookCatalog.at(i));
+                    cout << bookCatalog.at(i);
                     cout << endl;
                     break;
                 }
@@ -196,6 +212,41 @@ void Reader::searchBook(vector<Book> bookCatalog)
         cout << "That's not a valid option! Try again!" << endl;
         break;
     }
+    }
+
+    // Sort searchMatches
+    // sorting by title
+    if (searchMatches.size() >= 2)
+    {
+        for (int i = 0; i < searchMatches.size() - 1; i++)
+        {
+            for (int j = 0; j < (searchMatches.size() - i - 1); j++)
+            {
+                int titleCompare = searchMatches.at(j).getTitle().compare(searchMatches.at(j + 1).getTitle());
+                if (titleCompare > 0)
+                {
+                    swap(searchMatches.at(j), searchMatches.at(j + 1));
+                }
+            }
+        }
+    }
+
+    // Print searchMatches
+    if (searchMatches.size() > 0)
+    {
+        cout << endl
+            << "Books that match your search critera:" << endl
+            << endl;
+        for (Book searchResult : searchMatches)
+        {
+            cout << searchResult;
+        }
+    }
+    else
+    {
+        cout << endl
+            << "There were no books that match that search critera, try again with a different search." << endl
+            << endl;
     }
 }
 
