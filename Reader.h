@@ -33,14 +33,15 @@ public:
     friend ostream &operator<<(ostream &output, Book &book);
     friend istream &operator>>(istream &input, Book &book);
     // Main functions //
-    void searchBook(vector<Book> bookCatalog);
+    void searchBook(vector<Book> &bookCatalog);
     void borrowBook(vector<Book> &bookCatalog, time_t &zeroTime);
-    void returnBook(vector<Book> &bookCatalog,time_t zer);
+    void returnBook(vector<Book> &bookCatalog, time_t zer);
     void renewBook(vector<Book> &bookCatalog);
     void reserveBook(vector<Book> &bookCatalog);
     void cancelBook(vector<Book> &bookCatalog);
     void feelingLucky(vector<Book> &bookCatalog);
-    void printMyInfo(vector<Book> bookCatalog);
+    void printMyInfo(vector<Book> &bookCatalog);
+    void printMyInfo();
 };
 
 // Leave functions in the .h file for now, will move them to their respective .cpp files when project is finished
@@ -104,7 +105,7 @@ void quickSort(vector<BookCopy> lib, int low, int high)
     }
 }
 
-void Reader::searchBook(vector<Book> bookCatalog)
+void Reader::searchBook(vector<Book> &bookCatalog)
 {
     int searchChoice;
     cout << "What do you want to search:" << endl;
@@ -416,6 +417,11 @@ void Reader::returnBook(vector<Book> &bookCatalog, time_t zerotime)
             cout << "Book with id:" << idin << "is being renewed" << endl;
             isreturned = true;
             this->copiesBorrowed.erase(this->copiesBorrowed.begin() + i);
+            int currenttime = date(zerotime);
+            if (currenttime > this->copiesBorrowed.at(i).getExpirationDate())
+            {
+                this->penalties++;
+            }
         }
     }
     if (!isreturned)
@@ -440,7 +446,7 @@ void Reader::returnBook(vector<Book> &bookCatalog, time_t zerotime)
                     bookCatalog.at(i).favorite();
                     cout << "Thank you for your response!" << endl;
                 }
-                int borrowbycount=1;
+                int borrowbycount = 1;
                 int currdate = date(zerotime);
 
                 LLNode* temp = bookCatalog.at(i).getReservers();
@@ -730,14 +736,19 @@ void Reader::feelingLucky(vector<Book> &bookCatalog)
     }
 }
 
-void Reader::printMyInfo(vector<Book> bookCatalog)
+void printMyInfo()
+{
+}
+
+void Reader::printMyInfo(vector<Book> &bookCatalog)
 {
     vector<BookCopy> copies;
 
     cout << "Username: " << this->getUsername() << endl;
     cout << "Password: " << this->getPassword() << endl;
     cout << "Borrowed Books: " << endl;
-    for (int i = 0; i < this->getBooksBorrowed().size(); i++) {
+    for (int i = 0; i < this->getBooksBorrowed().size(); i++)
+    {
         cout << "ID: " << this->getBooksBorrowed().at(i).getID() << ", ";
         for (int i = 0; i < bookCatalog.size(); i++)
         {
@@ -754,9 +765,10 @@ void Reader::printMyInfo(vector<Book> bookCatalog)
         }
     }
     cout << "Reserved Books: " << endl;
-    for (int i = 0; i < this->booksReserved.size(); i++) {
+    for (int i = 0; i < this->booksReserved.size(); i++)
+    {
         cout << "ISBN: " << this->booksReserved.at(i).getIsbn() << ", "
-            << "Title: " << this->booksReserved.at(i).getTitle() << endl;
+             << "Title: " << this->booksReserved.at(i).getTitle() << endl;
     }
     cout << endl;
 }
