@@ -378,6 +378,40 @@ void Reader::borrowBook(vector<Book> &bookCatalog, time_t &zeroTime)
 
 void Reader::returnBook(vector<Book> &bookCatalog)
 {
+    if (this->getBooksBorrowed().size()==0) {
+        cout << "You are not borrowing any books..." << endl;
+        return;
+    }
+    cout << "The books you are currently borrowing are: " << endl;
+    for (BookCopy book : this->getBooksBorrowed()) {
+        //possible todo
+        cout << book;
+    }
+    int idin;
+    cout << "Please input the id of the book to be returned: " << endl;
+    cin >> idin;
+    bool isreturned = false;
+    for (int i = 0; i < this->copiesBorrowed.size(); i++) {
+        if (this->copiesBorrowed.at(i).getID() == idin) {
+            cout << "Book with id:" << idin << "is being renewed" << endl;
+            isreturned = true;
+            this->copiesBorrowed.erase(this->copiesBorrowed.begin() + i);
+        }
+    }
+    if (!isreturned) {
+        cout << "The book has nto been found in your possesion, please try again..." << endl;
+        return;
+    }
+    
+    for (int i = 0; i < bookCatalog.size(); i++) {
+        for (int j = 0; i < bookCatalog.at(i).getCopies().size(); i++){
+            if (bookCatalog.at(i).getCopies().at(j).getID() == idin) {
+                bookCatalog.at(i).getCopies().at(j).setExpirationDate(-1);
+                bookCatalog.at(i).getCopies().at(j).setStartDate(-1);
+                bookCatalog.at(i).getCopies().at(j).setReaderName("");
+            }
+        }
+    }
 }
 
 void Reader::renewBook(vector<Book> &bookCatalog)
