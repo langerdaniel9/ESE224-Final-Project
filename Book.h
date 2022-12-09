@@ -116,7 +116,7 @@ void Book::favorite()
     timesFavorited++;
 }
 
-int expPartition(vector<BookCopy>& copyList, int low, int high)
+int expPartition(vector<BookCopy> &copyList, int low, int high)
 {
     int i = low - 1;
 
@@ -134,7 +134,7 @@ int expPartition(vector<BookCopy>& copyList, int low, int high)
     return i + 1;
 }
 
-void sortExpiration(vector<BookCopy>& copyList, int low, int high)
+void sortExpiration(vector<BookCopy> &copyList, int low, int high)
 {
     if (low < high)
     {
@@ -150,32 +150,31 @@ void sortExpiration(vector<BookCopy>& copyList, int low, int high)
 
 // ******************** OPERATION OVERLOADING ********************
 
+ostream &operator<<(ostream &output, Book &book)
+{
+    output << "ISBN: " << book.getIsbn() << endl
+           << "Title: " << book.getTitle() << endl
+           << "Author: " << book.getAuthor() << endl
+           << "Category: " << book.getCategory() << endl
+           << "Number of Favorites: " << book.getTimesFavorited() << endl
+           << "Copy IDs: " << endl;
+    vector<BookCopy> copies = book.getCopies();
+    sortExpiration(copies, 0, copies.size());
+    for (int i = 0; i < copies.size(); i++)
+    {
+        output << "id: " << copies.at(i).getID() << ", ";
+        if (copies.at(i).getExpirationDate() == -1)
+        {
+            output << "AVAILABLE" << endl;
+        }
+        else
+        {
+            output << "UNAVAILABLE " << endl;
+        }
+    }
 
- ostream &operator<<(ostream &output, Book &book)
- {
-     output << "ISBN: " << book.getIsbn() << endl
-          << "Title: " << book.getTitle() << endl
-          << "Author: " << book.getAuthor() << endl
-          << "Category: " << book.getCategory() << endl
-         << "Number of Favorites: " << book.getTimesFavorited() << endl
-          << "Copy IDs: " << endl;
-     vector<BookCopy> copies = book.getCopies();
-     sortExpiration(copies, 0, copies.size());
-     for (int i = 0; i < copies.size(); i++)
-     {
-         output << "id: " << copies.at(i).getID() << ", ";
-         if (copies.at(i).getExpirationDate() == -1)
-         {
-             output << "AVAILABLE" << endl;
-         }
-         else
-         {
-             output << "UNAVAILABLE " << endl;
-         }
-     }
-
-     return output;
- }
+    return output;
+}
 
 istream &operator>>(istream &input, Book &book)
 {

@@ -589,6 +589,7 @@ void Reader::cancelBook(vector<Book> &bookCatalog)
              << endl;
         return;
     }
+
     // Print the books that the current user has reserved
     cout << "These are the books that you currently have reserved:" << endl;
 
@@ -613,9 +614,31 @@ void Reader::cancelBook(vector<Book> &bookCatalog)
         }
     }
 
-    // Remove the user from the linked list of reservers on the book within the catalog
-
-    struct node *current;
+    // Find the book from the book catalog
+    int lo = 0, hi = bookCatalog.size() - 1;
+    int mid;
+    while (hi - lo > 1)
+    {
+        int mid = (hi + lo) / 2;
+        if (bookCatalog[mid].getIsbn() < isbnToCancel)
+        {
+            lo = mid + 1;
+        }
+        else
+        {
+            hi = mid;
+        }
+    }
+    if (bookCatalog[lo].getIsbn() == isbnToCancel)
+    {
+        // Remove the user from the linked list of reservers on the book within the catalog
+        bookCatalog.at(lo).deleteReader(this->getUsername());
+    }
+    else if (bookCatalog[hi].getIsbn() == isbnToCancel)
+    {
+        // Remove the user from the linked list of reservers on the book within the catalog
+        bookCatalog.at(hi).deleteReader(this->getUsername());
+    }
 }
 
 int favPartition(vector<Book> lib, int low, int high)
