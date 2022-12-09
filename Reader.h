@@ -40,7 +40,7 @@ public:
     void reserveBook(vector<Book> &bookCatalog);
     void cancelBook(vector<Book> &bookCatalog);
     void feelingLucky(vector<Book> &bookCatalog);
-    void printMyInfo();
+    void printMyInfo(vector<Book> bookCatalog);
 };
 
 // Leave functions in the .h file for now, will move them to their respective .cpp files when project is finished
@@ -683,9 +683,33 @@ void Reader::feelingLucky(vector<Book> &bookCatalog)
     }
 }
 
-void Reader::printMyInfo()
+void Reader::printMyInfo(vector<Book> bookCatalog)
 {
+    vector<BookCopy> copies;
+
     cout << "Username: " << this->getUsername() << endl;
     cout << "Password: " << this->getPassword() << endl;
-    for (int i = 0; i < this->)
+    cout << "Borrowed Books: " << endl;
+    for (int i = 0; i < this->getBooksBorrowed().size(); i++) {
+        cout << "ID: " << this->getBooksBorrowed().at(i).getID() << ", ";
+        for (int i = 0; i < bookCatalog.size(); i++)
+        {
+            copies = bookCatalog.at(i).getCopies();
+            for (int j = 0; j < copies.size(); j++)
+            {
+                if (copies.at(j).getID() == this->getBooksBorrowed().at(i).getID())
+                {
+                    cout << "ISBN: " << bookCatalog.at(i).getIsbn() << ", ";
+                    cout << "Title: " << bookCatalog.at(i).getTitle() << endl;
+                    break;
+                }
+            }
+        }
+    }
+    cout << "Reserved Books: " << endl;
+    for (int i = 0; i < this->booksReserved.size(); i++) {
+        cout << "ISBN: " << this->booksReserved.at(i).getIsbn() << ", "
+            << "Title: " << this->booksReserved.at(i).getTitle() << endl;
+    }
+    cout << endl;
 }
