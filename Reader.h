@@ -295,6 +295,7 @@ void Reader::borrowBook(vector<Book> &bookCatalog, time_t &zeroTime)
         {
             if (copies.at(j).getID() == inputID)
             {
+                exists = true;
                 matchedBook = bookCatalog.at(i);
                 toBeBorrowed = copies.at(j);
                 break;
@@ -302,18 +303,33 @@ void Reader::borrowBook(vector<Book> &bookCatalog, time_t &zeroTime)
         }
     }
 
-    if (toBeBorrowed.getID() != -1)
+    if (toBeBorrowed.getReaderName() == "")
     {
-        exists = true;
-        if (toBeBorrowed.getReaderName() == "")
-        {
-            available = true;
-        }
+        available = true;
     }
 
     // Now check if someone else is on the reserved linked list
     bool goodToContinue;
 
+    for (int i = 0; i < bookCatalog.size(); i++)
+    {
+        if (bookCatalog.at(i).getIsbn() == matchedBook.getIsbn()) {
+            while (bookCatalog.at(i).getReservers()->borrowBy < currentTime && bookCatalog.at(i).getReservers() != NULL) {
+                if (bookCatalog.at(i).getReservers()->username != this->getUsername()) {
+                    cerr << "Hey... this is awkward... you can't do that... sorry." << endl;
+                    exit(3);
+                }
+                for (int i = 0; i < booksReserved.size(); i++) {
+                    if (this->booksReserved.at(i).getIsbn() == matchedBook.getIsbn()) {
+                        booksReserved.erase(booksReserved.begin() + i);
+                    }
+                }
+                bookCatalog.at(i).deleteFirst();
+            }
+            break;
+        }
+    }
+    
     // Check the first entry of the linked list to see if it exists
     if (matchedBook.getReservers() == nullptr)
     {
@@ -429,7 +445,7 @@ void Reader::returnBook(vector<Book> &bookCatalog, time_t zerotime)
 
                 LLNode* temp = bookCatalog.at(i).getReservers();
                 while (temp != NULL) {
-                    bookCatalog.at(i).getReservers()->borrowBy = (5 * borrowbycount)+currdate;
+                    temp->borrowBy = (5 * borrowbycount)+currdate;
                     borrowbycount++;
                     temp = temp->next;
                 }
@@ -488,7 +504,6 @@ void Reader::renewBook(vector<Book> &bookCatalog)
         }
     }
 
-    vector<BookCopy> copies;
     if (renewed)
     {
         for (int i = 0; i < bookCatalog.size(); i++)
