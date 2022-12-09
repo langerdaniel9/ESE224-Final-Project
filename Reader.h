@@ -34,6 +34,7 @@ public:
     friend istream &operator>>(istream &input, Book &book);
     // Main functions //
     void sortExpiration(vector<BookCopy> &copyList, int low, int high);
+    void getBookInfo(Book book);
     void searchBook(vector<Book> bookCatalog);
     void borrowBook(vector<Book> &bookCatalog, time_t &zeroTime);
     void returnBook(vector<Book> &bookCatalog);
@@ -145,7 +146,7 @@ void Reader::getBookInfo(Book book)
          << "Category: " << book.getCategory() << endl
          << "Copy IDs: " << endl;
     vector<BookCopy> copies = book.getCopies();
-    sortExpiration(copies, 0, copies.size() - 1);
+    sortExpiration(copies, 0, copies.size());
     for (int i = 0; i < copies.size(); i++)
     {
         cout << "ID: " << copies.at(i).getID() << ", ";
@@ -170,9 +171,6 @@ void Reader::searchBook(vector<Book> bookCatalog)
     cout << "(4) - ID" << endl;
     cin >> searchChoice;
 
-    vector<Book> searchMatches;
-    searchMatches.clear();
-
     switch (searchChoice)
     {
     case 1:
@@ -182,17 +180,12 @@ void Reader::searchBook(vector<Book> bookCatalog)
         cin >> inputISBN;
 
         // Search for matching isbn and print if found
-
         for (int i = 0; i < bookCatalog.size(); i++)
         {
-            // At least a partial match on isbn
-            string s = bookCatalog.at(i).getIsbn();
-            transform(s.begin(), s.end(), s.begin(), ::tolower);
-            transform(inputISBN.begin(), inputISBN.end(), inputISBN.begin(), ::tolower);
-            if (s.find(inputISBN) != string::npos)
+            if (bookCatalog.at(i).getIsbn() == inputISBN)
             {
-                // Books with matching criteria get pushed to search results vector
-                searchMatches.push_back(bookCatalog.at(i));
+                getBookInfo(bookCatalog.at(i));
+                cout << endl;
             }
         }
 
@@ -207,14 +200,10 @@ void Reader::searchBook(vector<Book> bookCatalog)
         // Search for matching titles and print them
         for (int i = 0; i < bookCatalog.size(); i++)
         {
-            // At least a partial match on title
-            string s = bookCatalog.at(i).getTitle();
-            transform(s.begin(), s.end(), s.begin(), ::tolower);
-            transform(inputTitle.begin(), inputTitle.end(), inputTitle.begin(), ::tolower);
-            if (s.find(inputTitle) != string::npos)
+            if (bookCatalog.at(i).getTitle() == inputTitle)
             {
-                // Books with matching criteria get pushed to search results vector
-                searchMatches.push_back(bookCatalog.at(i));
+                getBookInfo(bookCatalog.at(i));
+                cout << endl;
             }
         }
 
@@ -229,14 +218,10 @@ void Reader::searchBook(vector<Book> bookCatalog)
         // Search for matching category and print them
         for (int i = 0; i < bookCatalog.size(); i++)
         {
-            // At least a partial match on category
-            string s = bookCatalog.at(i).getCategory();
-            transform(s.begin(), s.end(), s.begin(), ::tolower);
-            transform(inputCategory.begin(), inputCategory.end(), inputCategory.begin(), ::tolower);
-            if (s.find(inputCategory) != string::npos)
+            if (bookCatalog.at(i).getCategory() == inputCategory)
             {
-                // Books with matching criteria get pushed to search results vector
-                searchMatches.push_back(bookCatalog.at(i));
+                getBookInfo(bookCatalog.at(i));
+                cout << endl;
             }
         }
         break;
@@ -255,7 +240,7 @@ void Reader::searchBook(vector<Book> bookCatalog)
             {
                 if (copies.at(j).getID() == inputID)
                 {
-                    cout << bookCatalog.at(i);
+                    getBookInfo(bookCatalog.at(i));
                     cout << endl;
                     break;
                 }
@@ -268,41 +253,6 @@ void Reader::searchBook(vector<Book> bookCatalog)
         cout << "That's not a valid option! Try again!" << endl;
         break;
     }
-    }
-
-    // Sort searchMatches
-    // sorting by title
-    if (searchMatches.size() >= 2)
-    {
-        for (int i = 0; i < searchMatches.size() - 1; i++)
-        {
-            for (int j = 0; j < (searchMatches.size() - i - 1); j++)
-            {
-                int titleCompare = searchMatches.at(j).getTitle().compare(searchMatches.at(j + 1).getTitle());
-                if (titleCompare > 0)
-                {
-                    swap(searchMatches.at(j), searchMatches.at(j + 1));
-                }
-            }
-        }
-    }
-
-    // Print searchMatches
-    if (searchMatches.size() > 0)
-    {
-        cout << endl
-             << "Books that match your search critera:" << endl
-             << endl;
-        for (Book searchResult : searchMatches)
-        {
-            cout << searchResult;
-        }
-    }
-    else
-    {
-        cout << endl
-             << "There were no books that match that search critera, try again with a different search." << endl
-             << endl;
     }
 }
 
@@ -412,13 +362,10 @@ void Reader::borrowBook(vector<Book> &bookCatalog, time_t &zeroTime)
     this->copiesBorrowed.push_back(toBeBorrowed);
 
     // Change the attributes of the book
-    for (int i = 0; i < bookCatalog.size(); i++)
-    {
+    for (int i = 0; i < bookCatalog.size(); i++) {
         copies = bookCatalog.at(i).getCopies();
-        for (int j = 0; j < copies.size(); j++)
-        {
-            if (copies.at(j).getID() == inputID)
-            {
+        for (int j = 0; j < copies.size(); j++) {
+            if (copies.at(j).getID() == inputID) {
                 copies.at(j).setReaderName(this->getUsername());
                 copies.at(j).setStartDate(currentTime);
                 copies.at(j).setExpirationDate(currentTime + this->getMaxLoanTime());
@@ -455,13 +402,19 @@ void Reader::returnBook(vector<Book> &bookCatalog)
         cout << "The book has nto been found in your possesion, please try again..." << endl;
         return;
     }
-    
     for (int i = 0; i < bookCatalog.size(); i++) {
         for (int j = 0; i < bookCatalog.at(i).getCopies().size(); i++){
             if (bookCatalog.at(i).getCopies().at(j).getID() == idin) {
                 bookCatalog.at(i).getCopies().at(j).setExpirationDate(-1);
                 bookCatalog.at(i).getCopies().at(j).setStartDate(-1);
                 bookCatalog.at(i).getCopies().at(j).setReaderName("");
+                cout << "Did you like the book?(y/n)" << endl;
+                char response;
+                cin >> response;
+                if (response == 'y') {
+                    bookCatalog.at(i).favorite();
+                    cout << "Thank you for your response!" << endl;
+                }
             }
         }
     }
@@ -477,28 +430,10 @@ void Reader::reserveBook(vector<Book> &bookCatalog)
 
 void Reader::cancelBook(vector<Book> &bookCatalog)
 {
-    // Print the books that the current user has reserved
-
-    // Ask for the isbn of the book that the user wants to cancel the reservation of
 }
 
 void Reader::feelingLucky(vector<Book> &bookCatalog)
 {
-    vector<Book> mostFavorited;
-    // Go through the catalog and add books that have a number of favorites > 0 to the vector
-
-    if (mostFavorited.size() == 0)
-    {
-        cout << "It seems like there are no favorited books so far, go and favorite some of them first." << endl
-             << endl;
-        return;
-    }
-
-    // Sort mostFavorited vector by number of favorites
-
-    cout << "The top 10 most liked books are:" << endl;
-
-    // Print out the vector
 }
 
 void Reader::printMyInfo()
