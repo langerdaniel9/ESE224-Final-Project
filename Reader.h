@@ -105,61 +105,6 @@ void quickSort(vector<BookCopy> lib, int low, int high)
     }
 }
 
-int expPartition(vector<BookCopy> &copyList, int low, int high)
-{
-    int i = low - 1;
-
-    for (int j = low; j < high; j++)
-    {
-        if (copyList.at(j).getExpirationDate() <= copyList.at(high).getExpirationDate())
-        {
-            i++;
-            swap(copyList.at(i), copyList.at(j));
-        }
-    }
-
-    swap(copyList.at(high), copyList.at(i + 1));
-
-    return i + 1;
-}
-
-void Reader::sortExpiration(vector<BookCopy> &copyList, int low, int high)
-{
-    if (low < high)
-    {
-        int pi = expPartition(copyList, low, high);
-
-        // recursive call on the left of pivot
-        sortExpiration(copyList, low, pi - 1);
-
-        // recursive call on the right of pivot
-        sortExpiration(copyList, pi + 1, high);
-    }
-}
-
-void Reader::getBookInfo(Book book)
-{
-    cout << "ISBN: " << book.getIsbn() << endl
-         << "Title: " << book.getTitle() << endl
-         << "Author: " << book.getAuthor() << endl
-         << "Category: " << book.getCategory() << endl
-         << "Copy IDs: " << endl;
-    vector<BookCopy> copies = book.getCopies();
-    sortExpiration(copies, 0, copies.size() - 1);
-    for (int i = 0; i < copies.size(); i++)
-    {
-        cout << "ID: " << copies.at(i).getID() << ", ";
-        if (copies.at(i).getExpirationDate() == -1)
-        {
-            cout << "AVAILABLE" << endl;
-        }
-        else
-        {
-            cout << "Expires " << copies.at(i).getExpirationDate() << endl;
-        }
-    }
-}
-
 void Reader::searchBook(vector<Book> bookCatalog)
 {
     int searchChoice;
@@ -443,15 +388,81 @@ void Reader::reserveBook(vector<Book> &bookCatalog)
 
 void Reader::cancelBook(vector<Book> &bookCatalog)
 {
+    if (this->booksReserved.size() == 0)
+    {
+        cout << "You do not currently have any books reserved, so you cannot cancel any reservations." << endl
+             << endl;
+        return;
+    }
     // Print the books that the current user has reserved
+    cout << "These are the books that you currently have reserved:" << endl;
+
+    for (Book bk : this->booksReserved)
+    {
+        cout << "Title: " << bk.getTitle() << endl
+             << "ISBN: " << bk.getIsbn() << endl;
+    }
 
     // Ask for the isbn of the book that the user wants to cancel the reservation of
+    cout << "What is the ISBN of the book you want to cancel the reservation of? ";
+    string isbn;
+    cin >> isbn;
+}
+
+int favPartition(vector<Book> lib, int low, int high)
+{
+    // partition starting from first element;
+    // then comparing each element by the last element in the array
+
+    int i = low - 1; // i => index of first array (array lower than "high" value)
+
+    for (int j = low; j < high; j++)
+    { // j => index of second array (array greater than "high" value)
+        if (lib.at(j).getTimesFavorited() <= lib.at(high).getTimesFavorited())
+        {
+            i++;
+            swap(lib.at(i), lib.at(j));
+        }
+    }
+
+    // Swapping the "high" value to where it needs to be
+    swap(lib.at(high), lib.at(i + 1));
+
+    // returns the index of where the "high" value is
+    return i + 1;
+}
+
+void favQS(vector<Book> lib, int low, int high)
+{
+    if (low < high)
+    {
+        int pi = favPartition(lib, low, high);
+
+        // recursive call on the left of pivot
+        favQS(lib, low, pi - 1);
+
+        // recursive call on the right of pivot
+        favQS(lib, pi + 1, high);
+    }
+}
+
+void mostFavoritesSort(vector<Book> &mostFavorited)
+{
+    favQS(mostFavorited, 0, mostFavorited.size() - 1);
 }
 
 void Reader::feelingLucky(vector<Book> &bookCatalog)
 {
     vector<Book> mostFavorited;
+
     // Go through the catalog and add books that have a number of favorites > 0 to the vector
+    for (int i = 0; i < bookCatalog.size(); i++)
+    {
+        if (bookCatalog.at(i).getTimesFavorited() > 0)
+        {
+            mostFavorited.push_back(bookCatalog.at(i));
+        }
+    }
 
     if (mostFavorited.size() == 0)
     {
@@ -461,10 +472,15 @@ void Reader::feelingLucky(vector<Book> &bookCatalog)
     }
 
     // Sort mostFavorited vector by number of favorites
+    mostFavoritesSort(mostFavorited);
 
     cout << "The top 10 most liked books are:" << endl;
 
     // Print out the vector
+    for (Book bk : mostFavorited)
+    {
+        cout << bk;
+    }
 }
 
 void Reader::printMyInfo()
