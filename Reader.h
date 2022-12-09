@@ -401,6 +401,11 @@ void Reader::returnBook(vector<Book> &bookCatalog, time_t zerotime)
             cout << "Book with id:" << idin << "is being renewed" << endl;
             isreturned = true;
             this->copiesBorrowed.erase(this->copiesBorrowed.begin() + i);
+            int currenttime = date(zerotime);
+            if (currenttime > this->copiesBorrowed.at(i).getExpirationDate())
+            {
+                this->penalties++;
+            }
         }
     }
     if (!isreturned)
@@ -428,10 +433,12 @@ void Reader::returnBook(vector<Book> &bookCatalog, time_t zerotime)
                 int borrowbycount = 1;
                 int currdate = date(zerotime);
 
-                while (bookCatalog.at(i).getReservers()->next != NULL)
+                LLNode *temp = bookCatalog.at(i).getReservers();
+                while (temp != NULL)
                 {
                     bookCatalog.at(i).getReservers()->borrowBy = (5 * borrowbycount) + currdate;
                     borrowbycount++;
+                    temp = temp->next;
                 }
             }
         }
