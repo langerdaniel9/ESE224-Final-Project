@@ -439,6 +439,63 @@ void Reader::renewBook(vector<Book> &bookCatalog)
 
 void Reader::reserveBook(vector<Book> &bookCatalog)
 {
+    string inputISBN;
+    cout << "What is the ISBN of the book you wish to reserve? ";
+    cin >> inputISBN;
+
+    // Check if that ISBN exists in bookCatalog and that there are available copies
+    bool exists = false;
+    bool available = false;
+    Book toBeBorrowed;
+
+    // Finds specific Book given the ISBN; also signifies that the Book exists
+    for (int i = 0; i < bookCatalog.size(); i++) {
+        if (bookCatalog.at(i).getIsbn() == inputISBN) {
+            exists = true;
+            toBeBorrowed = bookCatalog.at(i);
+        }
+    }
+
+    // Checks if the Book is available (if a BookCopy has a reader name that is empty)
+    for (int i = 0; i < toBeBorrowed.copies.size(); i++) {
+        if (toBeBorrowed.copies.at(i).getReaderName() == "") {
+            available = true;
+        }
+    }
+
+    if (!exists)
+    {
+        cout << "That ISBN does not exist in the library, double check the ISBN and try again" << endl;
+        return;
+    }
+    if (!available)
+    {
+        Book book;
+        // Finds the book to reserve if it is not available
+        for (int i = 0; i < bookCatalog.size(); i++) {
+            if (bookCatalog.at(i).getIsbn() == inputISBN) {
+                book = bookCatalog.at(i);
+            }
+        }
+
+        if (book.getIsbn() == "-1")
+        {
+            cerr << "Couldnt find match";
+            exit(1);
+        }
+
+        // Inserts the reader's name to the Book 
+        book.insertReader(this->getUsername());
+        
+        // Adds the book to the reader's vector of reserved books
+        this->booksReserved.push_back(book);
+        return;
+    }
+    else
+    {
+        cout << "This book is currently available, try borrowing this book." << endl;
+        return;
+    }
 }
 
 void Reader::cancelBook(vector<Book> &bookCatalog)
