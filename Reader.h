@@ -33,7 +33,6 @@ public:
     friend ostream &operator<<(ostream &output, Book &book);
     friend istream &operator>>(istream &input, Book &book);
     // Main functions //
-    void sortExpiration(vector<BookCopy> &copyList, int low, int high);
     void searchBook(vector<Book> bookCatalog);
     void borrowBook(vector<Book> &bookCatalog, time_t &zeroTime);
     void returnBook(vector<Book> &bookCatalog);
@@ -102,61 +101,6 @@ void quickSort(vector<BookCopy> lib, int low, int high)
 
         // recursive call on the right of pivot
         quickSort(lib, pi + 1, high);
-    }
-}
-
-int expPartition(vector<BookCopy> &copyList, int low, int high)
-{
-    int i = low - 1;
-
-    for (int j = low; j < high; j++)
-    {
-        if (copyList.at(j).getExpirationDate() <= copyList.at(high).getExpirationDate())
-        {
-            i++;
-            swap(copyList.at(i), copyList.at(j));
-        }
-    }
-
-    swap(copyList.at(high), copyList.at(i + 1));
-
-    return i + 1;
-}
-
-void Reader::sortExpiration(vector<BookCopy> &copyList, int low, int high)
-{
-    if (low < high)
-    {
-        int pi = expPartition(copyList, low, high);
-
-        // recursive call on the left of pivot
-        sortExpiration(copyList, low, pi - 1);
-
-        // recursive call on the right of pivot
-        sortExpiration(copyList, pi + 1, high);
-    }
-}
-
-void Reader::getBookInfo(Book book)
-{
-    cout << "ISBN: " << book.getIsbn() << endl
-         << "Title: " << book.getTitle() << endl
-         << "Author: " << book.getAuthor() << endl
-         << "Category: " << book.getCategory() << endl
-         << "Copy IDs: " << endl;
-    vector<BookCopy> copies = book.getCopies();
-    sortExpiration(copies, 0, copies.size() - 1);
-    for (int i = 0; i < copies.size(); i++)
-    {
-        cout << "ID: " << copies.at(i).getID() << ", ";
-        if (copies.at(i).getExpirationDate() == -1)
-        {
-            cout << "AVAILABLE" << endl;
-        }
-        else
-        {
-            cout << "Expires " << copies.at(i).getExpirationDate() << endl;
-        }
     }
 }
 
@@ -422,19 +366,93 @@ void Reader::borrowBook(vector<Book> &bookCatalog, time_t &zeroTime)
                 copies.at(j).setReaderName(this->getUsername());
                 copies.at(j).setStartDate(currentTime);
                 copies.at(j).setExpirationDate(currentTime + this->getMaxLoanTime());
+                cout << "Book Successfully Borrowed!" << endl;
+                cout << copies.at(j) << endl;
                 break;
             }
         }
     }
+
     return;
 }
 
-void Reader::returnBook(vector<Book> &bookCatalog)
-{
+void Reader::returnBook(vector<Book> &bookCatalog) {
+
 }
 
-void Reader::renewBook(vector<Book> &bookCatalog)
-{
+void Reader::renewBook(vector<Book> &bookCatalog) {
+
+    if (this->getBooksBorrowed().size() == 0)
+    {
+        cout << "You are not currently borrowing any books." << endl
+            << endl;
+        return;
+    }
+
+    cout << "Here are all the books you are currently borrowing:" << endl
+        << endl;
+
+    vector<BookCopy> copies;
+    for (BookCopy book : this->getBooksBorrowed())
+    {
+        cout << "ID: " << book.getID() << ", "
+            << "Title: ";
+        for (int i = 0; i < bookCatalog.size(); i++)
+        {
+            copies = bookCatalog.at(i).getCopies();
+            for (int j = 0; j < copies.size(); j++)
+            {
+                if (copies.at(j).getID() == book.getID())
+                {
+                    cout << bookCatalog.at(i).getTitle() << endl;
+                    break;
+                }
+            }
+        }
+    }
+    cout << endl;
+
+    cout << "What is the ID of the book you would like to renew?" << endl;
+    int id;
+    cin >> id;
+
+    bool renewed = false;
+    for (int i = 0; i < this->getBooksBorrowed().size(); i++)
+    {
+        if (this->getBooksBorrowed().at(i).getID() == id)
+        {
+            renewed = true;
+            cout << "Renewing book" << endl
+                << endl;
+
+            copiesBorrowed.at(i).setExpirationDate(copiesBorrowed.at(i).getExpirationDate() + this->getMaxLoanTime());
+        }
+    }
+
+    vector<BookCopy> copies;
+    if (renewed)
+    {
+        for (int i = 0; i < bookCatalog.size(); i++)
+        {
+            copies = bookCatalog.at(i).getCopies();
+            for (int j = 0; j < copies.size(); j++)
+            {
+                if (copies.at(j).getID() == id)
+                {
+                    copies.at(j).setExpirationDate(copies.at(j).getExpirationDate() + this->getMaxLoanTime());
+                    break;
+                }
+            }
+        }
+    }
+
+    if (!renewed)
+    {
+        cout << endl
+            << "Cant renew that book since you dont have it checked out" << endl
+            << endl;
+        return;
+    }
 }
 
 void Reader::reserveBook(vector<Book> &bookCatalog)
@@ -469,5 +487,7 @@ void Reader::feelingLucky(vector<Book> &bookCatalog)
 
 void Reader::printMyInfo()
 {
-    cout << (*this);
+    cout << "Username: " << this->getUsername() << endl;
+    cout << "Password: " << this->getPassword() << endl;
+    for (int i = 0; i < this->)
 }
