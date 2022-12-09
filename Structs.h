@@ -8,7 +8,7 @@ using namespace std;
 
 ///////////////////////////////////////////////////
 
-struct LLNode // TODO maybe use a template here??
+struct LLNode
 {
     string username;
     string isbnReserved;
