@@ -35,7 +35,7 @@ public:
     // Main functions //
     void searchBook(vector<Book> bookCatalog);
     void borrowBook(vector<Book> &bookCatalog, time_t &zeroTime);
-    void returnBook(vector<Book> &bookCatalog);
+    void returnBook(vector<Book> &bookCatalog,time_t zer);
     void renewBook(vector<Book> &bookCatalog);
     void reserveBook(vector<Book> &bookCatalog);
     void cancelBook(vector<Book> &bookCatalog);

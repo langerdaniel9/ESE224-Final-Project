@@ -291,7 +291,7 @@ void readerLoop(Reader *user, vector<Book> &catalog, UserBST users, time_t &zero
         case 3:
         {
             // Return Book
-            user->returnBook(catalog);
+            user->returnBook(catalog,zeroTime);
             break;
         }
         case 4:
