@@ -19,7 +19,7 @@ public:
     Librarian(string initUsername, string initPassword);
 
     // ********** FUNCTIONS **********
-    void addBook(vector<Book> &catalog);
+    void addBook(vector<Book> &catalog, int &copycount);
     void deleteBook(vector<Book> &catalog);
     void searchUser(UserBST &users);
     void addUser(UserBST &users);
@@ -49,7 +49,7 @@ Librarian *userToLibrarian(User *toCast)
 
 // Functions //
 
-void Librarian::addBook(vector<Book> &catalog)
+void Librarian::addBook(vector<Book> &catalog, int &copycount)
 {
     string newISBN;
     int newID;
@@ -61,9 +61,9 @@ void Librarian::addBook(vector<Book> &catalog)
 
     if (foundIndex != -1)
     {
-        cout << "This book already exists, so a new copy of this book will be added. What is the ID of this new copy: ";
-        cin >> newID;
-        BookCopy newBookCopy(newID);
+       
+        BookCopy newBookCopy(copycount);
+        copycount++;
         catalog.at(foundIndex).copies.push_back(newBookCopy);
     }
     else
@@ -78,10 +78,11 @@ void Librarian::addBook(vector<Book> &catalog)
         cout << "What is the category of this book? ";
         cin >> newCategory;
         cout << "At least one copy of this book must be added, what is the ID of this copy? ";
-        cin >> newID;
+        
 
         Book newBook(newISBN, newTitle, newAuthor, newCategory);
-        BookCopy newBookCopy(newID);
+        BookCopy newBookCopy(copycount);
+        copycount++;
         newBook.copies.push_back(newBookCopy);
         catalog.push_back(newBook);
 
