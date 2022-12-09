@@ -404,8 +404,22 @@ void Reader::cancelBook(vector<Book> &bookCatalog)
 
     // Ask for the isbn of the book that the user wants to cancel the reservation of
     cout << "What is the ISBN of the book you want to cancel the reservation of? ";
-    string isbn;
-    cin >> isbn;
+    string isbnToCancel;
+    cin >> isbnToCancel;
+
+    // Remove that book from the reserved books vector of the user
+    for (int i = 0; i < this->booksReserved.size(); i++)
+    {
+        if (this->booksReserved.at(i).getIsbn() == isbnToCancel)
+        {
+            this->booksReserved.erase(this->booksReserved.begin() + i);
+            return;
+        }
+    }
+
+    // Remove the user from the linked list of reservers on the book within the catalog
+
+    struct node *current;
 }
 
 int favPartition(vector<Book> lib, int low, int high)
