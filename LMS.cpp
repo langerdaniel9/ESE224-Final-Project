@@ -27,7 +27,7 @@ using namespace std;
 
 void getUsers(UserBST &users);
 void getBooks(vector<Book> &catalog);
-void getCopies(vector<Book> &catalog);
+void getCopies(vector<Book> &catalog, int copyCount);
 
 User *login(UserBST &users);
 
@@ -163,7 +163,7 @@ void getBooks(vector<Book> &catalog)
     bookFile.close();
 }
 
-void getCopies(vector<Book> &catalog, int &copyin)
+void getCopies(vector<Book> &catalog, int copyin)
 {
     fstream copyFile("copiesList.txt");
     if (copyFile.fail())
@@ -291,7 +291,7 @@ void readerLoop(Reader *user, vector<Book> &catalog, UserBST users, time_t &zero
         case 3:
         {
             // Return Book
-            user->returnBook(catalog,zeroTime);
+            user->returnBook(catalog, zeroTime);
             break;
         }
         case 4:
@@ -315,7 +315,7 @@ void readerLoop(Reader *user, vector<Book> &catalog, UserBST users, time_t &zero
         case 7:
         {
             // Printout Information
-            user->printMyInfo();
+            user->printMyInfo(catalog);
             break;
         }
         case 8:
