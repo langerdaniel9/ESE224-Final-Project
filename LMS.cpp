@@ -32,18 +32,20 @@ void getCopies(vector<Book> &catalog);
 User *login(UserBST &users);
 
 void readerLoop(Reader *user, vector<Book> &catalog, UserBST users, time_t &zeroTime);
-void librarianLoop(Librarian *user, vector<Book> &catalog, UserBST users, time_t &zeroTime);
+void librarianLoop(Librarian *user, vector<Book> &catalog, UserBST users, time_t &zeroTime, int &copycount);
+
+
 
 int main()
 {
     // Data to be read in from text files
     vector<Book> catalog;
     UserBST users;
-
+    int copycount = 0;
     // Read in data from text files
     getUsers(users);
     getBooks(catalog);
-    getCopies(catalog);
+    getCopies(catalog,copycount);
 
     // Print Welcome message
     cout << "-----------------------------------" << endl
@@ -163,7 +165,7 @@ void getBooks(vector<Book> &catalog)
     bookFile.close();
 }
 
-void getCopies(vector<Book> &catalog)
+void getCopies(vector<Book> &catalog, int& copyin)
 {
     fstream copyFile("copiesList.txt");
     if (copyFile.fail())
@@ -188,6 +190,7 @@ void getCopies(vector<Book> &catalog)
         {
             catalog.at(indexResult).copies.push_back(*temp);
         }
+        copyin++;
     }
 
     copyFile.close();
@@ -338,7 +341,7 @@ void readerLoop(Reader *user, vector<Book> &catalog, UserBST users, time_t &zero
     }
 }
 
-void librarianLoop(Librarian *user, vector<Book> &catalog, UserBST users, time_t &zeroTime)
+void librarianLoop(Librarian *user, vector<Book> &catalog, UserBST users, time_t &zeroTime,int &copycount)
 {
     while (true)
     {
