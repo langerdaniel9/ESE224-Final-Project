@@ -400,6 +400,10 @@ void Reader::returnBook(vector<Book> &bookCatalog, time_t zerotime)
             cout << "Book with id:" << idin << "is being renewed" << endl;
             isreturned = true;
             this->copiesBorrowed.erase(this->copiesBorrowed.begin() + i);
+            int currenttime = date(zerotime);
+            if (currenttime > this->copiesBorrowed.at(i).getExpirationDate()) {
+                this->penalties++;
+            }
         }
     }
     if (!isreturned)
