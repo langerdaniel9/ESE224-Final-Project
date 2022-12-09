@@ -235,8 +235,8 @@ void Reader::searchBook(vector<Book> bookCatalog)
     if (searchMatches.size() > 0)
     {
         cout << endl
-            << "Books that match your search critera:" << endl
-            << endl;
+             << "Books that match your search critera:" << endl
+             << endl;
         for (Book searchResult : searchMatches)
         {
             cout << searchResult;
@@ -245,8 +245,8 @@ void Reader::searchBook(vector<Book> bookCatalog)
     else
     {
         cout << endl
-            << "There were no books that match that search critera, try again with a different search." << endl
-            << endl;
+             << "There were no books that match that search critera, try again with a different search." << endl
+             << endl;
     }
 }
 
@@ -429,23 +429,24 @@ void Reader::returnBook(vector<Book> &bookCatalog)
     }
 }
 
-void Reader::renewBook(vector<Book> &bookCatalog) {
+void Reader::renewBook(vector<Book> &bookCatalog)
+{
 
     if (this->getBooksBorrowed().size() == 0)
     {
         cout << "You are not currently borrowing any books." << endl
-            << endl;
+             << endl;
         return;
     }
 
     cout << "Here are all the books you are currently borrowing:" << endl
-        << endl;
+         << endl;
 
     vector<BookCopy> copies;
     for (BookCopy book : this->getBooksBorrowed())
     {
         cout << "ID: " << book.getID() << ", "
-            << "Title: ";
+             << "Title: ";
         for (int i = 0; i < bookCatalog.size(); i++)
         {
             copies = bookCatalog.at(i).getCopies();
@@ -472,7 +473,7 @@ void Reader::renewBook(vector<Book> &bookCatalog) {
         {
             renewed = true;
             cout << "Renewing book" << endl
-                << endl;
+                 << endl;
 
             copiesBorrowed.at(i).setExpirationDate(copiesBorrowed.at(i).getExpirationDate() + this->getMaxLoanTime());
         }
@@ -498,8 +499,8 @@ void Reader::renewBook(vector<Book> &bookCatalog) {
     if (!renewed)
     {
         cout << endl
-            << "Cant renew that book since you dont have it checked out" << endl
-            << endl;
+             << "Cant renew that book since you dont have it checked out" << endl
+             << endl;
         return;
     }
 }
@@ -516,16 +517,20 @@ void Reader::reserveBook(vector<Book> &bookCatalog)
     Book toBeBorrowed;
 
     // Finds specific Book given the ISBN; also signifies that the Book exists
-    for (int i = 0; i < bookCatalog.size(); i++) {
-        if (bookCatalog.at(i).getIsbn() == inputISBN) {
+    for (int i = 0; i < bookCatalog.size(); i++)
+    {
+        if (bookCatalog.at(i).getIsbn() == inputISBN)
+        {
             exists = true;
             toBeBorrowed = bookCatalog.at(i);
         }
     }
 
     // Checks if the Book is available (if a BookCopy has a reader name that is empty)
-    for (int i = 0; i < toBeBorrowed.copies.size(); i++) {
-        if (toBeBorrowed.copies.at(i).getReaderName() == "") {
+    for (int i = 0; i < toBeBorrowed.copies.size(); i++)
+    {
+        if (toBeBorrowed.copies.at(i).getReaderName() == "")
+        {
             available = true;
         }
     }
@@ -539,8 +544,10 @@ void Reader::reserveBook(vector<Book> &bookCatalog)
     {
         Book book;
         // Finds the book to reserve if it is not available
-        for (int i = 0; i < bookCatalog.size(); i++) {
-            if (bookCatalog.at(i).getIsbn() == inputISBN) {
+        for (int i = 0; i < bookCatalog.size(); i++)
+        {
+            if (bookCatalog.at(i).getIsbn() == inputISBN)
+            {
                 book = bookCatalog.at(i);
             }
         }
@@ -551,9 +558,9 @@ void Reader::reserveBook(vector<Book> &bookCatalog)
             exit(1);
         }
 
-        // Inserts the reader's name to the Book 
+        // Inserts the reader's name to the Book
         book.insertReader(this->getUsername());
-        
+
         // Adds the book to the reader's vector of reserved books
         this->booksReserved.push_back(book);
         return;
