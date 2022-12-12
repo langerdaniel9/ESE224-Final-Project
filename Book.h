@@ -17,12 +17,12 @@ private:
     string title;
     string author;
     string category;
-    LLNode *rrHead;
     int timesFavorited;
 
 public:
     // Properties //
     vector<BookCopy> copies;
+    LLNode *rrHead;
 
     // ********** CONSTRUCTORS **********
     Book();
@@ -210,7 +210,7 @@ void Book::insertReader(string newReaderUsername)
 
     if (head == nullptr)
     {
-        head = newNode;
+        rrHead = newNode;
         return;
     }
 
@@ -224,6 +224,10 @@ void Book::insertReader(string newReaderUsername)
 
 void Book::deleteFirst()
 {
+    if (rrHead == nullptr)
+    {
+        return;
+    }
     LLNode *temp = rrHead;
     rrHead = rrHead->next;
     delete (temp);

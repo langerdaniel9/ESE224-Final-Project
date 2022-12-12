@@ -1,10 +1,11 @@
 #pragma once
 
 #include "BookCopy.h"
-#include "DateFunction.h" //
+#include "DateFunction.h"
 #include "User.h"
-#include "Book.h" //
+#include "Book.h"
 #include "Structs.h"
+#include "UserBST.h"
 
 #include <iostream>
 #include <string>
@@ -34,8 +35,8 @@ public:
     friend istream &operator>>(istream &input, Reader &reader);
     // Main functions //
     void searchBook(vector<Book> &bookCatalog);
-    void borrowBook(vector<Book> &bookCatalog, time_t &zeroTime);
-    void returnBook(vector<Book> &bookCatalog, time_t zer);
+    void borrowBook(vector<Book> &bookCatalog, time_t &zeroTime, UserBST users);
+    void returnBook(vector<Book> &bookCatalog, time_t zeroTime);
     void renewBook(vector<Book> &bookCatalog);
     void reserveBook(vector<Book> &bookCatalog);
     void cancelBook(vector<Book> &bookCatalog);
@@ -248,12 +249,11 @@ void Reader::searchBook(vector<Book> &bookCatalog)
     }
 }
 
-void Reader::borrowBook(vector<Book> &bookCatalog, time_t &zeroTime)
+void Reader::borrowBook(vector<Book> &bookCatalog, time_t &zeroTime, UserBST users)
 {
     // Check if there are overdue books
     int currentTime = date(zeroTime);
     vector<BookCopy> expiredBooks;
-    vector<Book> temp = bookCatalog;
     bool expired = false;
 
     for (int i = 0; i < this->getBooksBorrowed().size(); i++)
@@ -264,6 +264,7 @@ void Reader::borrowBook(vector<Book> &bookCatalog, time_t &zeroTime)
             expiredBooks.push_back(this->getBooksBorrowed().at(i));
         }
     }
+
     if (expired)
     {
         cout << "You have books that are already past due, return those before borrowing more. Your expired books are:" << endl;
@@ -311,30 +312,32 @@ void Reader::borrowBook(vector<Book> &bookCatalog, time_t &zeroTime)
     {
         if (bookCatalog.at(i).getIsbn() == matchedBook.getIsbn())
         {
-            if (bookCatalog.at(i).getReservers() == NULL)
+            if (bookCatalog.at(i).getReservers() == nullptr)
             {
                 break;
             }
+            // Checks all the reservers to see if any have expired
             while (bookCatalog.at(i).getReservers()->borrowBy < currentTime)
             {
-                if (bookCatalog.at(i).getReservers()->username != this->getUsername())
+                string testUsername = bookCatalog.at(i).getReservers()->username;
+                for (int j = 0; j < userToReader(users.returnUser(testUsername))->booksReserved.size(); j++)
                 {
-                    cerr << "Hey... this is awkward... you can't do that... sorry." << endl;
-                    exit(3);
-                }
-                for (int i = 0; i < booksReserved.size(); i++)
-                {
-                    if (this->booksReserved.at(i).getIsbn() == matchedBook.getIsbn())
+                    if (userToReader(users.returnUser(testUsername))->booksReserved.at(i).getIsbn() == matchedBook.getIsbn())
                     {
-                        this->booksReserved.erase(booksReserved.begin() + i);
+                        // Use the username from the expired reserve entry to delete the book from that users reservations vector
+                        userToReader(users.returnUser(testUsername))->booksReserved.erase(booksReserved.begin() + j);
                     }
                 }
+                // Delete the entry from the books linked list as well
                 bookCatalog.at(i).deleteFirst();
-                if (bookCatalog.at(i).getReservers() == NULL)
+
+                // Check if linked list is now empty
+                if (bookCatalog.at(i).getReservers() == nullptr)
                 {
                     break;
                 }
             }
+            // Stops after the first match is found, since there is only one match possible
             break;
         }
     }
@@ -480,7 +483,7 @@ void Reader::returnBook(vector<Book> &bookCatalog, time_t zerotime)
                 int borrowbycount = 1;
                 int currdate = date(zerotime);
 
-                LLNode *temp = bookCatalog.at(i).getReservers();
+                LLNode *temp = (bookCatalog.at(i).rrHead);
                 while (temp != NULL)
                 {
                     temp->borrowBy = (5 * borrowbycount) + currdate;
@@ -619,6 +622,8 @@ void Reader::reserveBook(vector<Book> &bookCatalog)
 
         // Inserts the reader's name to the Book
         bookCatalog.at(temp).insertReader(this->getUsername());
+        bookCatalog.at(temp).getReservers()->isbnReserved = inputISBN;
+        bookCatalog.at(temp).getReservers()->borrowBy = toBeBorrowed.copies[0].getExpirationDate() + 5;
 
         // Adds the book to the reader's vector of reserved books
         this->booksReserved.push_back(bookCatalog.at(temp));

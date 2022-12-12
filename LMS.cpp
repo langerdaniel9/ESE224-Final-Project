@@ -286,7 +286,7 @@ void readerLoop(Reader *user, vector<Book> &catalog, UserBST users, time_t &zero
         case 2:
         {
             // Borrow Book
-            user->borrowBook(catalog, zeroTime);
+            user->borrowBook(catalog, zeroTime, users);
             break;
         }
         case 3:
