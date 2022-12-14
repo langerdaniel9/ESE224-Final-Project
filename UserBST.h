@@ -15,9 +15,6 @@ class UserBST
 {
 
 private:
-    // Parameters //
-    int treeSize;
-
     // Functions //
     void addUser(struct node **node, User *val);
     void deleteUser(struct node **node, User *val);
@@ -51,7 +48,6 @@ public:
 UserBST::UserBST()
 {
     this->root = NULL;
-    this->treeSize = 0;
 }
 
 void UserBST::addUser(User *toInsert)
@@ -69,8 +65,6 @@ void UserBST::addUser(struct node **node, User *toInsert)
         tmp->left = NULL;
         tmp->right = NULL;
         *node = tmp;
-
-        this->treeSize++;
     }
     else
     {
@@ -203,8 +197,6 @@ void UserBST::deleteUser(struct node **node, User *toDelete)
 
         delete (current);
     }
-
-    this->treeSize--;
 }
 
 void UserBST::printInOrder()
