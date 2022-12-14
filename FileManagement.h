@@ -41,7 +41,7 @@ void traverseBSTandWriteToFile(ofstream &output, node *node)
 void writeOutUsersFile(UserBST users)
 {
     ofstream userOutput;
-    userOutput.open("outputUsers.txt");
+    userOutput.open("usersList.txt");
     traverseBSTandWriteToFile(userOutput, users.root);
     userOutput.close();
 }
@@ -49,7 +49,7 @@ void writeOutUsersFile(UserBST users)
 void writeOutBooksFile(vector<Book> catalog)
 {
     ofstream bookOutput;
-    bookOutput.open("outputBooks.txt");
+    bookOutput.open("booksList.txt");
 
     // Traverse and print
     for (Book bk : catalog)
@@ -67,7 +67,7 @@ void writeOutBooksFile(vector<Book> catalog)
 void writeOutCopiesFile(vector<Book> catalog)
 {
     ofstream copiesOutput;
-    copiesOutput.open("outputCopies.txt");
+    copiesOutput.open("copiesList.txt");
 
     // Traverse and print
     for (Book bk : catalog)

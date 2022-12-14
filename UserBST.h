@@ -21,8 +21,10 @@ private:
     // Functions //
     void addUser(struct node **node, User *val);
     void deleteUser(struct node **node, User *val);
-    User *returnUser(struct node *node, string testUsername, string testPassword);
-    User *returnUser(struct node *node, string testUsername);
+    template <typename T>
+    User *returnUser(struct node *node, T testUsername, T testPassword);
+    template <typename T>
+    User *returnUser(struct node *node, T testUsername);
     void printInOrder(struct node *node);
 
     // Helper Functions //
@@ -39,8 +41,10 @@ public:
     // Binary Search Tree
     void addUser(User *toInsert);
     void deleteUser(User *toDelete);
-    User *returnUser(string testUsername);
-    User *returnUser(string testUsername, string testPassword);
+    template <typename T>
+    User *returnUser(T testUsername);
+    template <typename T>
+    User *returnUser(T testUsername, T testPassword);
     void printInOrder();
 };
 
@@ -222,12 +226,14 @@ void UserBST::printInOrder(struct node *node)
     }
 }
 
-User *UserBST::returnUser(string testUsername, string testPassword)
+template <typename T>
+User *UserBST::returnUser(T testUsername, T testPassword)
 {
     return returnUser(this->root, testUsername, testPassword);
 }
 
-User *UserBST::returnUser(struct node *node, string testUsername, string testPassword)
+template <typename T>
+User *UserBST::returnUser(struct node *node, T testUsername, T testPassword)
 {
     struct node *current = node;
     if (current == nullptr)
@@ -253,12 +259,14 @@ User *UserBST::returnUser(struct node *node, string testUsername, string testPas
     return current->value;
 }
 
-User *UserBST::returnUser(string testUsername)
+template <typename T>
+User *UserBST::returnUser(T testUsername)
 {
     return returnUser(this->root, testUsername);
 }
 
-User *UserBST::returnUser(struct node *node, string testUsername)
+template <typename T>
+User *UserBST::returnUser(struct node *node, T testUsername)
 {
     struct node *current = node;
     if (current == nullptr)

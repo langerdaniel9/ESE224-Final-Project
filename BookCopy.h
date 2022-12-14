@@ -35,8 +35,6 @@ public:
     friend istream &operator>>(istream &input, BookCopy &bc);
 };
 
-// Leave functions in the .h file for now, will move them to their respective .cpp files when project is finished
-
 BookCopy::BookCopy()
 {
     this->ID = -1;
